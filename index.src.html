@@ -1,0 +1,98 @@
+<h1>Mixed Content</h1>
+<pre class="metadata">
+Status: DREAM
+ED: https://mikewest.github.io/cake/spec/
+Shortname: CAKE
+Level: 1
+Editor: Mike West, Google Inc., mkwst@google.com
+Abstract: This document defines the `origin` attribute for cookies and the `Origin-Cookie` header field, which together allow servers to choose to harmonize the security policy of their cookies with the same-origin policy which governs other available client-side storage mechanisms.
+Indent: 2
+</pre>
+
+<!--
+████ ██    ██ ████████ ████████   ███████
+ ██  ███   ██    ██    ██     ██ ██     ██
+ ██  ████  ██    ██    ██     ██ ██     ██
+ ██  ██ ██ ██    ██    ████████  ██     ██
+ ██  ██  ████    ██    ██   ██   ██     ██
+ ██  ██   ███    ██    ██    ██  ██     ██
+████ ██    ██    ██    ██     ██  ███████
+-->
+<section>
+  <h2 id="intro">Introduction</h2>
+
+  <em>This section is not normative.</em>
+
+  Cookies, as defined by [[RFC6265]], diverge from the web's general security
+  policy in a number of ways which may be surprising to implementers and
+  authors who haven't carefully read that document's discussion of [domain
+  matching](http://tools.ietf.org/html/rfc6265#section-5.1.3) and [path
+  matching](http://tools.ietf.org/html/rfc6265#section-5.1.4), or who ignored
+  the ["Weak Confidentiality"](http://tools.ietf.org/html/rfc6265#section-8.5)
+  and ["Weak Integrity"](http://tools.ietf.org/html/rfc6265#section-8.6)
+  sections.
+
+  This document describes a mechanism by which servers can opt-in to
+  harmonizing cookies' security policy with the [same origin
+  policy](https://tools.ietf.org/html/rfc6454#section-3) [[!RFC6456]] that
+  web authors know and love. User agents that support these "origin cookies"
+  will ignore a <code>Set-Cookie</code> header's value's <code>Path</code>,
+  <code>Domain</code>, and <code>Secure</code> attributes if a new
+  <code>Origin</code> attribute is present, instead tying the cookie to the
+  origin.
+
+  Origin cookies will be returned in a new <a><code>Origin-Cookie</code></a>
+  header field, as the <code>Cookie</code> header field does not provide any
+  information about the source of the cookie.
+
+  <h3 id="examples">Examples</h3>
+
+  The server can set an origin cookie, and can expect it to be returned via
+  the <code>Origin-Cookie</code> header field on subsequent requests. Origin
+  cookies support all the attributes of legacy cookies (as defined by
+  [[RFC6265]]), with the exception of <code>Path</code>, <code>Domain</code>,
+  and <code>Secure</code>; these are ignored.
+
+  <div class="example">
+    Origin cookies are set via the <code>Origin</code> attribute in the
+    <code>Set-Cookie</code> header field. That is, given a server's response
+    to a user agent which contains the following header field:
+
+    <pre>
+      Set-Cookie: SID=31d4d96e407aad42; Origin
+    </pre>
+
+    Subsequent requests from that user agent can be expected to contain the
+    following header field:
+
+    <pre>
+      Origin-Cookie: SID=31d4d96e407aad42
+    </pre>
+  </div>
+
+  <div class="example">
+    Non-origin cookies are returned in the <code>Cookie</code> header field
+    as usual. If both non-origin and origin cookies are present for an origin,
+    then both a <code>Cookie</code> and <code>Origin-Cookie</code> header
+    field will be present. That is, given a server's response to a user agent
+    which contains the following header fields:
+
+    <pre>
+      Set-Cookie: SID=31d4d96e407aad42; Origin
+      Set-Cookie: lang=en-US; Path=/; Domain=example.com
+    </pre>
+
+    Subsequent requests from that user agent can be expected to contain the
+    following header fields:
+
+    <pre>
+      Cookie: lang=en-US
+      Origin-Cookie: SID=31d4d96e407aad42
+    </pre>
+  </div>
+
+
+
+
+
+</section>
