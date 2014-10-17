@@ -8,6 +8,9 @@ Editor: Mike West, Google Inc., mkwst@google.com
 Abstract: This document defines the `origin` attribute for cookies and the `Origin-Cookie` header field, which together allow servers to choose to harmonize the security policy of their cookies with the same-origin policy which governs other available client-side storage mechanisms.
 Indent: 2
 </pre>
+<div boilerplate=copyright>
+&copy;2014 Google
+</div>
 
 <!--
 ████ ██    ██ ████████ ████████   ███████
@@ -25,23 +28,25 @@ Indent: 2
 
   Cookies, as defined by [[RFC6265]], diverge from the web's general security
   policy in a number of ways which may be surprising to implementers and
-  authors who haven't carefully read that document's discussion of [domain
-  matching](http://tools.ietf.org/html/rfc6265#section-5.1.3) and [path
-  matching](http://tools.ietf.org/html/rfc6265#section-5.1.4), or who ignored
-  the ["Weak Confidentiality"](http://tools.ietf.org/html/rfc6265#section-8.5)
-  and ["Weak Integrity"](http://tools.ietf.org/html/rfc6265#section-8.6)
+  authors who haven't carefully read that document's discussion of
+  <a href="http://tools.ietf.org/html/rfc6265#section-5.1.3">domain matching</a>
+  and
+  <a href="http://tools.ietf.org/html/rfc6265#section-5.1.4">path matching</a>,
+  or who ignored the
+  <a href="http://tools.ietf.org/html/rfc6265#section-8.5">"Weak Confidentiality"</a>
+  and <a href="http://tools.ietf.org/html/rfc6265#section-8.6">"Weak Integrity"</a>
   sections.
 
   This document describes a mechanism by which servers can opt-in to
-  harmonizing cookies' security policy with the [same origin
-  policy](https://tools.ietf.org/html/rfc6454#section-3) [[!RFC6456]] that
-  web authors know and love. User agents that support these "origin cookies"
-  will ignore a <code>Set-Cookie</code> header's value's <code>Path</code>,
-  <code>Domain</code>, and <code>Secure</code> attributes if a new
-  <code>Origin</code> attribute is present, instead tying the cookie to the
-  origin.
+  harmonizing cookies' security policy with the
+  <a href="https://tools.ietf.org/html/rfc6454#section-3">same-origin policy</a>
+  [[!RFC6454]] that web authors know and love. User agents that support these
+  "origin cookies" will ignore a <code>Set-Cookie</code> header's value's
+  <code>Path</code>, <code>Domain</code>, and <code>Secure</code> attributes if
+  a new <code>Origin</code> attribute is present, instead tying the cookie to
+  the origin.
 
-  Origin cookies will be returned in a new <a><code>Origin-Cookie</code></a>
+  Origin cookies will be returned in a new <code>Origin-Cookie</code>
   header field, as the <code>Cookie</code> header field does not provide any
   information about the source of the cookie.
 
@@ -50,7 +55,7 @@ Indent: 2
   The server can set an origin cookie, and can expect it to be returned via
   the <code>Origin-Cookie</code> header field on subsequent requests. Origin
   cookies support all the attributes of legacy cookies (as defined by
-  [[RFC6265]]), with the exception of <code>Path</code>, <code>Domain</code>,
+  [[!RFC6265]]), with the exception of <code>Path</code>, <code>Domain</code>,
   and <code>Secure</code>; these are ignored.
 
   <div class="example">
@@ -90,9 +95,5 @@ Indent: 2
       Origin-Cookie: SID=31d4d96e407aad42
     </pre>
   </div>
-
-
-
-
 
 </section>

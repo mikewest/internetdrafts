@@ -1,0 +1,16 @@
+{
+  "RFC6265": {
+    "authors": [ "Adam Barth" ],
+    "href": "http://www.ietf.org/rfc/rfc6265.txt",
+    "title": "HTTP State Management Mechanism",
+    "status": "RFC",
+    "publisher": "IETF"
+  },
+  "RFC6454": {
+    "authors": [ "Adam Barth" ],
+    "href": "http://www.ietf.org/rfc/rfc6454.txt",
+    "title": "The Web Origin Concept",
+    "status": "RFC",
+    "publisher": "IETF"
+  }
+}
