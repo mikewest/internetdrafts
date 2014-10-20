@@ -545,7 +545,7 @@ span.issue, span.note {
   <p data-fill-with=logo></p>
   <h1 class="p-name no-ref" id=title>Mixed Content</h1>
   <h2 class="no-num no-toc no-ref heading settled" id=subtitle><span class=content>A Collection of Interesting Ideas,
-    <span class=dt-updated><span class=value-title title=20141017>17 October 2014</span></span></span></h2>
+    <span class=dt-updated><span class=value-title title=20141020>20 October 2014</span></span></span></h2>
   <div data-fill-with=spec-metadata><dl>
 	<dt>This version:
 	<dd><a class=u-url href=https://mikewest.github.io/cake/spec/>https://mikewest.github.io/cake/spec/</a>
@@ -571,13 +571,23 @@ span.issue, span.note {
 	<li><a href=#intro><span class=secno>1</span> Introduction</a>
 		<ul class=toc>
 		<li><a href=#examples><span class=secno>1.1</span> Examples</a></ul>
+	<li><a href=#server-requirements><span class=secno>2</span> Server Requirements</a>
+	<li><a href=#user-agent-requirements><span class=secno>3</span> User Agent Requirements</a>
+		<ul class=toc>
+		<li><a href=#cookie-av-grammar><span class=secno>3.1</span> <code>cookie-av</code> grammar</a>
+		<li><a href=#origin-attribute><span class=secno>3.2</span> The <code>Origin</code> attribute</a>
+		<li><a href=#storage-model><span class=secno>3.3</span> Monkey-patching the storage model</a>
+		<li><a href=#cookie-header><span class=secno>3.4</span> Monkey-patching the <code>Cookie</code> header</a>
+		<li><a href=#origin-cookie-header><span class=secno>3.5</span> The <code>Origin-Cookie</code> header</a></ul>
+	<li><a href=#IANA><span class=secno>4</span> IANA Considerations</a>
 	<li><a href=#conformance><span class=secno></span>  Conformance</a>
 	<li><a href=#references><span class=secno></span>  References</a>
 		<ul class=toc>
 		<li><a href=#normative><span class=secno></span>  Normative References</a>
 		<li><a href=#informative><span class=secno></span>  Informative References</a></ul>
 	<li><a href=#index><span class=secno></span>  Index</a>
-	<li><a href=#property-index><span class=secno></span>  Property index</a></ul></div>
+	<li><a href=#property-index><span class=secno></span>  Property index</a>
+	<li><a href=#issues-index><span class=secno></span> Issues Index</a></ul></div>
 
 
 
@@ -585,8 +595,6 @@ span.issue, span.note {
 
 <section>
   <h2 class="heading settled" data-level=1 id=intro><span class=secno>1 </span><span class=content>Introduction</span><a class=self-link href=#intro></a></h2>
-
-<p><em>This section is not normative.</em></p>
 
 <p>Cookies, as defined by <a data-biblio-type=informative data-link-type=biblio href=#biblio-rfc6265 title=biblio-RFC6265>[RFC6265]</a>, diverge from the web’s general security
   policy in a number of ways which may be surprising to implementers and
@@ -599,8 +607,8 @@ span.issue, span.note {
   and <a href=http://tools.ietf.org/html/rfc6265#section-8.6>"Weak Integrity"</a>
   sections.</p>
 
-<p>This document describes a mechanism by which servers can opt-in to
-  harmonizing cookies' security policy with the
+<p>This document extends <a data-biblio-type=informative data-link-type=biblio href=#biblio-rfc6265 title=biblio-RFC6265>[RFC6265]</a>, describing a mechanism by which servers can
+  opt-in to harmonizing cookies' security policy with the
   <a href=https://tools.ietf.org/html/rfc6454#section-3>same-origin policy</a>
   <a data-biblio-type=normative data-link-type=biblio href=#biblio-rfc6454 title=biblio-RFC6454>[RFC6454]</a> that web authors know and love. User agents that support these
   "origin cookies" will ignore a <code>Set-Cookie</code> header’s value’s
@@ -653,7 +661,224 @@ Set-Cookie: lang=en-US; Path=/; Domain=example.com
 Origin-Cookie: SID=31d4d96e407aad42
 </pre>
   </div>
+</section>
 
+<section>
+  <h2 class="heading settled" data-level=2 id=server-requirements><span class=secno>2 </span><span class=content>Server Requirements</span><a class=self-link href=#server-requirements></a></h2>
+</section>
+
+<section>
+  <h2 class="heading settled" data-level=3 id=user-agent-requirements><span class=secno>3 </span><span class=content>User Agent Requirements</span><a class=self-link href=#user-agent-requirements></a></h2>
+
+<p>This section describes extensions to RFC6265 necessary in order to implement
+  the client-side requirements of the <code>origin</code> attribute and
+  <code>Origin-Cookie</code> header.</p>
+
+  <h3 class="heading settled" data-level=3.1 id=cookie-av-grammar><span class=secno>3.1 </span><span class=content><code>cookie-av</code> grammar</span><a class=self-link href=#cookie-av-grammar></a></h3>
+
+<p><a data-biblio-type=informative data-link-type=biblio href=#biblio-rfc6265 title=biblio-RFC6265>[RFC6265]</a> is extended such that the <code>cookie-av</code> token definition
+  is replaced with the following grammar:</p>
+
+  <pre>cookie-av         = expires-av / max-age-av / domain-av /
+                    path-av / secure-av / httponly-av /
+                    origin-av / extension-av
+origin-av         = "Origin"
+</pre>
+
+  <h3 class="heading settled" data-level=3.2 id=origin-attribute><span class=secno>3.2 </span><span class=content>The <code>Origin</code> attribute</span><a class=self-link href=#origin-attribute></a></h3>
+
+<p>The following attribute definition should be considered part of the
+  the <code>Set-Cookie</code> algorithm as described in Section 5.2 of
+  <a data-biblio-type=informative data-link-type=biblio href=#biblio-rfc6265 title=biblio-RFC6265>[RFC6265]</a>:</p>
+
+<p>If the attribute-name case-insensitively matches the string "Origin", the
+  user agent MUST append an attribute to the cookie-attribute-list with an
+  attribute-name of <code>Origin</code> and an empty attribute-value.</p>
+
+  <h3 class="heading settled" data-level=3.3 id=storage-model><span class=secno>3.3 </span><span class=content>Monkey-patching the storage model</span><a class=self-link href=#storage-model></a></h3>
+
+<p class=issue id=issue-8b075c740><a class=self-link href=#issue-8b075c740></a>There’s got to be a better way to specify this. Until I figure out
+  what that is, monkey-patching!</p>
+
+<p>Alter <a href=http://tools.ietf.org/html/rfc6265#section-5.3>Section 5.3
+  of RFC6265</a> as follows:</p>
+
+  <ol>
+    <li>
+      Add <code>origin</code> and <code>origin-flag</code> to the list of fields
+      stored about each cookie.
+    </li>
+    <li>
+      Before step 11 of the current algorithm, add the following:
+
+      <ol start=11>
+        <li>
+          If the <code>cookie-attribute-list</code> contains an attribute
+          with an <code>attribute-name</code> of "Origin":
+
+          <ol>
+            <li>
+              Set the cookie’s <code>domain</code> attribute to the empty
+              string.
+            </li>
+            <li>Set the cookie’s <code>http-only-flag</code> to true.</li>
+            <li>Set the cookie’s <code>host-only-flag</code> to true.</li>
+            <li>
+              Set the cookie’s <code>origin</code> to the origin of
+              <code>request-uri</code>, as defined by
+              <a href=http://tools.ietf.org/html/rfc6454#section-4>Section 4
+              of RFC6454</a>. <a data-biblio-type=normative data-link-type=biblio href=#biblio-rfc6454 title=biblio-RFC6454>[RFC6454]</a>
+            </li>
+            <li>Set the cookie’s <code>origin-flag</code> to true.</li>
+            <li>
+              Set the cookie’s <code>path</code> attribute to the empty string.
+            </li>
+            <li>Set the cookie’s <code>secure-only-flag</code> to false.</li>
+          </ol>
+
+<p>Otherwise: set the cookie’s <code>origin-flag</code> to false, and its
+          <code>origin</code> to <code>null</code>.</p>
+        </li>
+        <li>
+          If the newly created cookie’s <code>origin-flag</code> is set to true,
+          and the cookie store contains a cookie with the same
+          <code>name</code>, <code>origin</code>, and <code>origin-flag</code>
+          as the newly created cookie:
+
+          <ol>
+            <li>
+              Let <var>old-cookie</var> be the existing cookie with the same
+              <code>name</code>, <code>origin</code>, and
+              <code>origin-flag</code> as the newly created cookie.
+            </li>
+            <li>
+              Update the <code>creation-time</code> of the newly created cookie
+              to match the <code>creation-time</code> of <var>old-cookie</var>.
+            </li>
+            <li>
+              Remove <var>old-cookie</var> from the cookie store.
+            </li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li>
+      Change the priority order for excess cookie removal to the following:
+
+      <ol>
+        <li>Expired cookies.</li>
+        <li>
+          Cookies whose <code>origin-flag</code> is false that share a
+          <code>domain</code> field with more than a predetermined number of
+          other cookies.
+        </li>
+        <li>
+          Cookies whose <code>origin-flag</code> is true that share a
+          <code>domain</code> field with more than a predetermined number of
+          other cookies.
+        </li>
+        <li>
+          Cookies whose <code>origin-flag</code> is false.
+        </li>
+        <li>
+          All cookies.
+        </li>
+      </ol>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h3 class="heading settled" data-level=3.4 id=cookie-header><span class=secno>3.4 </span><span class=content>Monkey-patching the <code>Cookie</code> header</span><a class=self-link href=#cookie-header></a></h3>
+
+<p class=issue id=issue-8b075c74><a class=self-link href=#issue-8b075c74></a>There’s got to be a better way to specify this. Until I figure out
+  what that is, monkey-patching!</p>
+
+<p>Alter <a href=http://tools.ietf.org/html/rfc6265#section-5.4>Section 5.4
+  of RFC6265</a> as follows:</p>
+
+  <ol>
+    <li>
+      Add the following requirement to step 1’s list:
+
+      <ul>
+        <li>The cookie’s <code>origin-flag</code> is false.</li>
+      </ul>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h3 class="heading settled" data-level=3.5 id=origin-cookie-header><span class=secno>3.5 </span><span class=content>The <code>Origin-Cookie</code> header</span><a class=self-link href=#origin-cookie-header></a></h3>
+
+<p>The user agent includes stored cookies whose <code>origin-flag</code> is set
+  in the <code><dfn data-dfn-type=dfn data-noexport="" id=origin-cookie>Origin-Cookie<a class=self-link href=#origin-cookie></a></dfn></code> request header. When the user
+  agent generates an HTTP request, it MUST NOT attach more than one
+  <code>Origin-Cookie</code> header field.</p>
+
+<p>A user agent MAY omit the <code>Origin-Cookie</code> header in its entirety.
+  For example, the user agent may wish to block sending cookies during
+  "third-party" requests.</p>
+
+<p>If the user agent does attach an <code>Origin-Cookie</code> header field to
+  an HTTP request, the user agent MUST send the <code>cookie-string</code> as
+  defined below as the value of the header field.</p>
+
+<p>The user agent MUST use an algorithm equivalent to the following algorithm
+  to compute the <dfn data-dfn-type=dfn data-noexport="" id=cookie-string>cookie-string<a class=self-link href=#cookie-string></a></dfn> from a cookie store and a
+  <var>request-uri</var>:</p>
+
+  <ol>
+    <li>
+      Let <var>cookie-list</var> be the set of cookies from the cookie store
+      that meets all the following requirements:
+
+      <ul>
+        <li>
+          The cookie’s <code>origin-flag</code> is true.
+        </li>
+        <li>
+          The cookie’s <code>origin</code> matches the origin of
+          <var>request-uri</var>. <a data-biblio-type=normative data-link-type=biblio href=#biblio-rfc6454 title=biblio-RFC6454>[RFC6454]</a>
+        </li>
+        <li>
+          The <code>cookie-string</code> is not being generated for a "non-HTTP"
+          API (as defined by the user agent).
+        </li>
+      </ul>
+    </li>
+    <li>
+      Copy/paste step 2, 3, and 4 from
+      <a href=http://tools.ietf.org/html/rfc6265#section-5.4>"The
+      <code>Cookie</code> header</a>.
+    </li>
+  </ol>
+
+<p class=issue id=issue-5763973a><a class=self-link href=#issue-5763973a></a>Split RFC6265’s
+  <a href=http://tools.ietf.org/html/rfc6265#section-5.4>"The
+  <code>Cookie</code> header</a> into two pieces: gathering
+  <var>cookie-list</var>, and sorting, updating, and serializing.
+  We can reuse the latter parts here.</p>
+</section>
+
+<section>
+  <h2 class="heading settled" data-level=4 id=IANA><span class=secno>4 </span><span class=content>IANA Considerations</span><a class=self-link href=#IANA></a></h2>
+  <dl>
+    <dt>Header field name</dt>
+    <dd>Origin-Cookie</dd>
+
+    <dt>Applicable protocol</dt>
+    <dd>http</dd>
+
+    <dt>Status</dt>
+    <dd>standard</dd>
+
+    <dt>Author/Change controller</dt>
+    <dd>W3C</dd>
+
+    <dt>Specification document</dt>
+    <dd>This specification</dd>
+  </dl>
 </section>
 
 <h2 class="no-ref no-num heading settled" id=conformance><span class=content>
@@ -705,6 +930,8 @@ Informative References</span><a class=self-link href=#informative></a></h3>
 <h2 class="no-num no-ref heading settled" id=index><span class=content>
 Index</span><a class=self-link href=#index></a></h2>
 <div data-fill-with=index><ul class=indexlist>
+<li>cookie-string, <a href=#cookie-string title="section 3.5">3.5</a>
+<li>Origin-Cookie, <a href=#origin-cookie title="section 3.5">3.5</a>
 </ul></div>
 
 <h2 class="no-num no-ref heading settled" id=property-index><span class=content>
@@ -713,3 +940,10 @@ Property index</span><a class=self-link href=#property-index></a></h2>
 
 
 
+<h2 class="no-num heading settled" id=issues-index><span class=content>Issues Index</span><a class=self-link href=#issues-index></a></h2><div style="counter-reset: issue"><div class=issue>There’s got to be a better way to specify this. Until I figure out
+  what that is, monkey-patching!<a href=#issue-8b075c740> ↵ </a></div><div class=issue>There’s got to be a better way to specify this. Until I figure out
+  what that is, monkey-patching!<a href=#issue-8b075c74> ↵ </a></div><div class=issue>Split RFC6265’s
+  <a href=http://tools.ietf.org/html/rfc6265#section-5.4>"The
+  <code>Cookie</code> header</a> into two pieces: gathering
+  <var>cookie-list</var>, and sorting, updating, and serializing.
+  We can reuse the latter parts here.<a href=#issue-5763973a> ↵ </a></div></div>
