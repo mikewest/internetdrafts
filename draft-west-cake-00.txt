@@ -74,9 +74,10 @@ Table of Contents
      4.2.  Paths are ignored . . . . . . . . . . . . . . . . . . . .   7
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
      5.1.  Origin-Cookie . . . . . . . . . . . . . . . . . . . . . .   7
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .   8
+   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   8
    Appendix A.  Open Issues  . . . . . . . . . . . . . . . . . . . .   8
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   8
 
@@ -103,7 +104,6 @@ Table of Contents
    and integrity risks noted above by ensuring that origin cookies are
    not influenced by malicious code running on a server's subdomain or a
    non-standard port or scheme.
-
 
 
 
@@ -373,19 +373,19 @@ Internet-Draft               Origin-Cookies                 October 2014
 
    Specification document  This specification (see Section 3.5)
 
-6.  References
+6.  Acknowledgements
 
-6.1.  Normative References
+   The origin cookie concept documented here is heavily indebted to and
+   based upon Adam Barth's [draft-abarth-cake-01] document.
+
+7.  References
+
+7.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
-   [RFC4790]  Newman, C., Duerst, M., and A. Gulbrandsen, "Internet
-              Application Protocol Collation Registry", RFC 4790, March
-              2007.
 
-   [RFC5234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
-              Specifications: ABNF", STD 68, RFC 5234, January 2008.
 
 
 
@@ -394,17 +394,28 @@ West                     Expires April 24, 2015                 [Page 7]
 Internet-Draft               Origin-Cookies                 October 2014
 
 
+   [RFC4790]  Newman, C., Duerst, M., and A. Gulbrandsen, "Internet
+              Application Protocol Collation Registry", RFC 4790, March
+              2007.
+
+   [RFC5234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
+              Specifications: ABNF", STD 68, RFC 5234, January 2008.
+
    [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
               April 2011.
 
    [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454, December
               2011.
 
-6.2.  Informative References
+7.2.  Informative References
 
    [RFC3864]  Klyne, G., Nottingham, M., and J. Mogul, "Registration
               Procedures for Message Header Fields", BCP 90, RFC 3864,
               September 2004.
+
+   [draft-abarth-cake-01]
+              Barth, A., "Origin Cookies", September 2011,
+              <https://tools.ietf.org/html/draft-abarth-cake-01>.
 
 Appendix A.  Open Issues
 
@@ -418,17 +429,6 @@ Author's Address
 
    Email: mkwst@google.com
    URI:   https://mikewest.org/
-
-
-
-
-
-
-
-
-
-
-
 
 
 

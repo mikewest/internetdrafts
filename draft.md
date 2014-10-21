@@ -28,6 +28,14 @@ normative:
 
 informative:
   RFC3864:
+  draft-abarth-cake-01:
+    target: https://tools.ietf.org/html/draft-abarth-cake-01
+    title: Origin Cookies
+    author:
+     -
+       ins: A. Barth
+       name: Adam Barth
+    date: 2011-09-06
 
 --- abstract
 
@@ -267,6 +275,11 @@ Author/Change controller
 
 Specification document
 : This specification (see {{origin-cookie-header-field}})
+
+# Acknowledgements
+
+The origin cookie concept documented here is heavily indebted to and based upon
+Adam Barth's {{draft-abarth-cake-01}} document.
 
 --- back
 

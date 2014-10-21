@@ -306,6 +306,12 @@ with the following registration:</t>
 
 </section>
 </section>
+<section anchor="acknowledgements" title="Acknowledgements">
+
+<t>The origin cookie concept documented here is heavily indebted to and based upon
+Adam Barth’s <xref target="draft-abarth-cake-01"/> document.</t>
+
+</section>
 
 
   </middle>
@@ -326,6 +332,15 @@ with the following registration:</t>
     <references title='Informative References'>
 
 &RFC3864;
+<reference anchor="draft-abarth-cake-01" target="https://tools.ietf.org/html/draft-abarth-cake-01">
+  <front>
+    <title>Origin Cookies</title>
+    <author initials="A." surname="Barth" fullname="Adam Barth">
+      <organization></organization>
+    </author>
+    <date year="2011" month="September" day="06"/>
+  </front>
+</reference>
 
 
     </references>
