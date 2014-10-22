@@ -129,8 +129,8 @@ To be slightly more precise, given an HTTP request `request`:
    is a **first-party request**. Otherwise, `request` is a **third-party
    request**.
 
-Note that we deal with the document's _location_ in step 2 above, not with its
-effective origin. For example, a top-level document from `https://example.com`
+Note that we deal with the document's _location_ in step 2 above, not with the
+document's origin. For example, a top-level document from `https://example.com`
 which has been sandboxed into a unique origin still creates a non-unique
 first-party context for subsequent requests.
 

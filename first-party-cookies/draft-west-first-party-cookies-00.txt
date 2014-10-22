@@ -161,7 +161,7 @@ Internet-Draft             first-party-cookies              October 2014
        *third-party request*.
 
    Note that we deal with the document's _location_ in step 2 above, not
-   with its effective origin.  For example, a top-level document from
+   with the document's origin.  For example, a top-level document from
 
 
 

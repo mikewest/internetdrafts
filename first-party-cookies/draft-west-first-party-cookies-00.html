@@ -507,7 +507,7 @@ Set-Cookie: SID=31d4d96e407aad42; First-Party
   <li>Let <samp>top-origin</samp> be the origin of the location of the active document in <samp>context</samp>.</li>
   <li>If the origin of <samp>request</samp>&#8217;s URL is the same as <samp>top-origin</samp>, <samp>request</samp> is a <strong>first-party request</strong>. Otherwise, <samp>request</samp> is a <strong>third-party request</strong>.</li>
 </ol>
-<p id="rfc.section.2.1.p.5">Note that we deal with the document&#8217;s <em>location</em> in step 2 above, not with its effective origin. For example, a top-level document from <samp>https://example.com</samp> which has been sandboxed into a unique origin still creates a non-unique first-party context for subsequent requests.</p>
+<p id="rfc.section.2.1.p.5">Note that we deal with the document&#8217;s <em>location</em> in step 2 above, not with the document&#8217;s origin. For example, a top-level document from <samp>https://example.com</samp> which has been sandboxed into a unique origin still creates a non-unique first-party context for subsequent requests.</p>
 <p id="rfc.section.2.1.p.6">This definition has a few implications:</p>
 <p/>
 
