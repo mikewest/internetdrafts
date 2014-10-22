@@ -385,11 +385,13 @@
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 The &#x201C;First-Party&#x201D; attribute"/>
 <link href="#rfc.section.4.2" rel="Chapter" title="4.2 Monkey-patching the Storage Model"/>
 <link href="#rfc.section.4.3" rel="Chapter" title="4.3 Monkey-patching the &#x201C;Cookie&#x201D; header"/>
-<link href="#rfc.section.5" rel="Chapter" title="5 Security Considerations"/>
-<link href="#rfc.section.6" rel="Chapter" title="6 Acknowledgements"/>
-<link href="#rfc.references" rel="Chapter" title="7 References"/>
-<link href="#rfc.references.1" rel="Chapter" title="7.1 Normative References"/>
-<link href="#rfc.references.2" rel="Chapter" title="7.2 Informative References"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Privacy Considerations"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 User Controls"/>
+<link href="#rfc.section.7" rel="Chapter" title="7 Security Considerations"/>
+<link href="#rfc.section.8" rel="Chapter" title="8 Acknowledgements"/>
+<link href="#rfc.references" rel="Chapter" title="9 References"/>
+<link href="#rfc.references.1" rel="Chapter" title="9.1 Normative References"/>
+<link href="#rfc.references.2" rel="Chapter" title="9.2 Informative References"/>
 <link href="#rfc.authors" rel="Chapter"/>
 
 
@@ -470,11 +472,13 @@
 <li>4.1.   <a href="#rfc.section.4.1">The &#8220;First-Party&#8221; attribute</a></li>
 <li>4.2.   <a href="#rfc.section.4.2">Monkey-patching the Storage Model</a></li>
 <li>4.3.   <a href="#rfc.section.4.3">Monkey-patching the &#8220;Cookie&#8221; header</a></li>
-<li>5.   <a href="#rfc.section.5">Security Considerations</a></li>
-<li>6.   <a href="#rfc.section.6">Acknowledgements</a></li>
-<li>7.   <a href="#rfc.references">References</a></li>
-<li>7.1.   <a href="#rfc.references.1">Normative References</a></li>
-<li>7.2.   <a href="#rfc.references.2">Informative References</a></li>
+<li>5.   <a href="#rfc.section.5">Privacy Considerations</a></li>
+<li>6.   <a href="#rfc.section.6">User Controls</a></li>
+<li>7.   <a href="#rfc.section.7">Security Considerations</a></li>
+<li>8.   <a href="#rfc.section.8">Acknowledgements</a></li>
+<li>9.   <a href="#rfc.references">References</a></li>
+<li>9.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>9.2.   <a href="#rfc.references.2">Informative References</a></li>
 <li><a href="#rfc.authors">Author's Address</a></li>
 
 
@@ -552,12 +556,16 @@ first-party-av    = "First-Party"
   <li>Add the following requirement to the list in step 1:  <ul><li>If the cookie&#8217;s <samp>first-party-flag</samp> is true, then exclude the cookie if the HTTP request is a third-party request (see <a href="#first-and-third-party">Section 2.1</a>).</li></ul></li>
 </ol>
 <p id="rfc.section.4.3.p.4">Note that the modifications suggested here concern themselves only with the origin of the top-level browsing context and the origin of the resource being requested. The cookie&#8217;s <samp>domain</samp>, <samp>path</samp>, and <samp>secure</samp> attributes do not come into play for this comparison.</p>
-<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#security-considerations" id="security-considerations">Security Considerations</a></h1>
-<p id="rfc.section.5.p.1">TODO.</p>
-<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
-<p id="rfc.section.6.p.1">The first-party cookie concept documented here is similar to (but stricter than) Mark Goodwin&#8217;s and Joe Walker&#8217;s <a href="#samedomain-cookies">[samedomain-cookies]</a>.</p>
-<h1 id="rfc.references"><a href="#rfc.references">7.</a> References</h1>
-<h1 id="rfc.references.1"><a href="#rfc.references.1">7.1.</a> Normative References</h1>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#privacy-considerations" id="privacy-considerations">Privacy Considerations</a></h1>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#user-controls" id="user-controls">User Controls</a></h1>
+<p id="rfc.section.6.p.1">First-party cookies in and of themselves don&#8217;t do anything to address the general privacy concerns outlined in Section 7.1 of <a href="#RFC6265">[RFC6265]</a>. The attribute is set by the server, and serves to mitigate the risk of certain kinds of attacks that the server is worried about. If a server wished to track users via the use of cookies attached to third-party requests, the server would simply not set the attribute.</p>
+<p id="rfc.section.6.p.2">User agents, however, could offer users the ability to toggle a cookie&#8217;s <samp>first-party-flag</samp> themselves, perhaps as part of a more general cookie management interface. This could provide an interesting middle-ground between the options that many user agents offer to users.</p>
+<h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> <a href="#security-considerations" id="security-considerations">Security Considerations</a></h1>
+<p id="rfc.section.7.p.1">TODO.</p>
+<h1 id="rfc.section.8"><a href="#rfc.section.8">8.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
+<p id="rfc.section.8.p.1">The first-party cookie concept documented here is similar to (but stricter than) Mark Goodwin&#8217;s and Joe Walker&#8217;s <a href="#samedomain-cookies">[samedomain-cookies]</a>.</p>
+<h1 id="rfc.references"><a href="#rfc.references">9.</a> References</h1>
+<h1 id="rfc.references.1"><a href="#rfc.references.1">9.1.</a> Normative References</h1>
 <table>
   <tbody>
     <tr>
@@ -598,7 +606,7 @@ first-party-av    = "First-Party"
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.references.2"><a href="#rfc.references.2">7.2.</a> Informative References</h1>
+<h1 id="rfc.references.2"><a href="#rfc.references.2">9.2.</a> Informative References</h1>
 <table>
   <tbody>
     <tr>

@@ -71,12 +71,14 @@ Table of Contents
      4.1.  The "First-Party" attribute . . . . . . . . . . . . . . .   5
      4.2.  Monkey-patching the Storage Model . . . . . . . . . . . .   5
      4.3.  Monkey-patching the "Cookie" header . . . . . . . . . . .   5
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
-   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
-   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
-     7.2.  Informative References  . . . . . . . . . . . . . . . . .   6
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
+   5.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .   6
+   6.  User Controls . . . . . . . . . . . . . . . . . . . . . . . .   6
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
+   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
+     9.2.  Informative References  . . . . . . . . . . . . . . . . .   7
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
 
 1.  Introduction
 
@@ -104,8 +106,6 @@ Table of Contents
    "Set-Cookie" header field.  That is, given a server's response to a
    user agent which contains the following header field:
 
-   Set-Cookie: SID=31d4d96e407aad42; First-Party
-
 
 
 
@@ -113,6 +113,8 @@ West                     Expires April 25, 2015                 [Page 2]
 
 Internet-Draft             first-party-cookies              October 2014
 
+
+   Set-Cookie: SID=31d4d96e407aad42; First-Party
 
    Subsequent requests from that user agent can be expected to contain
    the following header field if and only if both the requested resource
@@ -160,8 +162,6 @@ Internet-Draft             first-party-cookies              October 2014
        "request" is a *first-party request*. Otherwise, "request" is a
        *third-party request*.
 
-   Note that we deal with the document's _location_ in step 2 above, not
-   with the document's origin.  For example, a top-level document from
 
 
 
@@ -170,6 +170,8 @@ West                     Expires April 25, 2015                 [Page 3]
 Internet-Draft             first-party-cookies              October 2014
 
 
+   Note that we deal with the document's _location_ in step 2 above, not
+   with the document's origin.  For example, a top-level document from
    "https://example.com" which has been sandboxed into a unique origin
    still creates a non-unique first-party context for subsequent
    requests.
@@ -213,8 +215,6 @@ Internet-Draft             first-party-cookies              October 2014
 
    The changes to the "Cookie" header field suggested in Section 4.3
    provide additional detail.
-
-
 
 
 
@@ -285,18 +285,35 @@ Internet-Draft             first-party-cookies              October 2014
    the resource being requested.  The cookie's "domain", "path", and
    "secure" attributes do not come into play for this comparison.
 
-5.  Security Considerations
+5.  Privacy Considerations
+
+6.  User Controls
+
+   First-party cookies in and of themselves don't do anything to address
+   the general privacy concerns outlined in Section 7.1 of [RFC6265].
+   The attribute is set by the server, and serves to mitigate the risk
+   of certain kinds of attacks that the server is worried about.  If a
+   server wished to track users via the use of cookies attached to
+   third-party requests, the server would simply not set the attribute.
+
+   User agents, however, could offer users the ability to toggle a
+   cookie's "first-party-flag" themselves, perhaps as part of a more
+   general cookie management interface.  This could provide an
+   interesting middle-ground between the options that many user agents
+   offer to users.
+
+7.  Security Considerations
 
    TODO.
 
-6.  Acknowledgements
+8.  Acknowledgements
 
    The first-party cookie concept documented here is similar to (but
    stricter than) Mark Goodwin's and Joe Walker's [samedomain-cookies].
 
-7.  References
+9.  References
 
-7.1.  Normative References
+9.1.  Normative References
 
    [HTML]     Hickson, I., "HTML Living Standard", n.d.,
               <https://html.spec.whatwg.org/>.
@@ -314,10 +331,17 @@ Internet-Draft             first-party-cookies              October 2014
    [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
               April 2011.
 
+
+
+West                     Expires April 25, 2015                 [Page 6]
+
+Internet-Draft             first-party-cookies              October 2014
+
+
    [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454, December
               2011.
 
-7.2.  Informative References
+9.2.  Informative References
 
    [samedomain-cookies]
               Goodwin,, M. and J. Walker, "SameDomain Cookie Flag",
@@ -326,35 +350,11 @@ Internet-Draft             first-party-cookies              October 2014
 
 Author's Address
 
-
-
-
-
-
-
-
-West                     Expires April 25, 2015                 [Page 6]
-
-Internet-Draft             first-party-cookies              October 2014
-
-
    Mike West
    Google, Inc
 
    Email: mkwst@google.com
    URI:   https://mikewest.org/
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

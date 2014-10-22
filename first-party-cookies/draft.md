@@ -218,6 +218,22 @@ origin of the top-level browsing context and the origin of the resource being
 requested. The cookie's `domain`, `path`, and `secure` attributes do not come
 into play for this comparison.
 
+# Privacy Considerations
+
+# User Controls
+
+First-party cookies in and of themselves don't do anything to address the
+general privacy concerns outlined in Section 7.1 of {{RFC6265}}. The attribute
+is set by the server, and serves to mitigate the risk of certain kinds of
+attacks that the server is worried about. If a server wished to track users
+via the use of cookies attached to third-party requests, the server would
+simply not set the attribute.
+
+User agents, however, could offer users the ability to toggle a cookie's
+`first-party-flag` themselves, perhaps as part of a more general cookie
+management interface. This could provide an interesting middle-ground between
+the options that many user agents offer to users.
+
 # Security Considerations
 
 TODO.
