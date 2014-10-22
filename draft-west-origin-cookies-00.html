@@ -5,7 +5,7 @@
 <head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
 
-  <title>Cake is tastier than cookies</title>
+  <title>Origin Cookies</title>
 
   <style type="text/css" title="Xml2Rfc (sans serif)">
   /*<![CDATA[*/
@@ -396,14 +396,14 @@
 <link href="#rfc.authors" rel="Chapter"/>
 
 
-  <meta name="generator" content="xml2rfc version 2.4.7 - http://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.4.8 - http://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="West, M." />
-  <meta name="dct.identifier" content="urn:ietf:id:draft-west-cake-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2014-10-21" />
-  <meta name="dct.abstract" content="This document defines the " />
-  <meta name="description" content="This document defines the " />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-west-origin-cookies-00" />
+  <meta name="dct.issued" scheme="ISO8601" content="2014-10-22" />
+  <meta name="dct.abstract" content="This document updates RFC6265, defining the " />
+  <meta name="description" content="This document updates RFC6265, defining the " />
 
 </head>
 
@@ -413,7 +413,7 @@
     <tbody>
     
     	<tr>
-  <td class="left">Network Working Group</td>
+  <td class="left">HTTPbis</td>
   <td class="right">M. West</td>
 </tr>
 <tr>
@@ -421,11 +421,15 @@
   <td class="right">Google, Inc</td>
 </tr>
 <tr>
-  <td class="left">Intended status: Standards Track</td>
-  <td class="right">October 21, 2014</td>
+  <td class="left">Updates: 6265 (if approved)</td>
+  <td class="right">October 22, 2014</td>
 </tr>
 <tr>
-  <td class="left">Expires: April 24, 2015</td>
+  <td class="left">Intended status: Standards Track</td>
+  <td class="right"></td>
+</tr>
+<tr>
+  <td class="left">Expires: April 25, 2015</td>
   <td class="right"></td>
 </tr>
 
@@ -433,20 +437,20 @@
     </tbody>
   </table>
 
-  <p class="title">Cake is tastier than cookies<br />
-  <span class="filename">draft-west-cake-00</span></p>
+  <p class="title">Origin Cookies<br />
+  <span class="filename">draft-west-origin-cookies-00</span></p>
   
   <h1 id="rfc.abstract">
   <a href="#rfc.abstract">Abstract</a>
 </h1>
-<p>This document defines the <samp>origin</samp> attribute for cookies and the <samp>Origin-Cookie</samp> header field, which together allow servers to choose to harmonize the security policy of their cookies with the same-origin policy which governs other available client-side storage mechanisms.</p>
+<p>This document updates RFC6265, defining the <samp>origin</samp> attribute for cookies and the <samp>Origin-Cookie</samp> header field, which together allow servers to choose to harmonize the security policy of their cookies with the same-origin policy which governs other available client-side storage mechanisms.</p>
 <h1 id="rfc.status">
   <a href="#rfc.status">Status of This Memo</a>
 </h1>
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on April 24, 2015.</p>
+<p>This Internet-Draft will expire on April 25, 2015.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -486,6 +490,7 @@
 <p id="rfc.section.1.p.1">Cookies, as defined by <a href="#RFC6265">[RFC6265]</a>, diverge from the web&#8217;s general security policy in a number of ways which may be surprising to implementers and authors who haven&#8217;t carefully read that document&#8217;s discussion of &#8220;domain matching&#8221;, and &#8220;path matching&#8221;, or who ignored the admonitions regarding &#8220;Weak Confidentiality&#8221; and &#8220;Weak Integrity&#8221;.</p>
 <p id="rfc.section.1.p.2">This document updates <a href="#RFC6265">[RFC6265]</a>, describing a mechanism by which servers can opt-in to harmonizing cookies&#8217; security policy with the same-origin policy, as described in <a href="#RFC6454">[RFC6454]</a>. User agents that support these &#8220;origin cookies&#8221; will ignore a <samp>Set-Cookie</samp> header&#8217;s value&#8217;s <samp>Path</samp>, <samp>Domain</samp>, and <samp>Secure</samp> attributes if an <samp>Origin</samp> attribute is present, instead tying the cookie to the origin that set it. These &#8220;origin cookies&#8221; will be returned in a new <samp>Origin-Cookie</samp> header field (see <a href="#origin-cookie-header-field">Section 3.5</a> for detail), separating them from non-origin cookies in a way a server can easily distinguish.</p>
 <p id="rfc.section.1.p.3">Harmonizing with the same-origin policy mitigates the confidentiality and integrity risks noted above by ensuring that origin cookies are not influenced by malicious code running on a server&#8217;s subdomain or a non-standard port or scheme.</p>
+<p id="rfc.section.1.p.4">Note that the mechanism outlined here is backwards compatible with the existing cookie syntax. Servers may serve origin cookies to all user agents; those that do not support the &#8220;Origin&#8221; attribute will simply store a non-origin cookie, just as they do today.</p>
 <h1 id="rfc.section.1.1"><a href="#rfc.section.1.1">1.1.</a> <a href="#examples" id="examples">Examples</a></h1>
 <p id="rfc.section.1.1.p.1">Origin cookies are set via the <samp>Origin</samp> attribute in the <samp>Set-Cookie</samp> header field. That is, given a server&#8217;s response to a user agent which contains the following header field:</p>
 <pre>
@@ -512,7 +517,7 @@ Origin-Cookie: SID=31d4d96e407aad42
 <h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#user-agent-requirements" id="user-agent-requirements">User Agent Requirements</a></h1>
 <p id="rfc.section.3.p.1">This section describes extensions to <a href="#RFC6265">[RFC6265]</a> necessary in order to implement the client-side requirements of the <samp>Origin</samp> attribute and <samp>Origin-Cookie</samp> header field.</p>
 <h1 id="rfc.section.3.1"><a href="#rfc.section.3.1">3.1.</a> <a href="#grammar" id="grammar">Grammar</a></h1>
-<p id="rfc.section.3.1.p.1">Replace <a href="#RFC6265">[RFC6265]</a>&#8217;s <samp>cookie-av</samp> token definition with the following ABNF grammar:</p>
+<p id="rfc.section.3.1.p.1">Replace the <samp>cookie-av</samp> token definition in <a href="#RFC6265">[RFC6265]</a> with the following ABNF grammar:</p>
 <pre>
 cookie-av         = expires-av / max-age-av / domain-av /
                     path-av / secure-av / httponly-av /
@@ -561,24 +566,19 @@ origin-av         = "Origin"
 <p id="rfc.section.4.2.p.1">Origin cookies will break the (flawed) <samp>Path</samp>-based isolation strategy which some servers may be attempting to implement. If a server has used the <samp>Path</samp> attribute to limit cookies to specific areas of a site (say <samp>/admin</samp>), then they may be surprised by origin cookies&#8217; pathless behavior.</p>
 <p id="rfc.section.4.2.p.2">That said, paths offer little to no protection against malicious code. The origin is the only security boundry enforced rigorously by user agents; it is therefore the only security boundry that server operators ought to rely on for isolation.</p>
 <h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#iana-considerations" id="iana-considerations">IANA Considerations</a></h1>
-<p id="rfc.section.5.p.1">The permanent message header field registry (see <a href="#RFC3864">[RFC3864]</a>) SHOULD be updated with the following registration:</p>
+<p id="rfc.section.5.p.1">The permanent message header field registry (see <a href="#RFC3864">[RFC3864]</a>) shall be updated with the following registration:</p>
 <h1 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1.</a> <a href="#origin-cookie" id="origin-cookie">Origin-Cookie</a></h1>
 <p/>
 
-<dl>
-  <dt>Header field name</dt>
-  <dd style="margin-left: 8">Origin-Cookie</dd>
-  <dt>Applicable protocol</dt>
-  <dd style="margin-left: 8">http</dd>
-  <dt>Status</dt>
-  <dd style="margin-left: 8">standard</dd>
-  <dt>Author/Change controller</dt>
-  <dd style="margin-left: 8">IETF</dd>
-  <dt>Specification document</dt>
-  <dd style="margin-left: 8">This specification (see <a href="#origin-cookie-header-field">Section 3.5</a>)</dd>
-</dl>
+<ul>
+  <li>Header field name: Origin-Cookie</li>
+  <li>Applicable protocol: http</li>
+  <li>Status: standard</li>
+  <li>Author/Change controller: IETF</li>
+  <li>Specification document: This specification (see <a href="#origin-cookie-header-field">Section 3.5</a>)</li>
+</ul>
 <h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
-<p id="rfc.section.6.p.1">The origin cookie concept documented here is heavily indebted to and based upon Adam Barth&#8217;s <a href="#draft-abarth-cake-01">[draft-abarth-cake-01]</a> document.</p>
+<p id="rfc.section.6.p.1">The origin cookie concept documented here is heavily indebted to and based upon Adam Barth&#8217;s <a href="#draft-abarth-cake-01">[draft-abarth-cake-01]</a> document, as well as Andrew Bortz, Adam Barth, and Alexei Czeskis&#8217; paper <a href="#origin-cookies-w2sp">[origin-cookies-w2sp]</a>.</p>
 <h1 id="rfc.references"><a href="#rfc.references">7.</a> References</h1>
 <h1 id="rfc.references.1"><a href="#rfc.references.1">7.1.</a> Normative References</h1>
 <table>
@@ -629,6 +629,12 @@ origin-av         = "Origin"
         <b id="draft-abarth-cake-01">[draft-abarth-cake-01]</b>
       </td>
       <td class="top"><a>Barth, A.</a>, "<a href="https://tools.ietf.org/html/draft-abarth-cake-01">Origin Cookies</a>", September 2011.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="origin-cookies-w2sp">[origin-cookies-w2sp]</b>
+      </td>
+      <td class="top"><a>Bortz,, A.</a>, <a>Barth, A.</a> and <a>A. Czeskis</a>, "<a href="http://w2spconf.com/2011/papers/session-integrity.pdf">Origin Cookies: Session Integrity for Web Applications</a>", 2011.</td>
     </tr>
   </tbody>
 </table>

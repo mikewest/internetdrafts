@@ -1,12 +1,15 @@
 ---
-title: Cake is tastier than cookies
+title: Origin Cookies
 abbrev: Origin-Cookies
-docname: draft-west-cake-00
+docname: draft-west-origin-cookies-00
 date: 2014
 category: std
+updates: 6265
 
+stand_alone: yes
+ipr: trust200902
 area: General
-workgroup:
+workgroup: HTTPbis
 keyword: Internet-Draft
 
 pi: [toc, tocindent, sortrefs, symrefs, strict, compact, comments, inline]
@@ -36,10 +39,27 @@ informative:
        ins: A. Barth
        name: Adam Barth
     date: 2011-09-06
+  origin-cookies-w2sp:
+    target: http://w2spconf.com/2011/papers/session-integrity.pdf
+    title: "Origin Cookies: Session Integrity for Web Applications"
+    author:
+    -
+      ins: A. Bortz,
+      name: Andrew Bortz
+    -
+      ins: A. Barth
+      name: Adam Barth
+    -
+      ins: A. Czeskis
+      name: Alexei Czeskis
+    date: 2011
 
 --- abstract
 
-This document defines the `origin` attribute for cookies and the `Origin-Cookie` header field, which together allow servers to choose to harmonize the security policy of their cookies with the same-origin policy which governs other available client-side storage mechanisms.
+This document updates RFC6265, defining the `origin` attribute for cookies
+and the `Origin-Cookie` header field, which together allow servers to choose
+to harmonize the security policy of their cookies with the same-origin policy
+which governs other available client-side storage mechanisms.
 
 --- middle
 
@@ -65,6 +85,11 @@ Harmonizing with the same-origin policy mitigates the confidentiality and
 integrity risks noted above by ensuring that origin cookies are not influenced
 by malicious code running on a server's subdomain or a non-standard port or
 scheme.
+
+Note that the mechanism outlined here is backwards compatible with the existing
+cookie syntax. Servers may serve origin cookies to all user agents; those that
+do not support the "Origin" attribute will simply store a non-origin cookie,
+just as they do today.
 
 ## Examples
 
@@ -114,7 +139,7 @@ header field.
 
 ## Grammar
 
-Replace {{RFC6265}}'s `cookie-av` token definition with the following ABNF
+Replace the `cookie-av` token definition in {{RFC6265}} with the following ABNF
 grammar:
 
     cookie-av         = expires-av / max-age-av / domain-av /
@@ -161,7 +186,7 @@ Alter Section 5.3 of {{RFC6265}} as follows:
     12. If the newly created cookie's `origin-flag` is set to true, and the
         cookie store contains a cookie with the same`name`, `origin`, and
         `origin-flag` as the newly created cookie:
-          
+
         1.  Let `old-cookie` be the existing cookie with the same
             `name`, `origin`, and `origin-flag` as the newly created cookie.
         2.  Update the `creation-time` of the newly created cookie to match the
@@ -256,30 +281,22 @@ isolation.
 
 # IANA Considerations
 
-The permanent message header field registry (see {{RFC3864}}) SHOULD be updated
+The permanent message header field registry (see {{RFC3864}}) shall be updated
 with the following registration:
 
 ## Origin-Cookie
 
-Header field name
-: Origin-Cookie
-
-Applicable protocol
-: http
-
-Status
-: standard
-
-Author/Change controller
-: IETF
-
-Specification document
-: This specification (see {{origin-cookie-header-field}})
+- Header field name: Origin-Cookie
+- Applicable protocol: http
+- Status: standard
+- Author/Change controller: IETF
+- Specification document: This specification (see {{origin-cookie-header-field}})
 
 # Acknowledgements
 
 The origin cookie concept documented here is heavily indebted to and based upon
-Adam Barth's {{draft-abarth-cake-01}} document.
+Adam Barth's {{draft-abarth-cake-01}} document, as well as Andrew Bortz, Adam
+Barth, and Alexei Czeskis' paper {{origin-cookies-w2sp}}.
 
 --- back
 
