@@ -4,9 +4,9 @@
 
 HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
-Updates: 6265 (if approved)                             October 22, 2014
+Updates: 6265 (if approved)                             October 23, 2014
 Intended status: Standards Track
-Expires: April 25, 2015
+Expires: April 26, 2015
 
 
                           First-Party Cookies
@@ -34,7 +34,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 25, 2015.
+   This Internet-Draft will expire on April 26, 2015.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-West                     Expires April 25, 2015                 [Page 1]
+West                     Expires April 26, 2015                 [Page 1]
 
 Internet-Draft             first-party-cookies              October 2014
 
@@ -61,7 +61,7 @@ Internet-Draft             first-party-cookies              October 2014
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     1.1.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.1.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .   3
    2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   3
      2.1.  First-party and Third-party Requests  . . . . . . . . . .   3
    3.  Server Requirements . . . . . . . . . . . . . . . . . . . . .   4
@@ -70,15 +70,18 @@ Table of Contents
    4.  User Agent Requirements . . . . . . . . . . . . . . . . . . .   5
      4.1.  The "First-Party" attribute . . . . . . . . . . . . . . .   5
      4.2.  Monkey-patching the Storage Model . . . . . . . . . . . .   5
-     4.3.  Monkey-patching the "Cookie" header . . . . . . . . . . .   5
-   5.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .   6
-   6.  User Controls . . . . . . . . . . . . . . . . . . . . . . . .   6
-   7.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
-   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .   7
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
+     4.3.  Monkey-patching the "Cookie" header . . . . . . . . . . .   6
+   5.  Authoring Considerations  . . . . . . . . . . . . . . . . . .   6
+     5.1.  Mashups and Widgets . . . . . . . . . . . . . . . . . . .   6
+   6.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .   6
+     6.1.  User Controls . . . . . . . . . . . . . . . . . . . . . .   6
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+     7.1.  Limitations . . . . . . . . . . . . . . . . . . . . . . .   7
+   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
+     9.2.  Informative References  . . . . . . . . . . . . . . . . .   8
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
 
@@ -100,19 +103,22 @@ Table of Contents
    attribute will simply store a non-first-party cookie, just as they do
    today.
 
+
+
+
+
+
+
+West                     Expires April 26, 2015                 [Page 2]
+
+Internet-Draft             first-party-cookies              October 2014
+
+
 1.1.  Examples
 
    First-party cookies are set via the "First-Party" attribute in the
    "Set-Cookie" header field.  That is, given a server's response to a
    user agent which contains the following header field:
-
-
-
-
-West                     Expires April 25, 2015                 [Page 2]
-
-Internet-Draft             first-party-cookies              October 2014
-
 
    Set-Cookie: SID=31d4d96e407aad42; First-Party
 
@@ -155,20 +161,21 @@ Internet-Draft             first-party-cookies              October 2014
    1.  Let "context" be the top-level browsing context in the window
        responsible for "request".
 
+
+
+
+
+West                     Expires April 26, 2015                 [Page 3]
+
+Internet-Draft             first-party-cookies              October 2014
+
+
    2.  Let "top-origin" be the origin of the location of the active
        document in "context".
 
    3.  If the origin of "request"'s URL is the same as "top-origin",
        "request" is a *first-party request*. Otherwise, "request" is a
        *third-party request*.
-
-
-
-
-West                     Expires April 25, 2015                 [Page 3]
-
-Internet-Draft             first-party-cookies              October 2014
-
 
    Note that we deal with the document's _location_ in step 2 above, not
    with the document's origin.  For example, a top-level document from
@@ -210,21 +217,20 @@ Internet-Draft             first-party-cookies              October 2014
    it will only be attached to requests if those requests are "first-
    party", as described in Section 2.1.  For example, requests for
    "https://example.com/sekrit-image" will attach first-party cookies if
+
+
+
+
+West                     Expires April 26, 2015                 [Page 4]
+
+Internet-Draft             first-party-cookies              October 2014
+
+
    and only if the top-level browsing context is currently displaying a
    document from "https://example.com".
 
    The changes to the "Cookie" header field suggested in Section 4.3
    provide additional detail.
-
-
-
-
-
-
-West                     Expires April 25, 2015                 [Page 4]
-
-Internet-Draft             first-party-cookies              October 2014
-
 
 4.  User Agent Requirements
 
@@ -259,6 +265,23 @@ Internet-Draft             first-party-cookies              October 2014
            party-flag" to true.  Otherwise, set the cookie's "first-
            party-flag" to false.
 
+       2.  If the cookie's "first-party-flag" is set to true, and the
+           request which generated the cookie is not a first-party
+           request (as defined in Section 2.1), then abort these steps
+           and ignore the newly created cookie entirely.
+
+
+
+
+
+
+
+
+West                     Expires April 26, 2015                 [Page 5]
+
+Internet-Draft             first-party-cookies              October 2014
+
+
 4.3.  Monkey-patching the "Cookie" header
 
    Note: There's got to be a better way to specify this.  Until I figure
@@ -274,37 +297,76 @@ Internet-Draft             first-party-cookies              October 2014
 
    Note that the modifications suggested here concern themselves only
    with the origin of the top-level browsing context and the origin of
-
-
-
-West                     Expires April 25, 2015                 [Page 5]
-
-Internet-Draft             first-party-cookies              October 2014
-
-
    the resource being requested.  The cookie's "domain", "path", and
    "secure" attributes do not come into play for this comparison.
 
-5.  Privacy Considerations
+5.  Authoring Considerations
 
-6.  User Controls
+5.1.  Mashups and Widgets
+
+   The "First-Party" attribute is inappropriate for some important use-
+   cases.  In particular, note that content which is intended to be
+   embedded in a third-party context (social networking widgets or
+   commenting services, for instance) will lose access to first-party
+   cookies, which may prevent it from acting in the intended way.
+   Concretely, you wouldn't be able to share directly to a social
+   network from a news article if your session cookie was first-party.
+
+6.  Privacy Considerations
+
+6.1.  User Controls
 
    First-party cookies in and of themselves don't do anything to address
    the general privacy concerns outlined in Section 7.1 of [RFC6265].
    The attribute is set by the server, and serves to mitigate the risk
-   of certain kinds of attacks that the server is worried about.  If a
-   server wished to track users via the use of cookies attached to
-   third-party requests, the server would simply not set the attribute.
+   of certain kinds of attacks that the server is worried about.  The
+   user is not involved in this decision.
 
    User agents, however, could offer users the ability to toggle a
    cookie's "first-party-flag" themselves, perhaps as part of a more
    general cookie management interface.  This could provide an
-   interesting middle-ground between the options that many user agents
-   offer to users.
+   interesting middle-ground between the options (e.g.  "Block all",
+   "Block third-party", and "Allow all") that many user agents offer to
+   users.
+
+
+
+
+
+West                     Expires April 26, 2015                 [Page 6]
+
+Internet-Draft             first-party-cookies              October 2014
+
 
 7.  Security Considerations
 
-   TODO.
+7.1.  Limitations
+
+   It is possible to bypass the protection that first-party cookies
+   offer against cross-site request forgery attacks by creating first-
+   party contexts in which to execute the attack.  Consider, for
+   instance, the URL "https://example.com/logout" which logs the current
+   user out of "example.com".  If the user's session cookie is first-
+   party cookie, then embedding the logout URL in an "<iframe>" element
+   or an "<img>" element won't log her out, as the cookie won't be sent.
+   Popping up a new window, or doing a top-level navigation, on the
+   other hand, will create a first-party context, attach cookies, and
+   perform the logout.
+
+   Note, though, that popping up a window, or doing a top-level
+   navigation are both significantly more visible to the user than
+   loading a subresource.  Users will at least have the opportunity to
+   notice that something strange is going on, which hopefully reduces an
+   attacker's ability to perform untargeted attacks.
+
+   Further, note that certain kinds of attacks are no longer possible if
+   a first-party context is required.  Information leakage attacks which
+   rely on visible side-effects of loading a session-protected image,
+   for example, can no longer access those side-effects if the image is
+   loaded in a new window.  Timing attacks like those Paul Stone
+   outlines in [pixel-perfect] are no longer possible if the session
+   cookie is first-party, as they rely on "<iframes>" to contain the
+   protected content in a way the attacker can manipulate.
 
 8.  Acknowledgements
 
@@ -325,23 +387,28 @@ Internet-Draft             first-party-cookies              October 2014
               Application Protocol Collation Registry", RFC 4790, March
               2007.
 
+
+
+West                     Expires April 26, 2015                 [Page 7]
+
+Internet-Draft             first-party-cookies              October 2014
+
+
    [RFC5234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
               Specifications: ABNF", STD 68, RFC 5234, January 2008.
 
    [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
               April 2011.
 
-
-
-West                     Expires April 25, 2015                 [Page 6]
-
-Internet-Draft             first-party-cookies              October 2014
-
-
    [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454, December
               2011.
 
 9.2.  Informative References
+
+   [pixel-perfect]
+              Stone, P., "Pixel Perfect Timing Attacks with HTML5",
+              n.d., <http://www.contextis.com/documents/2/
+              Browser_Timing_Attacks.pdf>.
 
    [samedomain-cookies]
               Goodwin,, M. and J. Walker, "SameDomain Cookie Flag",
@@ -378,15 +445,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-West                     Expires April 25, 2015                 [Page 7]
+West                     Expires April 26, 2015                 [Page 8]

@@ -48,6 +48,13 @@ informative:
       ins: J. Walker
       name: Joe Walker
     date: 2011
+  pixel-perfect:
+    target: http://www.contextis.com/documents/2/Browser_Timing_Attacks.pdf
+    title: Pixel Perfect Timing Attacks with HTML5
+    author:
+    -
+        ins: P. Stone
+        name: Paul Stone
 
 --- abstract
 
@@ -196,9 +203,14 @@ Alter Section 5.3 of {{RFC6265}} as follows:
 
 2.  Before step 11 of the current algorithm, add the following:
 
-    11. If the `cookie-attribute-list` contains an attribute with an
-        `attribute-name` of "First-Party", set the cookie's `first-party-flag`
-        to true. Otherwise, set the cookie's `first-party-flag` to false.
+    11.  If the `cookie-attribute-list` contains an attribute with an
+         `attribute-name` of "First-Party", set the cookie's `first-party-flag`
+         to true. Otherwise, set the cookie's `first-party-flag` to false.
+
+    12.  If the cookie's `first-party-flag` is set to true, and the request
+         which generated the cookie is not a first-party request (as defined
+         in {{first-and-third-party}}), then abort these steps and ignore the
+         newly created cookie entirely.
 
 ## Monkey-patching the "Cookie" header {#cookie-header}
 
@@ -218,25 +230,58 @@ origin of the top-level browsing context and the origin of the resource being
 requested. The cookie's `domain`, `path`, and `secure` attributes do not come
 into play for this comparison.
 
+# Authoring Considerations
+
+## Mashups and Widgets
+
+The `First-Party` attribute is inappropriate for some important use-cases. In
+particular, note that content which is intended to be embedded in a
+third-party context (social networking widgets or commenting services, for
+instance) will lose access to first-party cookies, which may prevent it from
+acting in the intended way. Concretely, you wouldn't be able to share directly
+to a social network from a news article if your session cookie was first-party.
+
 # Privacy Considerations
 
-# User Controls
+## User Controls
 
 First-party cookies in and of themselves don't do anything to address the
 general privacy concerns outlined in Section 7.1 of {{RFC6265}}. The attribute
 is set by the server, and serves to mitigate the risk of certain kinds of
-attacks that the server is worried about. If a server wished to track users
-via the use of cookies attached to third-party requests, the server would
-simply not set the attribute.
+attacks that the server is worried about. The user is not involved in this
+decision.
 
 User agents, however, could offer users the ability to toggle a cookie's
 `first-party-flag` themselves, perhaps as part of a more general cookie
 management interface. This could provide an interesting middle-ground between
-the options that many user agents offer to users.
+the options (e.g. "Block all", "Block third-party", and "Allow all") that many
+user agents offer to users.
 
 # Security Considerations
 
-TODO.
+## Limitations
+
+It is possible to bypass the protection that first-party cookies offer against
+cross-site request forgery attacks by creating first-party contexts in which to
+execute the attack. Consider, for instance, the URL `https://example.com/logout`
+which logs the current user out of `example.com`. If the user's session cookie
+is first-party cookie, then embedding the logout URL in an `<iframe>` element or
+an `<img>` element won't log her out, as the cookie won't be sent. Popping up a
+new window, or doing a top-level navigation, on the other hand, will create a
+first-party context, attach cookies, and perform the logout.
+
+Note, though, that popping up a window, or doing a top-level navigation are both
+significantly more visible to the user than loading a subresource. Users will
+at least have the opportunity to notice that something strange is going on,
+which hopefully reduces an attacker's ability to perform untargeted attacks.
+
+Further, note that certain kinds of attacks are no longer possible if a
+first-party context is required. Information leakage attacks which rely on
+visible side-effects of loading a session-protected image, for example, can no
+longer access those side-effects if the image is loaded in a new window. Timing
+attacks like those Paul Stone outlines in {{pixel-perfect}} are no longer
+possible if the session cookie is first-party, as they rely on `<iframes>` to
+contain the protected content in a way the attacker can manipulate. 
 
 # Acknowledgements
 

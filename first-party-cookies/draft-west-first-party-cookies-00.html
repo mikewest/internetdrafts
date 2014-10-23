@@ -385,9 +385,12 @@
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 The &#x201C;First-Party&#x201D; attribute"/>
 <link href="#rfc.section.4.2" rel="Chapter" title="4.2 Monkey-patching the Storage Model"/>
 <link href="#rfc.section.4.3" rel="Chapter" title="4.3 Monkey-patching the &#x201C;Cookie&#x201D; header"/>
-<link href="#rfc.section.5" rel="Chapter" title="5 Privacy Considerations"/>
-<link href="#rfc.section.6" rel="Chapter" title="6 User Controls"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Authoring Considerations"/>
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Mashups and Widgets"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 Privacy Considerations"/>
+<link href="#rfc.section.6.1" rel="Chapter" title="6.1 User Controls"/>
 <link href="#rfc.section.7" rel="Chapter" title="7 Security Considerations"/>
+<link href="#rfc.section.7.1" rel="Chapter" title="7.1 Limitations"/>
 <link href="#rfc.section.8" rel="Chapter" title="8 Acknowledgements"/>
 <link href="#rfc.references" rel="Chapter" title="9 References"/>
 <link href="#rfc.references.1" rel="Chapter" title="9.1 Normative References"/>
@@ -400,7 +403,7 @@
 
   <meta name="dct.creator" content="West, M." />
   <meta name="dct.identifier" content="urn:ietf:id:draft-west-first-party-cookies-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2014-10-22" />
+  <meta name="dct.issued" scheme="ISO8601" content="2014-10-23" />
   <meta name="dct.abstract" content="This document updates RFC6265, defining the " />
   <meta name="description" content="This document updates RFC6265, defining the " />
 
@@ -421,14 +424,14 @@
 </tr>
 <tr>
   <td class="left">Updates: 6265 (if approved)</td>
-  <td class="right">October 22, 2014</td>
+  <td class="right">October 23, 2014</td>
 </tr>
 <tr>
   <td class="left">Intended status: Standards Track</td>
   <td class="right"></td>
 </tr>
 <tr>
-  <td class="left">Expires: April 25, 2015</td>
+  <td class="left">Expires: April 26, 2015</td>
   <td class="right"></td>
 </tr>
 
@@ -449,7 +452,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on April 25, 2015.</p>
+<p>This Internet-Draft will expire on April 26, 2015.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -472,9 +475,12 @@
 <li>4.1.   <a href="#rfc.section.4.1">The &#8220;First-Party&#8221; attribute</a></li>
 <li>4.2.   <a href="#rfc.section.4.2">Monkey-patching the Storage Model</a></li>
 <li>4.3.   <a href="#rfc.section.4.3">Monkey-patching the &#8220;Cookie&#8221; header</a></li>
-<li>5.   <a href="#rfc.section.5">Privacy Considerations</a></li>
-<li>6.   <a href="#rfc.section.6">User Controls</a></li>
+<li>5.   <a href="#rfc.section.5">Authoring Considerations</a></li>
+<li>5.1.   <a href="#rfc.section.5.1">Mashups and Widgets</a></li>
+<li>6.   <a href="#rfc.section.6">Privacy Considerations</a></li>
+<li>6.1.   <a href="#rfc.section.6.1">User Controls</a></li>
 <li>7.   <a href="#rfc.section.7">Security Considerations</a></li>
+<li>7.1.   <a href="#rfc.section.7.1">Limitations</a></li>
 <li>8.   <a href="#rfc.section.8">Acknowledgements</a></li>
 <li>9.   <a href="#rfc.references">References</a></li>
 <li>9.1.   <a href="#rfc.references.1">Normative References</a></li>
@@ -545,7 +551,7 @@ first-party-av    = "First-Party"
 
 <ol>
   <li>Add <samp>firstparty-flag</samp> to the list of fields stored for each cookie.</li>
-  <li>Before step 11 of the current algorithm, add the following:  <ol><li>If the <samp>cookie-attribute-list</samp> contains an attribute with an <samp>attribute-name</samp> of &#8220;First-Party&#8221;, set the cookie&#8217;s <samp>first-party-flag</samp> to true. Otherwise, set the cookie&#8217;s <samp>first-party-flag</samp> to false.</li></ol></li>
+  <li>Before step 11 of the current algorithm, add the following:  <ol><li>If the <samp>cookie-attribute-list</samp> contains an attribute with an <samp>attribute-name</samp> of &#8220;First-Party&#8221;, set the cookie&#8217;s <samp>first-party-flag</samp> to true. Otherwise, set the cookie&#8217;s <samp>first-party-flag</samp> to false.</li><li>If the cookie&#8217;s <samp>first-party-flag</samp> is set to true, and the request which generated the cookie is not a first-party request (as defined in <a href="#first-and-third-party">Section 2.1</a>), then abort these steps and ignore the newly created cookie entirely.</li></ol></li>
 </ol>
 <h1 id="rfc.section.4.3"><a href="#rfc.section.4.3">4.3.</a> <a href="#cookie-header" id="cookie-header">Monkey-patching the &#8220;Cookie&#8221; header</a></h1>
 <p id="rfc.section.4.3.p.1">Note: There&#8217;s got to be a better way to specify this. Until I figure out what that is, monkey-patching!</p>
@@ -556,12 +562,18 @@ first-party-av    = "First-Party"
   <li>Add the following requirement to the list in step 1:  <ul><li>If the cookie&#8217;s <samp>first-party-flag</samp> is true, then exclude the cookie if the HTTP request is a third-party request (see <a href="#first-and-third-party">Section 2.1</a>).</li></ul></li>
 </ol>
 <p id="rfc.section.4.3.p.4">Note that the modifications suggested here concern themselves only with the origin of the top-level browsing context and the origin of the resource being requested. The cookie&#8217;s <samp>domain</samp>, <samp>path</samp>, and <samp>secure</samp> attributes do not come into play for this comparison.</p>
-<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#privacy-considerations" id="privacy-considerations">Privacy Considerations</a></h1>
-<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#user-controls" id="user-controls">User Controls</a></h1>
-<p id="rfc.section.6.p.1">First-party cookies in and of themselves don&#8217;t do anything to address the general privacy concerns outlined in Section 7.1 of <a href="#RFC6265">[RFC6265]</a>. The attribute is set by the server, and serves to mitigate the risk of certain kinds of attacks that the server is worried about. If a server wished to track users via the use of cookies attached to third-party requests, the server would simply not set the attribute.</p>
-<p id="rfc.section.6.p.2">User agents, however, could offer users the ability to toggle a cookie&#8217;s <samp>first-party-flag</samp> themselves, perhaps as part of a more general cookie management interface. This could provide an interesting middle-ground between the options that many user agents offer to users.</p>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#authoring-considerations" id="authoring-considerations">Authoring Considerations</a></h1>
+<h1 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1.</a> <a href="#mashups-and-widgets" id="mashups-and-widgets">Mashups and Widgets</a></h1>
+<p id="rfc.section.5.1.p.1">The <samp>First-Party</samp> attribute is inappropriate for some important use-cases. In particular, note that content which is intended to be embedded in a third-party context (social networking widgets or commenting services, for instance) will lose access to first-party cookies, which may prevent it from acting in the intended way. Concretely, you wouldn&#8217;t be able to share directly to a social network from a news article if your session cookie was first-party.</p>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#privacy-considerations" id="privacy-considerations">Privacy Considerations</a></h1>
+<h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#user-controls" id="user-controls">User Controls</a></h1>
+<p id="rfc.section.6.1.p.1">First-party cookies in and of themselves don&#8217;t do anything to address the general privacy concerns outlined in Section 7.1 of <a href="#RFC6265">[RFC6265]</a>. The attribute is set by the server, and serves to mitigate the risk of certain kinds of attacks that the server is worried about. The user is not involved in this decision.</p>
+<p id="rfc.section.6.1.p.2">User agents, however, could offer users the ability to toggle a cookie&#8217;s <samp>first-party-flag</samp> themselves, perhaps as part of a more general cookie management interface. This could provide an interesting middle-ground between the options (e.g. &#8220;Block all&#8221;, &#8220;Block third-party&#8221;, and &#8220;Allow all&#8221;) that many user agents offer to users.</p>
 <h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> <a href="#security-considerations" id="security-considerations">Security Considerations</a></h1>
-<p id="rfc.section.7.p.1">TODO.</p>
+<h1 id="rfc.section.7.1"><a href="#rfc.section.7.1">7.1.</a> <a href="#limitations" id="limitations">Limitations</a></h1>
+<p id="rfc.section.7.1.p.1">It is possible to bypass the protection that first-party cookies offer against cross-site request forgery attacks by creating first-party contexts in which to execute the attack. Consider, for instance, the URL <samp>https://example.com/logout</samp> which logs the current user out of <samp>example.com</samp>. If the user&#8217;s session cookie is first-party cookie, then embedding the logout URL in an <samp>&lt;iframe&gt;</samp> element or an <samp>&lt;img&gt;</samp> element won&#8217;t log her out, as the cookie won&#8217;t be sent. Popping up a new window, or doing a top-level navigation, on the other hand, will create a first-party context, attach cookies, and perform the logout.</p>
+<p id="rfc.section.7.1.p.2">Note, though, that popping up a window, or doing a top-level navigation are both significantly more visible to the user than loading a subresource. Users will at least have the opportunity to notice that something strange is going on, which hopefully reduces an attacker&#8217;s ability to perform untargeted attacks.</p>
+<p id="rfc.section.7.1.p.3">Further, note that certain kinds of attacks are no longer possible if a first-party context is required. Information leakage attacks which rely on visible side-effects of loading a session-protected image, for example, can no longer access those side-effects if the image is loaded in a new window. Timing attacks like those Paul Stone outlines in <a href="#pixel-perfect">[pixel-perfect]</a> are no longer possible if the session cookie is first-party, as they rely on <samp>&lt;iframes&gt;</samp> to contain the protected content in a way the attacker can manipulate. </p>
 <h1 id="rfc.section.8"><a href="#rfc.section.8">8.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
 <p id="rfc.section.8.p.1">The first-party cookie concept documented here is similar to (but stricter than) Mark Goodwin&#8217;s and Joe Walker&#8217;s <a href="#samedomain-cookies">[samedomain-cookies]</a>.</p>
 <h1 id="rfc.references"><a href="#rfc.references">9.</a> References</h1>
@@ -609,6 +621,12 @@ first-party-av    = "First-Party"
 <h1 id="rfc.references.2"><a href="#rfc.references.2">9.2.</a> Informative References</h1>
 <table>
   <tbody>
+    <tr>
+      <td class="reference">
+        <b id="pixel-perfect">[pixel-perfect]</b>
+      </td>
+      <td class="top"><a>Stone, P.</a>, "<a href="http://www.contextis.com/documents/2/Browser_Timing_Attacks.pdf">Pixel Perfect Timing Attacks with HTML5</a>", n.d..</td>
+    </tr>
     <tr>
       <td class="reference">
         <b id="samedomain-cookies">[samedomain-cookies]</b>
