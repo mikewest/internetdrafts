@@ -59,9 +59,9 @@ informative:
 --- abstract
 
 This document updates RFC6265, defining the `First-Party` attribute for cookies,
-which allows servers to mitigate the risk of cross-site request forgery attacks
-by asserting that a particular cookie should only be sent in a "first-party"
-context.
+which allows servers to mitigate the risk of cross-site request forgery and
+related information leakage attacks by asserting that a particular cookie should
+only be sent in a "first-party" context.
 
 --- middle
 

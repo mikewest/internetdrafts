@@ -16,8 +16,9 @@ Abstract
 
    This document updates RFC6265, defining the "First-Party" attribute
    for cookies, which allows servers to mitigate the risk of cross-site
-   request forgery attacks by asserting that a particular cookie should
-   only be sent in a "first-party" context.
+   request forgery and related information leakage attacks by asserting
+   that a particular cookie should only be sent in a "first-party"
+   context.
 
 Status of This Memo
 
@@ -48,8 +49,7 @@ Copyright Notice
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
-   the Trust Legal Provisions and are provided without warranty as
-   described in the Simplified BSD License.
+
 
 
 
@@ -57,6 +57,9 @@ West                     Expires April 26, 2015                 [Page 1]
 
 Internet-Draft             first-party-cookies              October 2014
 
+
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
 
 Table of Contents
 
@@ -102,9 +105,6 @@ Table of Contents
    all user agents; those that do not support the "First-Party"
    attribute will simply store a non-first-party cookie, just as they do
    today.
-
-
-
 
 
 
