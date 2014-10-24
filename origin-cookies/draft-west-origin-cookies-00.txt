@@ -4,9 +4,9 @@
 
 HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
-Updates: 6265 (if approved)                             October 22, 2014
+Updates: 6265 (if approved)                             October 24, 2014
 Intended status: Standards Track
-Expires: April 25, 2015
+Expires: April 27, 2015
 
 
                              Origin Cookies
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 25, 2015.
+   This Internet-Draft will expire on April 27, 2015.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-West                     Expires April 25, 2015                 [Page 1]
+West                     Expires April 27, 2015                 [Page 1]
 
 Internet-Draft               Origin-Cookies                 October 2014
 
@@ -66,23 +66,25 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
      1.1.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .   3
    2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   3
-   3.  User Agent Requirements . . . . . . . . . . . . . . . . . . .   4
+   3.  Server Requirements . . . . . . . . . . . . . . . . . . . . .   4
      3.1.  Grammar . . . . . . . . . . . . . . . . . . . . . . . . .   4
-     3.2.  The "Origin" attribute  . . . . . . . . . . . . . . . . .   4
-     3.3.  Monkey-patching the Storage Model . . . . . . . . . . . .   4
-     3.4.  Monkey-patching the "Cookie" header . . . . . . . . . . .   5
-     3.5.  The "Origin-Cookie" header field  . . . . . . . . . . . .   6
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
-     4.1.  "HttpOnly"  . . . . . . . . . . . . . . . . . . . . . . .   7
-     4.2.  Paths are ignored . . . . . . . . . . . . . . . . . . . .   7
-   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
-     5.1.  Origin-Cookie . . . . . . . . . . . . . . . . . . . . . .   7
-   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
-   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
-     7.2.  Informative References  . . . . . . . . . . . . . . . . .   8
-   Appendix A.  Open Issues  . . . . . . . . . . . . . . . . . . . .   8
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   8
+     3.2.  Semantics of the "Origin" Attribute (Non-Normative) . . .   4
+   4.  User Agent Requirements . . . . . . . . . . . . . . . . . . .   4
+     4.1.  The "Origin" attribute  . . . . . . . . . . . . . . . . .   4
+     4.2.  Monkey-patching the Storage Model . . . . . . . . . . . .   5
+     4.3.  Monkey-patching the "Cookie" header . . . . . . . . . . .   6
+     4.4.  The "Origin-Cookie" header field  . . . . . . . . . . . .   6
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+     5.1.  "HttpOnly"  . . . . . . . . . . . . . . . . . . . . . . .   7
+     5.2.  Paths are ignored . . . . . . . . . . . . . . . . . . . .   7
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
+     6.1.  Origin-Cookie . . . . . . . . . . . . . . . . . . . . . .   8
+   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   8
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
+   Appendix A.  Open Issues  . . . . . . . . . . . . . . . . . . . .   9
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   9
 
 1.  Introduction
 
@@ -100,20 +102,20 @@ Table of Contents
    value's "Path", "Domain", and "Secure" attributes if an "Origin"
    attribute is present, instead tying the cookie to the origin that set
    it.  These "origin cookies" will be returned in a new "Origin-Cookie"
-   header field (see Section 3.5 for detail), separating them from non-
+   header field (see Section 4.4 for detail), separating them from non-
    origin cookies in a way a server can easily distinguish.
 
-   Harmonizing with the same-origin policy mitigates the confidentiality
-   and integrity risks noted above by ensuring that origin cookies are
 
 
 
 
-West                     Expires April 25, 2015                 [Page 2]
+West                     Expires April 27, 2015                 [Page 2]
 
 Internet-Draft               Origin-Cookies                 October 2014
 
 
+   Harmonizing with the same-origin policy mitigates the confidentiality
+   and integrity risks noted above by ensuring that origin cookies are
    not influenced by malicious code running on a server's subdomain or a
    non-standard port or scheme.
 
@@ -159,34 +161,53 @@ Internet-Draft               Origin-Cookies                 October 2014
    This specification uses the Augmented Backus-Naur Form (ABNF)
    notation of [RFC5234].
 
-   Two sequences of octets are said to case-insensitively match each
-   other if and only if they are equivalent under the "i;ascii-casemap"
-   collation defined in [RFC4790].
 
 
 
-West                     Expires April 25, 2015                 [Page 3]
+
+West                     Expires April 27, 2015                 [Page 3]
 
 Internet-Draft               Origin-Cookies                 October 2014
 
 
-3.  User Agent Requirements
+   Two sequences of octets are said to case-insensitively match each
+   other if and only if they are equivalent under the "i;ascii-casemap"
+   collation defined in [RFC4790].
+
+3.  Server Requirements
+
+   This section describes extensions to [RFC6265] necessary to implement
+   the server-side requirements of the "Origin" attribute.
+
+3.1.  Grammar
+
+   Add "Origin" to the list of accepted attributes in the "Set-Cookie"
+   header field's value by replacing the "cookie-av" token definition in
+   Section 4.1.1 of [RFC6265] with the following ABNF grammar:
+
+   cookie-av = expires-av / max-age-av / domain-av /
+               path-av / secure-av / httponly-av /
+               origin-av / extension-av
+   origin-av = "origin"
+
+3.2.  Semantics of the "Origin" Attribute (Non-Normative)
+
+   The "Origin" attribute limits the scope of the cookie such that it
+   will only be attached to requests if those request match the origin
+   which set the cookie.  For example, requests for
+   "https://example.com/" will attach origin cookies if and only if
+   those cookies were set by "https://example.com/".
+
+   The changes to the "Cookie" header field suggested in Section 4.3
+   provide additional detail.
+
+4.  User Agent Requirements
 
    This section describes extensions to [RFC6265] necessary in order to
    implement the client-side requirements of the "Origin" attribute and
    "Origin-Cookie" header field.
 
-3.1.  Grammar
-
-   Replace the "cookie-av" token definition in [RFC6265] with the
-   following ABNF grammar:
-
-   cookie-av         = expires-av / max-age-av / domain-av /
-                       path-av / secure-av / httponly-av /
-                       origin-av / extension-av
-   origin-av         = "Origin"
-
-3.2.  The "Origin" attribute
+4.1.  The "Origin" attribute
 
    The following attribute definition should be considered part of the
    the "Set-Cookie" algorithm as described in Section 5.2 of [RFC6265]:
@@ -195,7 +216,17 @@ Internet-Draft               Origin-Cookies                 October 2014
    the user agent MUST append an attribute to the cookie-attribute-list
    with an attribute-name of "Origin" and an empty attribute-value.
 
-3.3.  Monkey-patching the Storage Model
+
+
+
+
+
+West                     Expires April 27, 2015                 [Page 4]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
+
+4.2.  Monkey-patching the Storage Model
 
    Note: There's got to be a better way to specify this.  Until I figure
    out what that is, monkey-patching!
@@ -218,13 +249,6 @@ Internet-Draft               Origin-Cookies                 October 2014
 
            4.  Set the cookie's "origin" to the origin of "request-uri",
                as defined by Section 4 of [RFC6454].
-
-
-
-West                     Expires April 25, 2015                 [Page 4]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
 
            5.  Set the cookie's "origin-flag" to true.
 
@@ -251,6 +275,13 @@ Internet-Draft               Origin-Cookies                 October 2014
    3.  Change the priority order for excess cookie removal to the
        following:
 
+
+
+West                     Expires April 27, 2015                 [Page 5]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
+
        1.  Expired cookies.
 
        2.  Cookies whose "origin-flag" is false that share a "domain"
@@ -263,7 +294,7 @@ Internet-Draft               Origin-Cookies                 October 2014
 
        5.  All cookies.
 
-3.4.  Monkey-patching the "Cookie" header
+4.3.  Monkey-patching the "Cookie" header
 
    Note: There's got to be a better way to specify this.  Until I figure
    out what that is, monkey-patching!
@@ -274,15 +305,7 @@ Internet-Draft               Origin-Cookies                 October 2014
 
        *  The cookie's "origin-flag" is false.
 
-
-
-
-West                     Expires April 25, 2015                 [Page 5]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
-
-3.5.  The "Origin-Cookie" header field
+4.4.  The "Origin-Cookie" header field
 
    The user agent includes stored cookies whose "origin-flag" is set in
    the "Origin-Cookie" request header.  When the user agent generates an
@@ -305,6 +328,15 @@ Internet-Draft               Origin-Cookies                 October 2014
        that meets all the following requirements:
 
        *  The cookie's "origin-flag" is true.
+
+
+
+
+
+West                     Expires April 27, 2015                 [Page 6]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
 
        *  The cookie's "origin" matches the origin of "request-uri".
           [RFC6454]
@@ -330,15 +362,7 @@ Internet-Draft               Origin-Cookies                 October 2014
        2.  If there is an unprocessed cookie in the "cookie-list",
            output the characters %x3B and %x20 ("; ").
 
-
-
-
-West                     Expires April 25, 2015                 [Page 6]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
-
-4.  Security Considerations
+5.  Security Considerations
 
    The security considerations listed in Section 8 of [RFC6265] apply
    equally to origin cookies, with the exceptions of Sections 8.6 ("Weak
@@ -346,12 +370,12 @@ Internet-Draft               Origin-Cookies                 October 2014
    are substantially improved if the "Origin" attribute is set.
    Further:
 
-4.1.  "HttpOnly"
+5.1.  "HttpOnly"
 
    Note that origin cookies are only accessible via HTTP.  "Non-HTTP"
    APIs like HTML's "document.cookie" cannot read these cookies' values.
 
-4.2.  Paths are ignored
+5.2.  Paths are ignored
 
    Origin cookies will break the (flawed) "Path"-based isolation
    strategy which some servers may be attempting to implement.  If a
@@ -361,15 +385,24 @@ Internet-Draft               Origin-Cookies                 October 2014
 
    That said, paths offer little to no protection against malicious
    code.  The origin is the only security boundry enforced rigorously by
+
+
+
+
+West                     Expires April 27, 2015                 [Page 7]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
+
    user agents; it is therefore the only security boundry that server
    operators ought to rely on for isolation.
 
-5.  IANA Considerations
+6.  IANA Considerations
 
    The permanent message header field registry (see [RFC3864]) shall be
    updated with the following registration:
 
-5.1.  Origin-Cookie
+6.1.  Origin-Cookie
 
    o  Header field name: Origin-Cookie
 
@@ -379,27 +412,18 @@ Internet-Draft               Origin-Cookies                 October 2014
 
    o  Author/Change controller: IETF
 
-   o  Specification document: This specification (see Section 3.5)
+   o  Specification document: This specification (see Section 4.4)
 
-6.  Acknowledgements
+7.  Acknowledgements
 
    The origin cookie concept documented here is heavily indebted to and
    based upon Adam Barth's [draft-abarth-cake-01] document, as well as
-
-
-
-
-West                     Expires April 25, 2015                 [Page 7]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
-
    Andrew Bortz, Adam Barth, and Alexei Czeskis' paper
    [origin-cookies-w2sp].
 
-7.  References
+8.  References
 
-7.1.  Normative References
+8.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
@@ -417,7 +441,16 @@ Internet-Draft               Origin-Cookies                 October 2014
    [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454, December
               2011.
 
-7.2.  Informative References
+
+
+
+
+West                     Expires April 27, 2015                 [Page 8]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
+
+8.2.  Informative References
 
    [RFC3864]  Klyne, G., Nottingham, M., and J. Mogul, "Registration
               Procedures for Message Header Fields", BCP 90, RFC 3864,
@@ -438,17 +471,6 @@ Appendix A.  Open Issues
       that weaken the guarantees in any way we care about?
 
 Author's Address
-
-
-
-
-
-
-
-West                     Expires April 25, 2015                 [Page 8]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
 
    Mike West
    Google, Inc
@@ -479,26 +501,4 @@ Internet-Draft               Origin-Cookies                 October 2014
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-West                     Expires April 25, 2015                 [Page 9]
+West                     Expires April 27, 2015                 [Page 9]

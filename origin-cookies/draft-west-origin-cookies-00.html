@@ -377,31 +377,33 @@
 <link href="#rfc.section.1" rel="Chapter" title="1 Introduction"/>
 <link href="#rfc.section.1.1" rel="Chapter" title="1.1 Examples"/>
 <link href="#rfc.section.2" rel="Chapter" title="2 Terminology and notation"/>
-<link href="#rfc.section.3" rel="Chapter" title="3 User Agent Requirements"/>
+<link href="#rfc.section.3" rel="Chapter" title="3 Server Requirements"/>
 <link href="#rfc.section.3.1" rel="Chapter" title="3.1 Grammar"/>
-<link href="#rfc.section.3.2" rel="Chapter" title="3.2 The &#x201C;Origin&#x201D; attribute"/>
-<link href="#rfc.section.3.3" rel="Chapter" title="3.3 Monkey-patching the Storage Model"/>
-<link href="#rfc.section.3.4" rel="Chapter" title="3.4 Monkey-patching the &#x201C;Cookie&#x201D; header"/>
-<link href="#rfc.section.3.5" rel="Chapter" title="3.5 The &#x201C;Origin-Cookie&#x201D; header field"/>
-<link href="#rfc.section.4" rel="Chapter" title="4 Security Considerations"/>
-<link href="#rfc.section.4.1" rel="Chapter" title="4.1 &#x201C;HttpOnly&#x201D;"/>
-<link href="#rfc.section.4.2" rel="Chapter" title="4.2 Paths are ignored"/>
-<link href="#rfc.section.5" rel="Chapter" title="5 IANA Considerations"/>
-<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Origin-Cookie"/>
-<link href="#rfc.section.6" rel="Chapter" title="6 Acknowledgements"/>
-<link href="#rfc.references" rel="Chapter" title="7 References"/>
-<link href="#rfc.references.1" rel="Chapter" title="7.1 Normative References"/>
-<link href="#rfc.references.2" rel="Chapter" title="7.2 Informative References"/>
+<link href="#rfc.section.3.2" rel="Chapter" title="3.2 Semantics of the &#x201C;Origin&#x201D; Attribute (Non-Normative)"/>
+<link href="#rfc.section.4" rel="Chapter" title="4 User Agent Requirements"/>
+<link href="#rfc.section.4.1" rel="Chapter" title="4.1 The &#x201C;Origin&#x201D; attribute"/>
+<link href="#rfc.section.4.2" rel="Chapter" title="4.2 Monkey-patching the Storage Model"/>
+<link href="#rfc.section.4.3" rel="Chapter" title="4.3 Monkey-patching the &#x201C;Cookie&#x201D; header"/>
+<link href="#rfc.section.4.4" rel="Chapter" title="4.4 The &#x201C;Origin-Cookie&#x201D; header field"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Security Considerations"/>
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 &#x201C;HttpOnly&#x201D;"/>
+<link href="#rfc.section.5.2" rel="Chapter" title="5.2 Paths are ignored"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 IANA Considerations"/>
+<link href="#rfc.section.6.1" rel="Chapter" title="6.1 Origin-Cookie"/>
+<link href="#rfc.section.7" rel="Chapter" title="7 Acknowledgements"/>
+<link href="#rfc.references" rel="Chapter" title="8 References"/>
+<link href="#rfc.references.1" rel="Chapter" title="8.1 Normative References"/>
+<link href="#rfc.references.2" rel="Chapter" title="8.2 Informative References"/>
 <link href="#rfc.appendix.A" rel="Chapter" title="A Open Issues"/>
 <link href="#rfc.authors" rel="Chapter"/>
 
 
-  <meta name="generator" content="xml2rfc version 2.4.8 - http://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.4.7 - http://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="West, M." />
   <meta name="dct.identifier" content="urn:ietf:id:draft-west-origin-cookies-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2014-10-22" />
+  <meta name="dct.issued" scheme="ISO8601" content="2014-10-24" />
   <meta name="dct.abstract" content="This document updates RFC6265, defining the " />
   <meta name="description" content="This document updates RFC6265, defining the " />
 
@@ -422,14 +424,14 @@
 </tr>
 <tr>
   <td class="left">Updates: 6265 (if approved)</td>
-  <td class="right">October 22, 2014</td>
+  <td class="right">October 24, 2014</td>
 </tr>
 <tr>
   <td class="left">Intended status: Standards Track</td>
   <td class="right"></td>
 </tr>
 <tr>
-  <td class="left">Expires: April 25, 2015</td>
+  <td class="left">Expires: April 27, 2015</td>
   <td class="right"></td>
 </tr>
 
@@ -450,7 +452,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on April 25, 2015.</p>
+<p>This Internet-Draft will expire on April 27, 2015.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -465,21 +467,23 @@
   	<li>1.   <a href="#rfc.section.1">Introduction</a></li>
 <li>1.1.   <a href="#rfc.section.1.1">Examples</a></li>
 <li>2.   <a href="#rfc.section.2">Terminology and notation</a></li>
-<li>3.   <a href="#rfc.section.3">User Agent Requirements</a></li>
+<li>3.   <a href="#rfc.section.3">Server Requirements</a></li>
 <li>3.1.   <a href="#rfc.section.3.1">Grammar</a></li>
-<li>3.2.   <a href="#rfc.section.3.2">The &#8220;Origin&#8221; attribute</a></li>
-<li>3.3.   <a href="#rfc.section.3.3">Monkey-patching the Storage Model</a></li>
-<li>3.4.   <a href="#rfc.section.3.4">Monkey-patching the &#8220;Cookie&#8221; header</a></li>
-<li>3.5.   <a href="#rfc.section.3.5">The &#8220;Origin-Cookie&#8221; header field</a></li>
-<li>4.   <a href="#rfc.section.4">Security Considerations</a></li>
-<li>4.1.   <a href="#rfc.section.4.1">&#8220;HttpOnly&#8221;</a></li>
-<li>4.2.   <a href="#rfc.section.4.2">Paths are ignored</a></li>
-<li>5.   <a href="#rfc.section.5">IANA Considerations</a></li>
-<li>5.1.   <a href="#rfc.section.5.1">Origin-Cookie</a></li>
-<li>6.   <a href="#rfc.section.6">Acknowledgements</a></li>
-<li>7.   <a href="#rfc.references">References</a></li>
-<li>7.1.   <a href="#rfc.references.1">Normative References</a></li>
-<li>7.2.   <a href="#rfc.references.2">Informative References</a></li>
+<li>3.2.   <a href="#rfc.section.3.2">Semantics of the &#8220;Origin&#8221; Attribute (Non-Normative)</a></li>
+<li>4.   <a href="#rfc.section.4">User Agent Requirements</a></li>
+<li>4.1.   <a href="#rfc.section.4.1">The &#8220;Origin&#8221; attribute</a></li>
+<li>4.2.   <a href="#rfc.section.4.2">Monkey-patching the Storage Model</a></li>
+<li>4.3.   <a href="#rfc.section.4.3">Monkey-patching the &#8220;Cookie&#8221; header</a></li>
+<li>4.4.   <a href="#rfc.section.4.4">The &#8220;Origin-Cookie&#8221; header field</a></li>
+<li>5.   <a href="#rfc.section.5">Security Considerations</a></li>
+<li>5.1.   <a href="#rfc.section.5.1">&#8220;HttpOnly&#8221;</a></li>
+<li>5.2.   <a href="#rfc.section.5.2">Paths are ignored</a></li>
+<li>6.   <a href="#rfc.section.6">IANA Considerations</a></li>
+<li>6.1.   <a href="#rfc.section.6.1">Origin-Cookie</a></li>
+<li>7.   <a href="#rfc.section.7">Acknowledgements</a></li>
+<li>8.   <a href="#rfc.references">References</a></li>
+<li>8.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>8.2.   <a href="#rfc.references.2">Informative References</a></li>
 <li>Appendix A.   <a href="#rfc.appendix.A">Open Issues</a></li>
 <li><a href="#rfc.authors">Author's Address</a></li>
 
@@ -488,7 +492,7 @@
 
   <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a></h1>
 <p id="rfc.section.1.p.1">Cookies, as defined by <a href="#RFC6265">[RFC6265]</a>, diverge from the web&#8217;s general security policy in a number of ways which may be surprising to implementers and authors who haven&#8217;t carefully read that document&#8217;s discussion of &#8220;domain matching&#8221;, and &#8220;path matching&#8221;, or who ignored the admonitions regarding &#8220;Weak Confidentiality&#8221; and &#8220;Weak Integrity&#8221;.</p>
-<p id="rfc.section.1.p.2">This document updates <a href="#RFC6265">[RFC6265]</a>, describing a mechanism by which servers can opt-in to harmonizing cookies&#8217; security policy with the same-origin policy, as described in <a href="#RFC6454">[RFC6454]</a>. User agents that support these &#8220;origin cookies&#8221; will ignore a <samp>Set-Cookie</samp> header&#8217;s value&#8217;s <samp>Path</samp>, <samp>Domain</samp>, and <samp>Secure</samp> attributes if an <samp>Origin</samp> attribute is present, instead tying the cookie to the origin that set it. These &#8220;origin cookies&#8221; will be returned in a new <samp>Origin-Cookie</samp> header field (see <a href="#origin-cookie-header-field">Section 3.5</a> for detail), separating them from non-origin cookies in a way a server can easily distinguish.</p>
+<p id="rfc.section.1.p.2">This document updates <a href="#RFC6265">[RFC6265]</a>, describing a mechanism by which servers can opt-in to harmonizing cookies&#8217; security policy with the same-origin policy, as described in <a href="#RFC6454">[RFC6454]</a>. User agents that support these &#8220;origin cookies&#8221; will ignore a <samp>Set-Cookie</samp> header&#8217;s value&#8217;s <samp>Path</samp>, <samp>Domain</samp>, and <samp>Secure</samp> attributes if an <samp>Origin</samp> attribute is present, instead tying the cookie to the origin that set it. These &#8220;origin cookies&#8221; will be returned in a new <samp>Origin-Cookie</samp> header field (see <a href="#origin-cookie-header-field">Section 4.4</a> for detail), separating them from non-origin cookies in a way a server can easily distinguish.</p>
 <p id="rfc.section.1.p.3">Harmonizing with the same-origin policy mitigates the confidentiality and integrity risks noted above by ensuring that origin cookies are not influenced by malicious code running on a server&#8217;s subdomain or a non-standard port or scheme.</p>
 <p id="rfc.section.1.p.4">Note that the mechanism outlined here is backwards compatible with the existing cookie syntax. Servers may serve origin cookies to all user agents; those that do not support the &#8220;Origin&#8221; attribute will simply store a non-origin cookie, just as they do today.</p>
 <h1 id="rfc.section.1.1"><a href="#rfc.section.1.1">1.1.</a> <a href="#examples" id="examples">Examples</a></h1>
@@ -514,22 +518,27 @@ Origin-Cookie: SID=31d4d96e407aad42
 <p id="rfc.section.2.p.1">The key words &#8220;MUST&#8221;, &#8220;MUST NOT&#8221;, &#8220;REQUIRED&#8221;, &#8220;SHALL&#8221;, &#8220;SHALL NOT&#8221;, &#8220;SHOULD&#8221;, &#8220;SHOULD NOT&#8221;, &#8220;RECOMMENDED&#8221;, &#8220;MAY&#8221;, and &#8220;OPTIONAL&#8221; in this document are to be interpreted as described in <a href="#RFC2119">[RFC2119]</a>.</p>
 <p id="rfc.section.2.p.2">This specification uses the Augmented Backus-Naur Form (ABNF) notation of <a href="#RFC5234">[RFC5234]</a>.</p>
 <p id="rfc.section.2.p.3">Two sequences of octets are said to case-insensitively match each other if and only if they are equivalent under the <samp>i;ascii-casemap</samp> collation defined in <a href="#RFC4790">[RFC4790]</a>.</p>
-<h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#user-agent-requirements" id="user-agent-requirements">User Agent Requirements</a></h1>
-<p id="rfc.section.3.p.1">This section describes extensions to <a href="#RFC6265">[RFC6265]</a> necessary in order to implement the client-side requirements of the <samp>Origin</samp> attribute and <samp>Origin-Cookie</samp> header field.</p>
+<h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#server-requirements" id="server-requirements">Server Requirements</a></h1>
+<p id="rfc.section.3.p.1">This section describes extensions to <a href="#RFC6265">[RFC6265]</a> necessary to implement the server-side requirements of the <samp>Origin</samp> attribute.</p>
 <h1 id="rfc.section.3.1"><a href="#rfc.section.3.1">3.1.</a> <a href="#grammar" id="grammar">Grammar</a></h1>
-<p id="rfc.section.3.1.p.1">Replace the <samp>cookie-av</samp> token definition in <a href="#RFC6265">[RFC6265]</a> with the following ABNF grammar:</p>
+<p id="rfc.section.3.1.p.1">Add <samp>Origin</samp> to the list of accepted attributes in the <samp>Set-Cookie</samp> header field&#8217;s value by replacing the <samp>cookie-av</samp> token definition in Section 4.1.1 of <a href="#RFC6265">[RFC6265]</a> with the following ABNF grammar:</p>
 <pre>
-cookie-av         = expires-av / max-age-av / domain-av /
-                    path-av / secure-av / httponly-av /
-                    origin-av / extension-av
-origin-av         = "Origin"
+cookie-av = expires-av / max-age-av / domain-av /
+            path-av / secure-av / httponly-av /
+            origin-av / extension-av
+origin-av = "origin"
 </pre>
-<h1 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2.</a> <a href="#the-origin-attribute" id="the-origin-attribute">The &#8220;Origin&#8221; attribute</a></h1>
-<p id="rfc.section.3.2.p.1">The following attribute definition should be considered part of the the <samp>Set-Cookie</samp> algorithm as described in Section 5.2 of <a href="#RFC6265">[RFC6265]</a>:</p>
-<p id="rfc.section.3.2.p.2">If the attribute-name case-insensitively matches the string &#8220;Origin&#8221;, the user agent MUST append an attribute to the cookie-attribute-list with an attribute-name of <samp>Origin</samp> and an empty attribute-value.</p>
-<h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#monkey-patching-the-storage-model" id="monkey-patching-the-storage-model">Monkey-patching the Storage Model</a></h1>
-<p id="rfc.section.3.3.p.1">Note: There&#8217;s got to be a better way to specify this. Until I figure out what that is, monkey-patching!</p>
-<p id="rfc.section.3.3.p.2">Alter Section 5.3 of <a href="#RFC6265">[RFC6265]</a> as follows:</p>
+<h1 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2.</a> <a href="#semantics-of-the-origin-attribute-non-normative" id="semantics-of-the-origin-attribute-non-normative">Semantics of the &#8220;Origin&#8221; Attribute (Non-Normative)</a></h1>
+<p id="rfc.section.3.2.p.1">The &#8220;Origin&#8221; attribute limits the scope of the cookie such that it will only be attached to requests if those request match the origin which set the cookie.  For example, requests for <samp>https://example.com/</samp> will attach origin cookies if and only if those cookies were set by <samp>https://example.com/</samp>.</p>
+<p id="rfc.section.3.2.p.2">The changes to the <samp>Cookie</samp> header field suggested in <a href="#cookie-header">Section 4.3</a> provide additional detail.</p>
+<h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#user-agent-requirements" id="user-agent-requirements">User Agent Requirements</a></h1>
+<p id="rfc.section.4.p.1">This section describes extensions to <a href="#RFC6265">[RFC6265]</a> necessary in order to implement the client-side requirements of the <samp>Origin</samp> attribute and <samp>Origin-Cookie</samp> header field.</p>
+<h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#the-origin-attribute" id="the-origin-attribute">The &#8220;Origin&#8221; attribute</a></h1>
+<p id="rfc.section.4.1.p.1">The following attribute definition should be considered part of the the <samp>Set-Cookie</samp> algorithm as described in Section 5.2 of <a href="#RFC6265">[RFC6265]</a>:</p>
+<p id="rfc.section.4.1.p.2">If the attribute-name case-insensitively matches the string &#8220;Origin&#8221;, the user agent MUST append an attribute to the cookie-attribute-list with an attribute-name of <samp>Origin</samp> and an empty attribute-value.</p>
+<h1 id="rfc.section.4.2"><a href="#rfc.section.4.2">4.2.</a> <a href="#monkey-patching-the-storage-model" id="monkey-patching-the-storage-model">Monkey-patching the Storage Model</a></h1>
+<p id="rfc.section.4.2.p.1">Note: There&#8217;s got to be a better way to specify this. Until I figure out what that is, monkey-patching!</p>
+<p id="rfc.section.4.2.p.2">Alter Section 5.3 of <a href="#RFC6265">[RFC6265]</a> as follows:</p>
 <p/>
 
 <ol>
@@ -537,19 +546,19 @@ origin-av         = "Origin"
   <li>Before step 11 of the current algorithm, add the following:  <ol><li>If the <samp>cookie-attribute-list</samp> contains an attribute with an <samp>attribute-name</samp> of &#8220;Origin&#8221;:      <ol><li>Set the cookie&#8217;s <samp>domain</samp> attribute to the empty string.</li><li>Set the cookie&#8217;s <samp>http-only-flag</samp> to true.</li><li>Set the cookie&#8217;s <samp>host-only-flag</samp> to true.</li><li>Set the cookie&#8217;s <samp>origin</samp> to the origin of <samp>request-uri</samp>, as defined by Section 4 of <a href="#RFC6454">[RFC6454]</a>.</li><li>Set the cookie&#8217;s <samp>origin-flag</samp> to true.</li><li>Set the cookie&#8217;s <samp>path</samp> attribute to the empty string.</li><li>Set the cookie&#8217;s <samp>secure-only-flag</samp> to false.</li></ol><p> Otherwise: set the cookie&#8217;s </p><samp>origin-flag</samp> to false, and its <samp>origin</samp> to <samp>null</samp>.</li><li>If the newly created cookie&#8217;s <samp>origin-flag</samp> is set to true, and the cookie store contains a cookie with the same<samp>name</samp>, <samp>origin</samp>, and <samp>origin-flag</samp> as the newly created cookie:      <ol><li>Let <samp>old-cookie</samp> be the existing cookie with the same <samp>name</samp>, <samp>origin</samp>, and <samp>origin-flag</samp> as the newly created cookie.</li><li>Update the <samp>creation-time</samp> of the newly created cookie to match the <samp>creation-time</samp> of <samp>old-cookie</samp>.</li><li>Remove <samp>old-cookie</samp> from the cookie store.</li></ol></li></ol></li>
   <li>Change the priority order for excess cookie removal to the following:  <ol><li>Expired cookies.</li><li>Cookies whose <samp>origin-flag</samp> is false that share a <samp>domain</samp> field with more than a predetermined number of other cookies.</li><li>Cookies whose <samp>origin-flag</samp> is true that share a  <samp>domain</samp> field with more than a predetermined number of other cookies.</li><li>Cookies whose <samp>origin-flag</samp> is false.</li><li>All cookies.</li></ol></li>
 </ol>
-<h1 id="rfc.section.3.4"><a href="#rfc.section.3.4">3.4.</a> <a href="#monkey-patching-the-cookie-header" id="monkey-patching-the-cookie-header">Monkey-patching the &#8220;Cookie&#8221; header</a></h1>
-<p id="rfc.section.3.4.p.1">Note: There&#8217;s got to be a better way to specify this. Until I figure out what that is, monkey-patching!</p>
-<p id="rfc.section.3.4.p.2">Alter Section 5.4 of <a href="#RFC6265">[RFC6265]</a> as follows:</p>
+<h1 id="rfc.section.4.3"><a href="#rfc.section.4.3">4.3.</a> <a href="#cookie-header" id="cookie-header">Monkey-patching the &#8220;Cookie&#8221; header</a></h1>
+<p id="rfc.section.4.3.p.1">Note: There&#8217;s got to be a better way to specify this. Until I figure out what that is, monkey-patching!</p>
+<p id="rfc.section.4.3.p.2">Alter Section 5.4 of <a href="#RFC6265">[RFC6265]</a> as follows:</p>
 <p/>
 
 <ol>
   <li>Add the following requirement to the list in step 1:  <ul><li>The cookie&#8217;s <samp>origin-flag</samp> is false.</li></ul></li>
 </ol>
-<h1 id="rfc.section.3.5"><a href="#rfc.section.3.5">3.5.</a> <a href="#origin-cookie-header-field" id="origin-cookie-header-field">The &#8220;Origin-Cookie&#8221; header field</a></h1>
-<p id="rfc.section.3.5.p.1">The user agent includes stored cookies whose <samp>origin-flag</samp> is set in the <samp>Origin-Cookie</samp> request header. When the user agent generates an HTTP request, it MUST NOT attach more than one <samp>Origin-Cookie</samp> header field.</p>
-<p id="rfc.section.3.5.p.2">A user agent MAY omit the <samp>Origin-Cookie</samp> header in its entirety. For example, the user agent may wish to block sending cookies during &#8220;third-party&#8221; requests.</p>
-<p id="rfc.section.3.5.p.3">If the user agent does attach an <samp>Origin-Cookie</samp> header field to an HTTP request, the user agent MUST send the <samp>cookie-string</samp> as defined below as the value of the header field.</p>
-<p id="rfc.section.3.5.p.4">The user agent MUST use an algorithm equivalent to the following algorithm to compute the <samp>cookie-string</samp> from a cookie store and a <samp>request-uri</samp>:</p>
+<h1 id="rfc.section.4.4"><a href="#rfc.section.4.4">4.4.</a> <a href="#origin-cookie-header-field" id="origin-cookie-header-field">The &#8220;Origin-Cookie&#8221; header field</a></h1>
+<p id="rfc.section.4.4.p.1">The user agent includes stored cookies whose <samp>origin-flag</samp> is set in the <samp>Origin-Cookie</samp> request header. When the user agent generates an HTTP request, it MUST NOT attach more than one <samp>Origin-Cookie</samp> header field.</p>
+<p id="rfc.section.4.4.p.2">A user agent MAY omit the <samp>Origin-Cookie</samp> header in its entirety. For example, the user agent may wish to block sending cookies during &#8220;third-party&#8221; requests.</p>
+<p id="rfc.section.4.4.p.3">If the user agent does attach an <samp>Origin-Cookie</samp> header field to an HTTP request, the user agent MUST send the <samp>cookie-string</samp> as defined below as the value of the header field.</p>
+<p id="rfc.section.4.4.p.4">The user agent MUST use an algorithm equivalent to the following algorithm to compute the <samp>cookie-string</samp> from a cookie store and a <samp>request-uri</samp>:</p>
 <p/>
 
 <ol>
@@ -558,16 +567,16 @@ origin-av         = "Origin"
   <li>Update the <samp>last-access-time</samp> of each cookie in the <samp>cookie-list</samp> to the current date and time.</li>
   <li>Serialize the <samp>cookie-list</samp> into a <samp>cookie-string</samp> by processing each cookie in the <samp>cookie-list</samp> in order:  <ol><li>Output the cookie&#8217;s <samp>name</samp>, the %x3D (&#8220;=&#8221;) character, and the cookie&#8217;s <samp>value</samp>.</li><li>If there is an unprocessed cookie in the <samp>cookie-list</samp>, output the characters %x3B and %x20 (&#8220;; &#8220;).</li></ol></li>
 </ol>
-<h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#security-considerations" id="security-considerations">Security Considerations</a></h1>
-<p id="rfc.section.4.p.1">The security considerations listed in Section 8 of <a href="#RFC6265">[RFC6265]</a> apply equally to origin cookies, with the exceptions of Sections 8.6 (&#8220;Weak Confidentiality&#8221;) and Sections 8.7 (&#8220;Weak Isolation&#8221;), both of which are substantially improved if the <samp>Origin</samp> attribute is set. Further:</p>
-<h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#httponly" id="httponly">&#8220;HttpOnly&#8221;</a></h1>
-<p id="rfc.section.4.1.p.1">Note that origin cookies are only accessible via HTTP. &#8220;Non-HTTP&#8221; APIs like HTML&#8217;s <samp>document.cookie</samp> cannot read these cookies&#8217; values.</p>
-<h1 id="rfc.section.4.2"><a href="#rfc.section.4.2">4.2.</a> <a href="#paths-are-ignored" id="paths-are-ignored">Paths are ignored</a></h1>
-<p id="rfc.section.4.2.p.1">Origin cookies will break the (flawed) <samp>Path</samp>-based isolation strategy which some servers may be attempting to implement. If a server has used the <samp>Path</samp> attribute to limit cookies to specific areas of a site (say <samp>/admin</samp>), then they may be surprised by origin cookies&#8217; pathless behavior.</p>
-<p id="rfc.section.4.2.p.2">That said, paths offer little to no protection against malicious code. The origin is the only security boundry enforced rigorously by user agents; it is therefore the only security boundry that server operators ought to rely on for isolation.</p>
-<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#iana-considerations" id="iana-considerations">IANA Considerations</a></h1>
-<p id="rfc.section.5.p.1">The permanent message header field registry (see <a href="#RFC3864">[RFC3864]</a>) shall be updated with the following registration:</p>
-<h1 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1.</a> <a href="#origin-cookie" id="origin-cookie">Origin-Cookie</a></h1>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#security-considerations" id="security-considerations">Security Considerations</a></h1>
+<p id="rfc.section.5.p.1">The security considerations listed in Section 8 of <a href="#RFC6265">[RFC6265]</a> apply equally to origin cookies, with the exceptions of Sections 8.6 (&#8220;Weak Confidentiality&#8221;) and Sections 8.7 (&#8220;Weak Isolation&#8221;), both of which are substantially improved if the <samp>Origin</samp> attribute is set. Further:</p>
+<h1 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1.</a> <a href="#httponly" id="httponly">&#8220;HttpOnly&#8221;</a></h1>
+<p id="rfc.section.5.1.p.1">Note that origin cookies are only accessible via HTTP. &#8220;Non-HTTP&#8221; APIs like HTML&#8217;s <samp>document.cookie</samp> cannot read these cookies&#8217; values.</p>
+<h1 id="rfc.section.5.2"><a href="#rfc.section.5.2">5.2.</a> <a href="#paths-are-ignored" id="paths-are-ignored">Paths are ignored</a></h1>
+<p id="rfc.section.5.2.p.1">Origin cookies will break the (flawed) <samp>Path</samp>-based isolation strategy which some servers may be attempting to implement. If a server has used the <samp>Path</samp> attribute to limit cookies to specific areas of a site (say <samp>/admin</samp>), then they may be surprised by origin cookies&#8217; pathless behavior.</p>
+<p id="rfc.section.5.2.p.2">That said, paths offer little to no protection against malicious code. The origin is the only security boundry enforced rigorously by user agents; it is therefore the only security boundry that server operators ought to rely on for isolation.</p>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#iana-considerations" id="iana-considerations">IANA Considerations</a></h1>
+<p id="rfc.section.6.p.1">The permanent message header field registry (see <a href="#RFC3864">[RFC3864]</a>) shall be updated with the following registration:</p>
+<h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#origin-cookie" id="origin-cookie">Origin-Cookie</a></h1>
 <p/>
 
 <ul>
@@ -575,12 +584,12 @@ origin-av         = "Origin"
   <li>Applicable protocol: http</li>
   <li>Status: standard</li>
   <li>Author/Change controller: IETF</li>
-  <li>Specification document: This specification (see <a href="#origin-cookie-header-field">Section 3.5</a>)</li>
+  <li>Specification document: This specification (see <a href="#origin-cookie-header-field">Section 4.4</a>)</li>
 </ul>
-<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
-<p id="rfc.section.6.p.1">The origin cookie concept documented here is heavily indebted to and based upon Adam Barth&#8217;s <a href="#draft-abarth-cake-01">[draft-abarth-cake-01]</a> document, as well as Andrew Bortz, Adam Barth, and Alexei Czeskis&#8217; paper <a href="#origin-cookies-w2sp">[origin-cookies-w2sp]</a>.</p>
-<h1 id="rfc.references"><a href="#rfc.references">7.</a> References</h1>
-<h1 id="rfc.references.1"><a href="#rfc.references.1">7.1.</a> Normative References</h1>
+<h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
+<p id="rfc.section.7.p.1">The origin cookie concept documented here is heavily indebted to and based upon Adam Barth&#8217;s <a href="#draft-abarth-cake-01">[draft-abarth-cake-01]</a> document, as well as Andrew Bortz, Adam Barth, and Alexei Czeskis&#8217; paper <a href="#origin-cookies-w2sp">[origin-cookies-w2sp]</a>.</p>
+<h1 id="rfc.references"><a href="#rfc.references">8.</a> References</h1>
+<h1 id="rfc.references.1"><a href="#rfc.references.1">8.1.</a> Normative References</h1>
 <table>
   <tbody>
     <tr>
@@ -615,7 +624,7 @@ origin-av         = "Origin"
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.references.2"><a href="#rfc.references.2">7.2.</a> Informative References</h1>
+<h1 id="rfc.references.2"><a href="#rfc.references.2">8.2.</a> Informative References</h1>
 <table>
   <tbody>
     <tr>

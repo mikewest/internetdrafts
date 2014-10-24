@@ -6,7 +6,6 @@ date: 2014
 category: std
 updates: 6265
 
-stand_alone: yes
 ipr: trust200902
 area: General
 workgroup: HTTPbis
@@ -131,21 +130,37 @@ Two sequences of octets are said to case-insensitively match each other if and
 only if they are equivalent under the `i;ascii-casemap` collation defined in
 {{RFC4790}}.
 
+# Server Requirements
+
+This section describes extensions to {{RFC6265}} necessary to implement the
+server-side requirements of the `Origin` attribute.
+
+## Grammar
+
+Add `Origin` to the list of accepted attributes in the `Set-Cookie` header
+field's value by replacing the `cookie-av` token definition in Section 4.1.1 of
+{{RFC6265}} with the following ABNF grammar:
+
+    cookie-av = expires-av / max-age-av / domain-av /
+                path-av / secure-av / httponly-av /
+                origin-av / extension-av
+    origin-av = "origin"
+
+## Semantics of the "Origin" Attribute (Non-Normative)
+
+The "Origin" attribute limits the scope of the cookie such that it will only be
+attached to requests if those request match the origin which set the cookie.
+For example, requests for `https://example.com/` will attach origin cookies if
+and only if those cookies were set by `https://example.com/`.
+
+The changes to the `Cookie` header field suggested in {{cookie-header}} provide
+additional detail.
+
 # User Agent Requirements
 
 This section describes extensions to {{RFC6265}} necessary in order to implement
 the client-side requirements of the `Origin` attribute and `Origin-Cookie`
 header field.
-
-## Grammar
-
-Replace the `cookie-av` token definition in {{RFC6265}} with the following ABNF
-grammar:
-
-    cookie-av         = expires-av / max-age-av / domain-av /
-                        path-av / secure-av / httponly-av /
-                        origin-av / extension-av
-    origin-av         = "Origin"
 
 ## The "Origin" attribute
 
@@ -203,7 +218,7 @@ Alter Section 5.3 of {{RFC6265}} as follows:
     4.  Cookies whose `origin-flag` is false.
     5.  All cookies.
 
-## Monkey-patching the "Cookie" header
+## Monkey-patching the "Cookie" header  {#cookie-header}
 
 Note: There's got to be a better way to specify this. Until I figure out
 what that is, monkey-patching!
