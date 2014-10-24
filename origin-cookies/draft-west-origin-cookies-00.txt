@@ -69,21 +69,24 @@ Table of Contents
    3.  Server Requirements . . . . . . . . . . . . . . . . . . . . .   4
      3.1.  Grammar . . . . . . . . . . . . . . . . . . . . . . . . .   4
      3.2.  Semantics of the "Origin" Attribute (Non-Normative) . . .   4
+     3.3.  The <spanx style="verb">Origin-Cookie</spanx> header  . .   5
+       3.3.1.  Syntax  . . . . . . . . . . . . . . . . . . . . . . .   5
+       3.3.2.  Semantics . . . . . . . . . . . . . . . . . . . . . .   5
    4.  User Agent Requirements . . . . . . . . . . . . . . . . . . .   5
      4.1.  The "Origin" attribute  . . . . . . . . . . . . . . . . .   5
      4.2.  Monkey-patching the Storage Model . . . . . . . . . . . .   5
-     4.3.  Monkey-patching the "Cookie" header . . . . . . . . . . .   6
-     4.4.  The "Origin-Cookie" header field  . . . . . . . . . . . .   6
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+     4.3.  Monkey-patching the "Cookie" header . . . . . . . . . . .   7
+     4.4.  The "Origin-Cookie" header field  . . . . . . . . . . . .   7
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
      5.1.  "HttpOnly"  . . . . . . . . . . . . . . . . . . . . . . .   8
      5.2.  Paths are ignored . . . . . . . . . . . . . . . . . . . .   8
      5.3.  Downgrade attacks . . . . . . . . . . . . . . . . . . . .   8
-   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
-     6.1.  Origin-Cookie . . . . . . . . . . . . . . . . . . . . . .   8
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
+     6.1.  Origin-Cookie . . . . . . . . . . . . . . . . . . . . . .   9
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
    8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
-     8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .  10
    Appendix A.  Open Issues  . . . . . . . . . . . . . . . . . . . .  10
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  10
 
@@ -103,9 +106,6 @@ Table of Contents
    value's "Path", "Domain", and "Secure" attributes if an "Origin"
    attribute is present, instead tying the cookie to the origin that set
    it.  These "origin cookies" will be returned in a new "Origin-Cookie"
-   header field (see Section 4.4 for detail), separating them from non-
-   origin cookies in a way a server can easily distinguish.
-
 
 
 
@@ -113,6 +113,9 @@ West                     Expires April 27, 2015                 [Page 2]
 
 Internet-Draft               Origin-Cookies                 October 2014
 
+
+   header field (see Section 4.4 for detail), separating them from non-
+   origin cookies in a way a server can easily distinguish.
 
    Harmonizing with the same-origin policy mitigates the confidentiality
    and integrity risks noted above by ensuring that origin cookies are
@@ -159,9 +162,6 @@ Internet-Draft               Origin-Cookies                 October 2014
 
    Set-Cookie: lang=en-US; Secure; HttpOnly
 
-   Subsequent requests from a user agent that supports origin cookies
-   can be expected to contain the following header fields:
-
 
 
 
@@ -169,6 +169,9 @@ West                     Expires April 27, 2015                 [Page 3]
 
 Internet-Draft               Origin-Cookies                 October 2014
 
+
+   Subsequent requests from a user agent that supports origin cookies
+   can be expected to contain the following header fields:
 
    Cookie: lang=en-US
    Origin-Cookie:
@@ -218,13 +221,34 @@ Internet-Draft               Origin-Cookies                 October 2014
 
 
 
-
-
-
 West                     Expires April 27, 2015                 [Page 4]
 
 Internet-Draft               Origin-Cookies                 October 2014
 
+
+3.3.  The <spanx style="verb">Origin-Cookie</spanx> header
+
+3.3.1.  Syntax
+
+   The user agent sends stored origin cookies to the origin server in
+   the "Origin-Cookie" header.  If the server conforms to the
+   requirements in Section 3 (and the user agent conforms to the
+   requirements in Section 4), the user agent will send an "Origin-
+   Cookie" header which conforms to the following grammar:
+
+   origin-cookie-header = "Cookie:" OWS 1#(cookie-string) OWS
+
+3.3.2.  Semantics
+
+   The semantics of the "cookie-string" are the same as those of the
+   same token in the "Cookie" header.
+
+   Note, however, that the "Origin-Cookie" header MAY be empty, and MUST
+   be sent with every request, even if no origin cookies are present in
+   the cookie store.  This allows conformant servers to detect a user
+   agent's support for origin cookies, and therefore to make a secure
+   decision about whether or not to fallback to searching through the
+   "Cookie" header for specific cookies.  See Section 5.3 for details.
 
 4.  User Agent Requirements
 
@@ -251,6 +275,13 @@ Internet-Draft               Origin-Cookies                 October 2014
    1.  Add "origin" and "origin-flag" to the list of fields stored about
        each cookie.
 
+
+
+West                     Expires April 27, 2015                 [Page 5]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
+
    2.  Before step 11 of the current algorithm, add the following:
 
        1.  If the "cookie-attribute-list" contains an attribute with an
@@ -273,14 +304,6 @@ Internet-Draft               Origin-Cookies                 October 2014
 
            Otherwise: set the cookie's "origin-flag" to false, and its
            "origin" to "null".
-
-
-
-
-West                     Expires April 27, 2015                 [Page 5]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
 
        2.  If the newly created cookie's "origin-flag" is set to true,
            and the cookie store contains a cookie with the same"name",
@@ -308,6 +331,13 @@ Internet-Draft               Origin-Cookies                 October 2014
 
        4.  Cookies whose "origin-flag" is false.
 
+
+
+West                     Expires April 27, 2015                 [Page 6]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
+
        5.  All cookies.
 
 4.3.  Monkey-patching the "Cookie" header
@@ -330,14 +360,6 @@ Internet-Draft               Origin-Cookies                 October 2014
 
    A user agent MAY omit the "Origin-Cookie" header in its entirety.
    For example, the user agent may wish to block sending cookies during
-
-
-
-West                     Expires April 27, 2015                 [Page 6]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
-
    "third-party" requests.  If, however, a "Cookie" header is sent, a
    user agent MUST send an "Origin-Cookie" header.
 
@@ -363,6 +385,15 @@ Internet-Draft               Origin-Cookies                 October 2014
    2.  The user agent SHOULD sort the "cookie-list" in the following
        order:
 
+
+
+
+
+West                     Expires April 27, 2015                 [Page 7]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
+
        *  Cookies with earlier "creation-time"s are listed before
           cookies with later "creation-time"s.
 
@@ -385,14 +416,6 @@ Internet-Draft               Origin-Cookies                 October 2014
    Confidentiality") and Sections 8.7 ("Weak Isolation"), both of which
    are substantially improved if the "Origin" attribute is set.
    Further:
-
-
-
-
-West                     Expires April 27, 2015                 [Page 7]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
 
 5.1.  "HttpOnly"
 
@@ -418,6 +441,15 @@ Internet-Draft               Origin-Cookies                 October 2014
    headers in order to provide backwards compatibility with user agents
    that don't support origin cookies, it ought to be done carefully.
    Careless fallback strategies can provide a window of opportunity for
+
+
+
+
+West                     Expires April 27, 2015                 [Page 8]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
+
    an attacker to inject cookies with the same name as origin cookies
    from a subdomain, bypassing origin cookies' main advantage.
 
@@ -443,13 +475,6 @@ Internet-Draft               Origin-Cookies                 October 2014
 
    o  Status: standard
 
-
-
-West                     Expires April 27, 2015                 [Page 8]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
-
    o  Author/Change controller: IETF
 
    o  Specification document: This specification (see Section 4.4)
@@ -471,6 +496,15 @@ Internet-Draft               Origin-Cookies                 October 2014
    [RFC4790]  Newman, C., Duerst, M., and A. Gulbrandsen, "Internet
               Application Protocol Collation Registry", RFC 4790, March
               2007.
+
+
+
+
+
+West                     Expires April 27, 2015                 [Page 9]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
 
    [RFC5234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
               Specifications: ABNF", STD 68, RFC 5234, January 2008.
@@ -496,16 +530,6 @@ Internet-Draft               Origin-Cookies                 October 2014
               Session Integrity for Web Applications", 2011,
               <http://w2spconf.com/2011/papers/session-integrity.pdf>.
 
-
-
-
-
-
-West                     Expires April 27, 2015                 [Page 9]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
-
 Appendix A.  Open Issues
 
    o  Should origin cookies be settable via "document.cookie"?  Does
@@ -518,30 +542,6 @@ Author's Address
 
    Email: mkwst@google.com
    URI:   https://mikewest.org/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

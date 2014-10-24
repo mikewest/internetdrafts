@@ -380,6 +380,9 @@
 <link href="#rfc.section.3" rel="Chapter" title="3 Server Requirements"/>
 <link href="#rfc.section.3.1" rel="Chapter" title="3.1 Grammar"/>
 <link href="#rfc.section.3.2" rel="Chapter" title="3.2 Semantics of the &#x201C;Origin&#x201D; Attribute (Non-Normative)"/>
+<link href="#rfc.section.3.3" rel="Chapter" title="3.3 The &lt;spanx style=&quot;verb&quot;&gt;Origin-Cookie&lt;/spanx&gt; header"/>
+<link href="#rfc.section.3.3.1" rel="Chapter" title="3.3.1 Syntax"/>
+<link href="#rfc.section.3.3.2" rel="Chapter" title="3.3.2 Semantics"/>
 <link href="#rfc.section.4" rel="Chapter" title="4 User Agent Requirements"/>
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 The &#x201C;Origin&#x201D; attribute"/>
 <link href="#rfc.section.4.2" rel="Chapter" title="4.2 Monkey-patching the Storage Model"/>
@@ -471,6 +474,9 @@
 <li>3.   <a href="#rfc.section.3">Server Requirements</a></li>
 <li>3.1.   <a href="#rfc.section.3.1">Grammar</a></li>
 <li>3.2.   <a href="#rfc.section.3.2">Semantics of the &#8220;Origin&#8221; Attribute (Non-Normative)</a></li>
+<li>3.3.   <a href="#rfc.section.3.3">The &lt;spanx style="verb"&gt;Origin-Cookie&lt;/spanx&gt; header</a></li>
+<li>3.3.1.   <a href="#rfc.section.3.3.1">Syntax</a></li>
+<li>3.3.2.   <a href="#rfc.section.3.3.2">Semantics</a></li>
 <li>4.   <a href="#rfc.section.4">User Agent Requirements</a></li>
 <li>4.1.   <a href="#rfc.section.4.1">The &#8220;Origin&#8221; attribute</a></li>
 <li>4.2.   <a href="#rfc.section.4.2">Monkey-patching the Storage Model</a></li>
@@ -543,6 +549,15 @@ origin-av = "origin"
 <h1 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2.</a> <a href="#semantics-of-the-origin-attribute-non-normative" id="semantics-of-the-origin-attribute-non-normative">Semantics of the &#8220;Origin&#8221; Attribute (Non-Normative)</a></h1>
 <p id="rfc.section.3.2.p.1">The &#8220;Origin&#8221; attribute limits the scope of the cookie such that it will only be attached to requests if those request match the origin which set the cookie.  For example, requests for <samp>https://example.com/</samp> will attach origin cookies if and only if those cookies were set by <samp>https://example.com/</samp>.</p>
 <p id="rfc.section.3.2.p.2">The changes to the <samp>Cookie</samp> header field suggested in <a href="#cookie-header">Section 4.3</a> provide additional detail.</p>
+<h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#the-origin-cookie-header" id="the-origin-cookie-header">The &lt;spanx style="verb"&gt;Origin-Cookie&lt;/spanx&gt; header</a></h1>
+<h1 id="rfc.section.3.3.1"><a href="#rfc.section.3.3.1">3.3.1.</a> <a href="#syntax" id="syntax">Syntax</a></h1>
+<p id="rfc.section.3.3.1.p.1">The user agent sends stored origin cookies to the origin server in the <samp>Origin-Cookie</samp> header. If the server conforms to the requirements in <a href="#server-requirements">Section 3</a> (and the user agent conforms to the requirements in <a href="#user-agent-requirements">Section 4</a>), the user agent will send an <samp>Origin-Cookie</samp> header which conforms to the following grammar:</p>
+<pre>
+origin-cookie-header = "Cookie:" OWS 1#(cookie-string) OWS
+</pre>
+<h1 id="rfc.section.3.3.2"><a href="#rfc.section.3.3.2">3.3.2.</a> <a href="#semantics" id="semantics">Semantics</a></h1>
+<p id="rfc.section.3.3.2.p.1">The semantics of the <samp>cookie-string</samp> are the same as those of the same token in the <samp>Cookie</samp> header.</p>
+<p id="rfc.section.3.3.2.p.2">Note, however, that the <samp>Origin-Cookie</samp> header MAY be empty, and MUST be sent with every request, even if no origin cookies are present in the cookie store.  This allows conformant servers to detect a user agent&#8217;s support for origin cookies, and therefore to make a secure decision about whether or not to fallback to searching through the <samp>Cookie</samp> header for specific cookies. See <a href="#downgrade">Section 5.3</a> for details.</p>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#user-agent-requirements" id="user-agent-requirements">User Agent Requirements</a></h1>
 <p id="rfc.section.4.p.1">This section describes extensions to <a href="#RFC6265">[RFC6265]</a> necessary in order to implement the client-side requirements of the <samp>Origin</samp> attribute and <samp>Origin-Cookie</samp> header field.</p>
 <h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#the-origin-attribute" id="the-origin-attribute">The &#8220;Origin&#8221; attribute</a></h1>
@@ -586,7 +601,7 @@ origin-av = "origin"
 <h1 id="rfc.section.5.2"><a href="#rfc.section.5.2">5.2.</a> <a href="#paths-are-ignored" id="paths-are-ignored">Paths are ignored</a></h1>
 <p id="rfc.section.5.2.p.1">Origin cookies will break the (flawed) <samp>Path</samp>-based isolation strategy which some servers may be attempting to implement. If a server has used the <samp>Path</samp> attribute to limit cookies to specific areas of a site (say <samp>/admin</samp>), then they may be surprised by origin cookies&#8217; pathless behavior.</p>
 <p id="rfc.section.5.2.p.2">That said, paths offer little to no protection against malicious code. The origin is the only security boundry enforced rigorously by user agents; it is therefore the only security boundry that server operators ought to rely on for isolation.</p>
-<h1 id="rfc.section.5.3"><a href="#rfc.section.5.3">5.3.</a> <a href="#downgrade-attacks" id="downgrade-attacks">Downgrade attacks</a></h1>
+<h1 id="rfc.section.5.3"><a href="#rfc.section.5.3">5.3.</a> <a href="#downgrade" id="downgrade">Downgrade attacks</a></h1>
 <p id="rfc.section.5.3.p.1">If a server chooses to scan both the <samp>Origin-Cookie</samp> and <samp>Cookie</samp> headers in order to provide backwards compatibility with user agents that don&#8217;t support origin cookies, it ought to be done carefully. Careless fallback strategies can provide a window of opportunity for an attacker to inject cookies with the same name as origin cookies from a subdomain, bypassing origin cookies&#8217; main advantage.</p>
 <p/>
 

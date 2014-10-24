@@ -144,7 +144,7 @@ Two sequences of octets are said to case-insensitively match each other if and
 only if they are equivalent under the `i;ascii-casemap` collation defined in
 {{RFC4790}}.
 
-# Server Requirements
+# Server Requirements {#server-requirements}
 
 This section describes extensions to {{RFC6265}} necessary to implement the
 server-side requirements of the `Origin` attribute.
@@ -170,7 +170,31 @@ and only if those cookies were set by `https://example.com/`.
 The changes to the `Cookie` header field suggested in {{cookie-header}} provide
 additional detail.
 
-# User Agent Requirements
+## The `Origin-Cookie` header
+
+### Syntax
+
+The user agent sends stored origin cookies to the origin server in the
+`Origin-Cookie` header. If the server conforms to the requirements in
+{{server-requirements}} (and the user agent conforms to the requirements in
+{{user-agent-requirements}}), the user agent will send an `Origin-Cookie`
+header which conforms to the following grammar:
+
+    origin-cookie-header = "Cookie:" OWS 1#(cookie-string) OWS
+
+### Semantics
+
+The semantics of the `cookie-string` are the same as those of the same token
+in the `Cookie` header.
+
+Note, however, that the `Origin-Cookie` header MAY be empty, and MUST be sent
+with every request, even if no origin cookies are present in the cookie store.
+This allows conformant servers to detect a user agent's support for origin
+cookies, and therefore to make a secure decision about whether or not to
+fallback to searching through the `Cookie` header for specific cookies. See
+{{downgrade}} for details.
+
+# User Agent Requirements {#user-agent-requirements}
 
 This section describes extensions to {{RFC6265}} necessary in order to implement
 the client-side requirements of the `Origin` attribute and `Origin-Cookie`
@@ -310,7 +334,7 @@ origin is the only security boundry enforced rigorously by user agents; it is
 therefore the only security boundry that server operators ought to rely on for
 isolation.
 
-## Downgrade attacks
+## Downgrade attacks {#downgrade}
 
 If a server chooses to scan both the `Origin-Cookie` and `Cookie` headers in
 order to provide backwards compatibility with user agents that don't support
