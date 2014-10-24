@@ -294,6 +294,22 @@ origin is the only security boundry enforced rigorously by user agents; it is
 therefore the only security boundry that server operators ought to rely on for
 isolation.
 
+## Downgrade attacks
+
+If a server chooses to scan both the `Origin-Cookie` and `Cookie` headers in
+order to provide backwards compatibility with user agents that don't support
+origin cookies, it ought to be done carefully. Careless fallback strategies
+can provide a window of opportunity for an attacker to inject cookies with the
+same name as origin cookies from a subdomain, bypassing origin cookies' main 
+advantage.
+
+*   If the `Origin-Cookie` header is present, servers SHOULD NOT check the
+    `Cookie` header for cookies which it set as origin cookies.
+*   If a user agent is known to support origin cookies, servers SHOULD check
+    only the `Origin-Cookie` header for origin cookies, and SHOULD NOT fallback
+    to the `Cookie` header if the `Origin-Cookie` header is not present, or if
+    a particular cookie is not found there.
+
 # IANA Considerations
 
 The permanent message header field registry (see {{RFC3864}}) shall be updated

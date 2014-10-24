@@ -77,11 +77,12 @@ Table of Contents
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
      5.1.  "HttpOnly"  . . . . . . . . . . . . . . . . . . . . . . .   7
      5.2.  Paths are ignored . . . . . . . . . . . . . . . . . . . .   7
+     5.3.  Downgrade attacks . . . . . . . . . . . . . . . . . . . .   8
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
      6.1.  Origin-Cookie . . . . . . . . . . . . . . . . . . . . . .   8
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   8
-   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
-     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
      8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
    Appendix A.  Open Issues  . . . . . . . . . . . . . . . . . . . .   9
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   9
@@ -104,7 +105,6 @@ Table of Contents
    it.  These "origin cookies" will be returned in a new "Origin-Cookie"
    header field (see Section 4.4 for detail), separating them from non-
    origin cookies in a way a server can easily distinguish.
-
 
 
 
@@ -397,6 +397,24 @@ Internet-Draft               Origin-Cookies                 October 2014
    user agents; it is therefore the only security boundry that server
    operators ought to rely on for isolation.
 
+5.3.  Downgrade attacks
+
+   If a server chooses to scan both the "Origin-Cookie" and "Cookie"
+   headers in order to provide backwards compatibility with user agents
+   that don't support origin cookies, it ought to be done carefully.
+   Careless fallback strategies can provide a window of opportunity for
+   an attacker to inject cookies with the same name as origin cookies
+   from a subdomain, bypassing origin cookies' main advantage.
+
+   o  If the "Origin-Cookie" header is present, servers SHOULD NOT check
+      the "Cookie" header for cookies which it set as origin cookies.
+
+   o  If a user agent is known to support origin cookies, servers SHOULD
+      check only the "Origin-Cookie" header for origin cookies, and
+      SHOULD NOT fallback to the "Cookie" header if the "Origin-Cookie"
+      header is not present, or if a particular cookie is not found
+      there.
+
 6.  IANA Considerations
 
    The permanent message header field registry (see [RFC3864]) shall be
@@ -421,6 +439,17 @@ Internet-Draft               Origin-Cookies                 October 2014
    Andrew Bortz, Adam Barth, and Alexei Czeskis' paper
    [origin-cookies-w2sp].
 
+
+
+
+
+
+
+West                     Expires April 27, 2015                 [Page 8]
+
+Internet-Draft               Origin-Cookies                 October 2014
+
+
 8.  References
 
 8.1.  Normative References
@@ -440,15 +469,6 @@ Internet-Draft               Origin-Cookies                 October 2014
 
    [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454, December
               2011.
-
-
-
-
-
-West                     Expires April 27, 2015                 [Page 8]
-
-Internet-Draft               Origin-Cookies                 October 2014
-
 
 8.2.  Informative References
 
@@ -477,26 +497,6 @@ Author's Address
 
    Email: mkwst@google.com
    URI:   https://mikewest.org/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

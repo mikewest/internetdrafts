@@ -388,6 +388,7 @@
 <link href="#rfc.section.5" rel="Chapter" title="5 Security Considerations"/>
 <link href="#rfc.section.5.1" rel="Chapter" title="5.1 &#x201C;HttpOnly&#x201D;"/>
 <link href="#rfc.section.5.2" rel="Chapter" title="5.2 Paths are ignored"/>
+<link href="#rfc.section.5.3" rel="Chapter" title="5.3 Downgrade attacks"/>
 <link href="#rfc.section.6" rel="Chapter" title="6 IANA Considerations"/>
 <link href="#rfc.section.6.1" rel="Chapter" title="6.1 Origin-Cookie"/>
 <link href="#rfc.section.7" rel="Chapter" title="7 Acknowledgements"/>
@@ -478,6 +479,7 @@
 <li>5.   <a href="#rfc.section.5">Security Considerations</a></li>
 <li>5.1.   <a href="#rfc.section.5.1">&#8220;HttpOnly&#8221;</a></li>
 <li>5.2.   <a href="#rfc.section.5.2">Paths are ignored</a></li>
+<li>5.3.   <a href="#rfc.section.5.3">Downgrade attacks</a></li>
 <li>6.   <a href="#rfc.section.6">IANA Considerations</a></li>
 <li>6.1.   <a href="#rfc.section.6.1">Origin-Cookie</a></li>
 <li>7.   <a href="#rfc.section.7">Acknowledgements</a></li>
@@ -574,6 +576,14 @@ origin-av = "origin"
 <h1 id="rfc.section.5.2"><a href="#rfc.section.5.2">5.2.</a> <a href="#paths-are-ignored" id="paths-are-ignored">Paths are ignored</a></h1>
 <p id="rfc.section.5.2.p.1">Origin cookies will break the (flawed) <samp>Path</samp>-based isolation strategy which some servers may be attempting to implement. If a server has used the <samp>Path</samp> attribute to limit cookies to specific areas of a site (say <samp>/admin</samp>), then they may be surprised by origin cookies&#8217; pathless behavior.</p>
 <p id="rfc.section.5.2.p.2">That said, paths offer little to no protection against malicious code. The origin is the only security boundry enforced rigorously by user agents; it is therefore the only security boundry that server operators ought to rely on for isolation.</p>
+<h1 id="rfc.section.5.3"><a href="#rfc.section.5.3">5.3.</a> <a href="#downgrade-attacks" id="downgrade-attacks">Downgrade attacks</a></h1>
+<p id="rfc.section.5.3.p.1">If a server chooses to scan both the <samp>Origin-Cookie</samp> and <samp>Cookie</samp> headers in order to provide backwards compatibility with user agents that don&#8217;t support origin cookies, it ought to be done carefully. Careless fallback strategies can provide a window of opportunity for an attacker to inject cookies with the same name as origin cookies from a subdomain, bypassing origin cookies&#8217; main advantage.</p>
+<p/>
+
+<ul>
+  <li>If the <samp>Origin-Cookie</samp> header is present, servers SHOULD NOT check the <samp>Cookie</samp> header for cookies which it set as origin cookies.</li>
+  <li>If a user agent is known to support origin cookies, servers SHOULD check only the <samp>Origin-Cookie</samp> header for origin cookies, and SHOULD NOT fallback to the <samp>Cookie</samp> header if the <samp>Origin-Cookie</samp> header is not present, or if a particular cookie is not found there.</li>
+</ul>
 <h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#iana-considerations" id="iana-considerations">IANA Considerations</a></h1>
 <p id="rfc.section.6.p.1">The permanent message header field registry (see <a href="#RFC3864">[RFC3864]</a>) shall be updated with the following registration:</p>
 <h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#origin-cookie" id="origin-cookie">Origin-Cookie</a></h1>
