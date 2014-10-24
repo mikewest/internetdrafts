@@ -399,7 +399,7 @@
 <link href="#rfc.authors" rel="Chapter"/>
 
 
-  <meta name="generator" content="xml2rfc version 2.4.7 - http://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.4.8 - http://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="West, M." />
@@ -500,7 +500,7 @@
 <h1 id="rfc.section.1.1"><a href="#rfc.section.1.1">1.1.</a> <a href="#examples" id="examples">Examples</a></h1>
 <p id="rfc.section.1.1.p.1">Origin cookies are set via the <samp>Origin</samp> attribute in the <samp>Set-Cookie</samp> header field. That is, given a server&#8217;s response to a user agent which contains the following header field:</p>
 <pre>
-Set-Cookie: SID=31d4d96e407aad42; Origin
+Set-Cookie: SID=31d4d96e407aad42; Secure; HttpOnly; Origin
 </pre>
 <p id="rfc.section.1.1.p.2">Subsequent requests from that user agent can be expected to contain the following header field:</p>
 <pre>
@@ -509,13 +509,23 @@ Origin-Cookie: SID=31d4d96e407aad42
 <p id="rfc.section.1.1.p.3">Non-origin cookies are returned in the <samp>Cookie</samp> header field as usual. If both non-origin and origin cookies are present for an origin, then both a <samp>Cookie</samp> and <samp>Origin-Cookie</samp> header field will be present. That is, given a server&#8217;s response to a user agent which contains the following header fields:</p>
 <pre>
 Set-Cookie: SID=31d4d96e407aad42; Origin
-Set-Cookie: lang=en-US; Path=/; Domain=example.com
+Set-Cookie: lang=en-US;
 </pre>
 <p id="rfc.section.1.1.p.4">Subsequent requests from that user agent can be expected to contain the following header fields:</p>
 <pre>
 Cookie: lang=en-US
 Origin-Cookie: SID=31d4d96e407aad42
 </pre>
+<p id="rfc.section.1.1.p.5">User agents that support origin cookies are required to advertise their support for such by sending an <samp>Origin-Cookie</samp> header whenever a <samp>Cookie</samp> header is sent. That is, given the following server response:</p>
+<pre>
+Set-Cookie: lang=en-US; Secure; HttpOnly
+</pre>
+<p id="rfc.section.1.1.p.6">Subsequent requests from a user agent that supports origin cookies can be expected to contain the following header fields:</p>
+<pre>
+Cookie: lang=en-US
+Origin-Cookie:
+</pre>
+<p id="rfc.section.1.1.p.7">Note that the <samp>Origin-Cookie</samp> field is empty.</p>
 <h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#terminology-and-notation" id="terminology-and-notation">Terminology and notation</a></h1>
 <p id="rfc.section.2.p.1">The key words &#8220;MUST&#8221;, &#8220;MUST NOT&#8221;, &#8220;REQUIRED&#8221;, &#8220;SHALL&#8221;, &#8220;SHALL NOT&#8221;, &#8220;SHOULD&#8221;, &#8220;SHOULD NOT&#8221;, &#8220;RECOMMENDED&#8221;, &#8220;MAY&#8221;, and &#8220;OPTIONAL&#8221; in this document are to be interpreted as described in <a href="#RFC2119">[RFC2119]</a>.</p>
 <p id="rfc.section.2.p.2">This specification uses the Augmented Backus-Naur Form (ABNF) notation of <a href="#RFC5234">[RFC5234]</a>.</p>
@@ -558,7 +568,7 @@ origin-av = "origin"
 </ol>
 <h1 id="rfc.section.4.4"><a href="#rfc.section.4.4">4.4.</a> <a href="#origin-cookie-header-field" id="origin-cookie-header-field">The &#8220;Origin-Cookie&#8221; header field</a></h1>
 <p id="rfc.section.4.4.p.1">The user agent includes stored cookies whose <samp>origin-flag</samp> is set in the <samp>Origin-Cookie</samp> request header. When the user agent generates an HTTP request, it MUST NOT attach more than one <samp>Origin-Cookie</samp> header field.</p>
-<p id="rfc.section.4.4.p.2">A user agent MAY omit the <samp>Origin-Cookie</samp> header in its entirety. For example, the user agent may wish to block sending cookies during &#8220;third-party&#8221; requests.</p>
+<p id="rfc.section.4.4.p.2">A user agent MAY omit the <samp>Origin-Cookie</samp> header in its entirety. For example, the user agent may wish to block sending cookies during &#8220;third-party&#8221; requests.  If, however, a <samp>Cookie</samp> header is sent, a user agent MUST send an <samp>Origin-Cookie</samp> header.</p>
 <p id="rfc.section.4.4.p.3">If the user agent does attach an <samp>Origin-Cookie</samp> header field to an HTTP request, the user agent MUST send the <samp>cookie-string</samp> as defined below as the value of the header field.</p>
 <p id="rfc.section.4.4.p.4">The user agent MUST use an algorithm equivalent to the following algorithm to compute the <samp>cookie-string</samp> from a cookie store and a <samp>request-uri</samp>:</p>
 <p/>

@@ -96,7 +96,7 @@ Origin cookies are set via the `Origin` attribute in the `Set-Cookie` header
 field. That is, given a server's response to a user agent which contains the
 following header field:
 
-    Set-Cookie: SID=31d4d96e407aad42; Origin
+    Set-Cookie: SID=31d4d96e407aad42; Secure; HttpOnly; Origin
 
 Subsequent requests from that user agent can be expected to contain the
 following header field:
@@ -109,13 +109,27 @@ and `Origin-Cookie` header field will be present. That is, given a server's
 response to a user agent which contains the following header fields:
 
     Set-Cookie: SID=31d4d96e407aad42; Origin
-    Set-Cookie: lang=en-US; Path=/; Domain=example.com
+    Set-Cookie: lang=en-US;
 
 Subsequent requests from that user agent can be expected to contain the
 following header fields:
 
     Cookie: lang=en-US
     Origin-Cookie: SID=31d4d96e407aad42
+
+User agents that support origin cookies are required to advertise their support
+for such by sending an `Origin-Cookie` header whenever a `Cookie` header is
+sent. That is, given the following server response:
+
+    Set-Cookie: lang=en-US; Secure; HttpOnly
+
+Subsequent requests from a user agent that supports origin cookies can be
+expected to contain the following header fields:
+
+    Cookie: lang=en-US
+    Origin-Cookie:
+
+Note that the `Origin-Cookie` field is empty.
 
 # Terminology and notation
 
@@ -237,6 +251,8 @@ it MUST NOT attach more than one `Origin-Cookie` header field.
 
 A user agent MAY omit the `Origin-Cookie` header in its entirety. For example,
 the user agent may wish to block sending cookies during "third-party" requests.
+If, however, a `Cookie` header is sent, a user agent MUST send an
+`Origin-Cookie` header.
 
 If the user agent does attach an `Origin-Cookie` header field to an HTTP
 request, the user agent MUST send the `cookie-string` as defined below as the
@@ -300,7 +316,7 @@ If a server chooses to scan both the `Origin-Cookie` and `Cookie` headers in
 order to provide backwards compatibility with user agents that don't support
 origin cookies, it ought to be done carefully. Careless fallback strategies
 can provide a window of opportunity for an attacker to inject cookies with the
-same name as origin cookies from a subdomain, bypassing origin cookies' main 
+same name as origin cookies from a subdomain, bypassing origin cookies' main
 advantage.
 
 *   If the `Origin-Cookie` header is present, servers SHOULD NOT check the
