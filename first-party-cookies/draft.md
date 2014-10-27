@@ -235,11 +235,14 @@ into play for this comparison.
 ## Mashups and Widgets
 
 The `First-Party` attribute is inappropriate for some important use-cases. In
-particular, note that content which is intended to be embedded in a
-third-party context (social networking widgets or commenting services, for
-instance) will lose access to first-party cookies, which may prevent it from
-acting in the intended way. Concretely, you wouldn't be able to share directly
-to a social network from a news article if your session cookie was first-party.
+particular, note that content intended for embedding in a third-party context
+(social networking widgets or commenting services, for instance) will not have
+access to first-party cookies. Non-first-party cookies may be required in order
+to provide seamless functionality that relies on a user's state.
+
+Likewise, some forms of Single-Sign On might require authentication in a
+third-party context; these mechanisms will not function as intended with
+first-party cookies.
 
 # Privacy Considerations
 

@@ -4,9 +4,9 @@
 
 HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
-Updates: 6265 (if approved)                             October 23, 2014
+Updates: 6265 (if approved)                             October 27, 2014
 Intended status: Standards Track
-Expires: April 26, 2015
+Expires: April 30, 2015
 
 
                           First-Party Cookies
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 26, 2015.
+   This Internet-Draft will expire on April 30, 2015.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-West                     Expires April 26, 2015                 [Page 1]
+West                     Expires April 30, 2015                 [Page 1]
 
 Internet-Draft             first-party-cookies              October 2014
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-West                     Expires April 26, 2015                 [Page 2]
+West                     Expires April 30, 2015                 [Page 2]
 
 Internet-Draft             first-party-cookies              October 2014
 
@@ -165,7 +165,7 @@ Internet-Draft             first-party-cookies              October 2014
 
 
 
-West                     Expires April 26, 2015                 [Page 3]
+West                     Expires April 30, 2015                 [Page 3]
 
 Internet-Draft             first-party-cookies              October 2014
 
@@ -221,7 +221,7 @@ Internet-Draft             first-party-cookies              October 2014
 
 
 
-West                     Expires April 26, 2015                 [Page 4]
+West                     Expires April 30, 2015                 [Page 4]
 
 Internet-Draft             first-party-cookies              October 2014
 
@@ -277,7 +277,7 @@ Internet-Draft             first-party-cookies              October 2014
 
 
 
-West                     Expires April 26, 2015                 [Page 5]
+West                     Expires April 30, 2015                 [Page 5]
 
 Internet-Draft             first-party-cookies              October 2014
 
@@ -305,12 +305,15 @@ Internet-Draft             first-party-cookies              October 2014
 5.1.  Mashups and Widgets
 
    The "First-Party" attribute is inappropriate for some important use-
-   cases.  In particular, note that content which is intended to be
-   embedded in a third-party context (social networking widgets or
-   commenting services, for instance) will lose access to first-party
-   cookies, which may prevent it from acting in the intended way.
-   Concretely, you wouldn't be able to share directly to a social
-   network from a news article if your session cookie was first-party.
+   cases.  In particular, note that content intended for embedding in a
+   third-party context (social networking widgets or commenting
+   services, for instance) will not have access to first-party cookies.
+   Non-first-party cookies may be required in order to provide seamless
+   functionality that relies on a user's state.
+
+   Likewise, some forms of Single-Sign On might require authentication
+   in a third-party context; these mechanisms will not function as
+   intended with first-party cookies.
 
 6.  Privacy Considerations
 
@@ -326,17 +329,17 @@ Internet-Draft             first-party-cookies              October 2014
    cookie's "first-party-flag" themselves, perhaps as part of a more
    general cookie management interface.  This could provide an
    interesting middle-ground between the options (e.g.  "Block all",
-   "Block third-party", and "Allow all") that many user agents offer to
-   users.
 
 
 
 
-
-West                     Expires April 26, 2015                 [Page 6]
+West                     Expires April 30, 2015                 [Page 6]
 
 Internet-Draft             first-party-cookies              October 2014
 
+
+   "Block third-party", and "Allow all") that many user agents offer to
+   users.
 
 7.  Security Considerations
 
@@ -383,16 +386,17 @@ Internet-Draft             first-party-cookies              October 2014
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
-   [RFC4790]  Newman, C., Duerst, M., and A. Gulbrandsen, "Internet
-              Application Protocol Collation Registry", RFC 4790, March
-              2007.
 
 
 
-West                     Expires April 26, 2015                 [Page 7]
+West                     Expires April 30, 2015                 [Page 7]
 
 Internet-Draft             first-party-cookies              October 2014
 
+
+   [RFC4790]  Newman, C., Duerst, M., and A. Gulbrandsen, "Internet
+              Application Protocol Collation Registry", RFC 4790, March
+              2007.
 
    [RFC5234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
               Specifications: ABNF", STD 68, RFC 5234, January 2008.
@@ -441,8 +445,4 @@ Author's Address
 
 
 
-
-
-
-
-West                     Expires April 26, 2015                 [Page 8]
+West                     Expires April 30, 2015                 [Page 8]

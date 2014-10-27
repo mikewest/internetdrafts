@@ -403,7 +403,7 @@
 
   <meta name="dct.creator" content="West, M." />
   <meta name="dct.identifier" content="urn:ietf:id:draft-west-first-party-cookies-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2014-10-23" />
+  <meta name="dct.issued" scheme="ISO8601" content="2014-10-27" />
   <meta name="dct.abstract" content="This document updates RFC6265, defining the " />
   <meta name="description" content="This document updates RFC6265, defining the " />
 
@@ -424,14 +424,14 @@
 </tr>
 <tr>
   <td class="left">Updates: 6265 (if approved)</td>
-  <td class="right">October 23, 2014</td>
+  <td class="right">October 27, 2014</td>
 </tr>
 <tr>
   <td class="left">Intended status: Standards Track</td>
   <td class="right"></td>
 </tr>
 <tr>
-  <td class="left">Expires: April 26, 2015</td>
+  <td class="left">Expires: April 30, 2015</td>
   <td class="right"></td>
 </tr>
 
@@ -452,7 +452,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on April 26, 2015.</p>
+<p>This Internet-Draft will expire on April 30, 2015.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -564,7 +564,8 @@ first-party-av    = "First-Party"
 <p id="rfc.section.4.3.p.4">Note that the modifications suggested here concern themselves only with the origin of the top-level browsing context and the origin of the resource being requested. The cookie&#8217;s <samp>domain</samp>, <samp>path</samp>, and <samp>secure</samp> attributes do not come into play for this comparison.</p>
 <h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#authoring-considerations" id="authoring-considerations">Authoring Considerations</a></h1>
 <h1 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1.</a> <a href="#mashups-and-widgets" id="mashups-and-widgets">Mashups and Widgets</a></h1>
-<p id="rfc.section.5.1.p.1">The <samp>First-Party</samp> attribute is inappropriate for some important use-cases. In particular, note that content which is intended to be embedded in a third-party context (social networking widgets or commenting services, for instance) will lose access to first-party cookies, which may prevent it from acting in the intended way. Concretely, you wouldn&#8217;t be able to share directly to a social network from a news article if your session cookie was first-party.</p>
+<p id="rfc.section.5.1.p.1">The <samp>First-Party</samp> attribute is inappropriate for some important use-cases. In particular, note that content intended for embedding in a third-party context (social networking widgets or commenting services, for instance) will not have access to first-party cookies. Non-first-party cookies may be required in order to provide seamless functionality that relies on a user&#8217;s state.</p>
+<p id="rfc.section.5.1.p.2">Likewise, some forms of Single-Sign On might require authentication in a third-party context; these mechanisms will not function as intended with first-party cookies.</p>
 <h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#privacy-considerations" id="privacy-considerations">Privacy Considerations</a></h1>
 <h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#user-controls" id="user-controls">User Controls</a></h1>
 <p id="rfc.section.6.1.p.1">First-party cookies in and of themselves don&#8217;t do anything to address the general privacy concerns outlined in Section 7.1 of <a href="#RFC6265">[RFC6265]</a>. The attribute is set by the server, and serves to mitigate the risk of certain kinds of attacks that the server is worried about. The user is not involved in this decision.</p>
