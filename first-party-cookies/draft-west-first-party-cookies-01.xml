@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
+
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY RFC2119 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC4790 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4790.xml">
+<!ENTITY RFC5234 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5234.xml">
+<!ENTITY RFC6265 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6265.xml">
+<!ENTITY RFC6454 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6454.xml">
+]>
+
+<rfc ipr="trust200902" docName="draft-west-first-party-cookies-01" category="std" updates="6265">
+
+<?rfc toc="yes"?>
+<?rfc tocindent="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc strict="yes"?>
+<?rfc compact="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+
+  <front>
+    <title abbrev="first-party-cookies">First-Party-Only Cookies</title>
+
+    <author initials="M." surname="West" fullname="Mike West">
+      <organization>Google, Inc</organization>
+      <address>
+        <email>mkwst@google.com</email>
+        <uri>https://mikewest.org/</uri>
+      </address>
+    </author>
+
+    <date year="2015"/>
+
+    <area>General</area>
+    <workgroup>HTTPbis</workgroup>
+    <keyword>Internet-Draft</keyword>
+
+    <abstract>
+
+
+<t>This document updates RFC6265 by defining a <spanx style="verb">First-Party-Only</spanx> attribute which
+allows servers to assert that a cookie ought to be sent only in a “first-party”
+context. This assertion allows user agents to mitigate the risk of cross-site
+request forgery attacks, and other related paths to cross-origin information
+leakage.</t>
+
+
+
+    </abstract>
+
+
+  </front>
+
+  <middle>
+
+
+<section anchor="introduction" title="Introduction">
+
+<t>Section 8.2 of <xref target="RFC6265"/> eloquently notes that cookies are a form of ambient
+authority, attached by default to requests the user agent sends on a user’s
+behalf. Even when an attacker doesn’t know the contents of a user’s cookies,
+she can still execute commands on the user’s behalf (and with the user’s
+authority) by asking the user agent to send HTTP requests to unwary servers.</t>
+
+<t>Here, we update <xref target="RFC6265"/> with a simple mitigation strategy that allows
+servers to declare certain cookies as “First-party-only”, meaning they should be
+attached to requests if and only if those requests occur in a first-party
+context. We define “first-party context” in terms of a user agent’s top-level
+browsing context, which is the only security context a user can reasonably be
+expected to understand.</t>
+
+<t>Note that the mechanism outlined here is backwards compatible with the existing
+cookie syntax. Servers may serve first-party cookies to all user agents; those
+that do not support the <spanx style="verb">First-Party-Only</spanx> attribute will simply store a cookie
+which is returned in all applicable contexts, just as they do today.</t>
+
+<section anchor="examples" title="Examples">
+
+<t>First-party-only cookies are set via the <spanx style="verb">First-Party-Only</spanx> attribute in the
+<spanx style="verb">Set-Cookie</spanx> header field. That is, given a server’s response to a user agent
+which contains the following header field:</t>
+
+<figure><artwork><![CDATA[
+Set-Cookie: SID=31d4d96e407aad42; First-Party-Only
+]]></artwork></figure>
+
+<t>Subsequent requests from that user agent can be expected to contain the
+following header field if and only if both the requested resource and the
+resource in the top-level browsing context match the cookie.</t>
+
+</section>
+</section>
+<section anchor="terminology-and-notation" title="Terminology and notation">
+
+<t>The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”,
+“SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be
+interpreted as described in <xref target="RFC2119"/>.</t>
+
+<t>This specification uses the Augmented Backus-Naur Form (ABNF) notation of
+<xref target="RFC5234"/>.</t>
+
+<t>Two sequences of octets are said to case-insensitively match each other if and
+only if they are equivalent under the <spanx style="verb">i;ascii-casemap</spanx> collation defined in
+<xref target="RFC4790"/>.</t>
+
+<t>The terms “active document”, and “top-level browsing context” are defined in
+the HTML Living Standard. <xref target="HTML"/></t>
+
+<t>The term “origin” and the mechanism of deriving an origin from a URI are defined
+in <xref target="RFC6454"/>.</t>
+
+<section anchor="first-and-third-party" title="First-party and Third-party Requests">
+
+<t>The URL displayed in a user agent’s address bar is the only security context
+directly exposed to users, and therefore the only signal users can reasonably
+rely upon to determine whether or not they trust a particular website.</t>
+
+<t>With that in mind, we define a “first-party” request as an HTTP request for a
+resource whose URL’s origin matches the origin of the URL the user sees in the
+address bar. A “third-party” request is an HTTP request for a resource at any
+other origin.</t>
+
+<t>To be more precise, given an HTTP request <spanx style="verb">request</spanx>:</t>
+
+<t><list style="numbers">
+  <t>Let <spanx style="verb">context</spanx> be the top-level browsing context in the window responsible
+for <spanx style="verb">request</spanx>.</t>
+  <t>Let <spanx style="verb">top-origin</spanx> be the origin of the location of the active document in
+<spanx style="verb">context</spanx>.</t>
+  <t>If the origin of <spanx style="verb">request</spanx>’s URL is the same as <spanx style="verb">top-origin</spanx>, <spanx style="verb">request</spanx>
+is a <spanx style="strong">first-party request</spanx>. Otherwise, <spanx style="verb">request</spanx> is a <spanx style="strong">third-party
+request</spanx>.</t>
+</list></t>
+
+<t>Note that we deal with the document’s location in step 2 above, not with the
+document’s origin. For example, a top-level document from <spanx style="verb">https://example.com</spanx>
+which has been sandboxed into a unique origin still creates a non-unique
+first-party context for subsequent requests.</t>
+
+<t>This definition has a few implications:</t>
+
+<t><list style="symbols">
+  <t>New windows create new first-party contexts.</t>
+  <t>Full-page navigations create new first-party contexts. Notably, this
+includes both HTTP and <spanx style="verb">&lt;meta&gt;</spanx>-driven redirects.</t>
+  <t><spanx style="verb">&lt;iframe&gt;</spanx>s do not create new first-party contexts; their requests MUST
+be considered in the context of the origin of the URL the user actually
+sees in the user agent’s address bar.</t>
+</list></t>
+
+</section>
+</section>
+<section anchor="server-requirements" title="Server Requirements">
+
+<t>This section describes extensions to <xref target="RFC6265"/> necessary to implement the
+server-side requirements of the <spanx style="verb">First-Party-Only</spanx> attribute.</t>
+
+<section anchor="grammar" title="Grammar">
+
+<t>Add <spanx style="verb">First-Party-Only</spanx> to the list of accepted attributes in the <spanx style="verb">Set-Cookie</spanx>
+header field’s value by replacing the <spanx style="verb">cookie-av</spanx> token definition in Section
+4.1.1 of <xref target="RFC6265"/> with the following ABNF grammar:</t>
+
+<figure><artwork><![CDATA[
+cookie-av           = expires-av / max-age-av / domain-av /
+                      path-av / secure-av / httponly-av /
+                      first-party-only-av / extension-av
+first-party-only-av = "First-Party-Only"
+]]></artwork></figure>
+
+</section>
+<section anchor="semantics-of-the-first-party-only-attribute-non-normative" title="Semantics of the “First-Party-Only” Attribute (Non-Normative)">
+
+<t>The “First-Party-Only” attribute limits the scope of the cookie such that it
+will only be attached to requests if those requests are “first-party”, as
+described in <xref target="first-and-third-party"/>. For example, requests for
+<spanx style="verb">https://example.com/sekrit-image</spanx> will attach first-party-only cookies if and
+only if the top-level browsing context is currently displaying a document from
+<spanx style="verb">https://example.com</spanx>.</t>
+
+<t>The changes to the <spanx style="verb">Cookie</spanx> header field suggested in <xref target="cookie-header"/> provide
+additional detail.</t>
+
+</section>
+</section>
+<section anchor="user-agent-requirements" title="User Agent Requirements">
+
+<t>This section describes extensions to <xref target="RFC6265"/> necessary in order to implement
+the client-side requirements of the <spanx style="verb">First-Party-Only</spanx> attribute.</t>
+
+<section anchor="the-first-party-attribute" title="The “First-Party” attribute">
+
+<t>The following attribute definition should be considered part of the the
+<spanx style="verb">Set-Cookie</spanx> algorithm as described in Section 5.2 of <xref target="RFC6265"/>:</t>
+
+<t>If the attribute-name case-insensitively matches the string “First-Party-Only”,
+the user agent MUST append an attribute to the <spanx style="verb">cookie-attribute-list</spanx> with an
+<spanx style="verb">attribute-name</spanx> of “First-Party-Only” and an empty <spanx style="verb">attribute-value</spanx>.</t>
+
+</section>
+<section anchor="monkey-patching-the-storage-model" title="Monkey-patching the Storage Model">
+
+<t>Note: There’s got to be a better way to specify this. Until I figure out
+what that is, monkey-patching!</t>
+
+<t>Alter Section 5.3 of <xref target="RFC6265"/> as follows:</t>
+
+<t><list style="numbers">
+  <t>Add <spanx style="verb">first-party-only-flag</spanx> to the list of fields stored for each cookie.</t>
+  <t>Before step 11 of the current algorithm, add the following:  <list style="numbers">
+      <t>If the <spanx style="verb">cookie-attribute-list</spanx> contains an attribute with an
+<spanx style="verb">attribute-name</spanx> of “First-Party-Only”, set the cookie’s
+<spanx style="verb">first-party-only-flag</spanx> to true. Otherwise, set the cookie’s
+<spanx style="verb">first-party-only-flag</spanx> to false.</t>
+      <t>If the cookie’s <spanx style="verb">first-party-only-flag</spanx> is set to true, and the request
+which generated the cookie is not a first-party request (as defined
+in <xref target="first-and-third-party"/>), then abort these steps and ignore the
+newly created cookie entirely.</t>
+    </list></t>
+</list></t>
+
+</section>
+<section anchor="cookie-header" title="Monkey-patching the “Cookie” header">
+
+<t>Note: There’s got to be a better way to specify this. Until I figure out
+what that is, monkey-patching!</t>
+
+<t>Alter Section 5.4 of <xref target="RFC6265"/> as follows:</t>
+
+<t><list style="numbers">
+  <t>Add the following requirement to the list in step 1:  <list style="symbols">
+      <t>If the cookie’s <spanx style="verb">first-party-only-flag</spanx> is true, then exclude the cookie
+if the HTTP request is a third-party request (see
+<xref target="first-and-third-party"/>).</t>
+    </list></t>
+</list></t>
+
+<t>Note that the modifications suggested here concern themselves only with the
+origin of the top-level browsing context and the origin of the resource being
+requested. The cookie’s <spanx style="verb">domain</spanx>, <spanx style="verb">path</spanx>, and <spanx style="verb">secure</spanx> attributes do not come
+into play for this comparison.</t>
+
+</section>
+</section>
+<section anchor="authoring-considerations" title="Authoring Considerations">
+
+<section anchor="mashups-and-widgets" title="Mashups and Widgets">
+
+<t>The <spanx style="verb">First-Party-Only</spanx> attribute is inappropriate for some important use-cases.
+In particular, note that content intended for embedding in a third-party context
+(social networking widgets or commenting services, for instance) will not have
+access to first-party-only cookies. Non-first-party cookies may be required in
+order to provide seamless functionality that relies on a user’s state.</t>
+
+<t>Likewise, some forms of Single-Sign On might require authentication in a
+third-party context; these mechanisms will not function as intended with
+first-party-only cookies.</t>
+
+</section>
+</section>
+<section anchor="privacy-considerations" title="Privacy Considerations">
+
+<t>First-party-only cookies in and of themselves don’t do anything to address the
+general privacy concerns outlined in Section 7.1 of <xref target="RFC6265"/>. The attribute
+is set by the server, and serves to mitigate the risk of certain kinds of
+attacks that the server is worried about. The user is not involved in this
+decision. Moreover, a number of side-channels exist which could allow a server
+to link distinct requests even in the absence of cookies. Connection and/or
+socket pooling, Token Binding, and Channel ID all offer explicit methods of
+identification that servers could take advantage of.</t>
+
+<t>We recommend, therefore, that servers interested in reducing the ambient
+authority of requests generated in a third-party context use such identification
+mechanisms only in addition to first-party-only cookies, and not as a
+replacement for them.</t>
+
+</section>
+<section anchor="security-considerations" title="Security Considerations">
+
+<section anchor="limitations" title="Limitations">
+
+<t>It is possible to bypass the protection that first-party-only cookies offer
+against cross-site request forgery attacks by creating first-party contexts in
+which to execute the attack. Consider, for instance, the URL
+<spanx style="verb">https://example.com/logout</spanx> which logs the current user out of <spanx style="verb">example.com</spanx>.
+If the user’s session cookie is a first-party-only cookie, then embedding the
+logout URL in an <spanx style="verb">&lt;iframe&gt;</spanx> element or an <spanx style="verb">&lt;img&gt;</spanx> element won’t log her out, as
+the cookie won’t be sent. Popping up a new window, or triggering a top-level
+navigation, on the other hand, will create a first-party context, attach
+cookies, and perform the logout.</t>
+
+<t>Note, though, that popping up a window, or doing a top-level navigation are both
+significantly more visible to the user than loading a subresource. Users will
+at least have the opportunity to notice that something strange is going on,
+which hopefully reduces an attacker’s ability to perform untargeted attacks.</t>
+
+<t>Further, note that certain kinds of attacks are no longer possible if a
+first-party context is required. Information leakage attacks which rely on
+visible side-effects of loading a session-protected image, for example, can no
+longer access those side-effects if the image is loaded in a new window. Timing
+attacks like those Paul Stone outlines in <xref target="pixel-perfect"/> are no longer
+possible if the session cookie is first-party-only, as they rely on <spanx style="verb">&lt;iframes&gt;</spanx>
+to contain the protected content in a way the attacker can manipulate. </t>
+
+</section>
+</section>
+<section anchor="acknowledgements" title="Acknowledgements">
+
+<t>The first-party cookie concept documented here is indebited to Mark Goodwin’s
+and Joe Walker’s <xref target="samedomain-cookies"/>.</t>
+
+</section>
+
+
+  </middle>
+
+  <back>
+
+    <references title='Normative References'>
+
+<reference anchor="HTML" target="https://html.spec.whatwg.org/">
+  <front>
+    <title>HTML Living Standard</title>
+    <author initials="I." surname="Hickson" fullname="Ian Hickson">
+      <organization>Google, Inc.</organization>
+    </author>
+    <date year="n.d."/>
+  </front>
+</reference>
+&RFC2119;
+&RFC4790;
+&RFC5234;
+&RFC6265;
+&RFC6454;
+
+
+    </references>
+
+    <references title='Informative References'>
+
+<reference anchor="samedomain-cookies" target="http://people.mozilla.org/~mgoodwin/SameDomain/samedomain-latest.txt">
+  <front>
+    <title>SameDomain Cookie Flag</title>
+    <author initials="M." surname="Goodwin," fullname="Mark Goodwin">
+      <organization></organization>
+    </author>
+    <author initials="J." surname="Walker" fullname="Joe Walker">
+      <organization></organization>
+    </author>
+    <date year="2011"/>
+  </front>
+</reference>
+<reference anchor="pixel-perfect" target="http://www.contextis.com/documents/2/Browser_Timing_Attacks.pdf">
+  <front>
+    <title>Pixel Perfect Timing Attacks with HTML5</title>
+    <author initials="P." surname="Stone" fullname="Paul Stone">
+      <organization></organization>
+    </author>
+    <date year="n.d."/>
+  </front>
+</reference>
+
+
+    </references>
+
+
+
+
+  </back>
+</rfc>
+
