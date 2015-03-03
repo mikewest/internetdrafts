@@ -1,6 +1,6 @@
 Internet Drafts
 ===============
 
-Origin Cookies: <https://mikewest.github.io/internetdrafts/origin-cookies/draft-west-origin-cookies>
+Origin Cookies: <https://tools.ietf.org/html/draft-west-origin-cookies>
 
-First-party Cookies: <https://mikewest.github.io/internetdrafts/first-party-cookies/draft-west-first-party-cookies>
+First-party Cookies: <https://tools.ietf.org/html/draft-west-first-party-cookies>
