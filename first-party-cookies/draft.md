@@ -15,11 +15,11 @@ pi: [toc, tocindent, sortrefs, symrefs, strict, compact, comments, inline]
 
 author:
 -
-    ins: M. West
-    name: Mike West
-    organization: Google, Inc
-    email: mkwst@google.com
-    uri: https://mikewest.org/
+  ins: M. West
+  name: Mike West
+  organization: Google, Inc
+  email: mkwst@google.com
+  uri: https://mikewest.org/
 
 normative:
   HTML:
@@ -27,14 +27,28 @@ normative:
     title: HTML Living Standard
     author:
     -
-        ins: I. Hickson
-        name: Ian Hickson
-        organization: Google, Inc.
+      ins: I. Hickson
+      name: Ian Hickson
+      organization: Google, Inc.
+  SERVICE-WORKERS:
+    target: http://www.w3.org/TR/service-workers/
+    title: Service Workers
+    author:
+    -
+      ins: A. Russell
+      name: Alex Russell
+    -
+      ins: J. Song
+      name: Jungkee Song
+    -
+      ins: J. Archibald
+      name: Jake Archibald
   RFC2119:
   RFC4790:
   RFC5234:
   RFC6265:
   RFC6454:
+  RFC7034:
 
 informative:
   samedomain-cookies:
@@ -42,7 +56,7 @@ informative:
     title: SameDomain Cookie Flag
     author:
     -
-      ins: M. Goodwin,
+      ins: M. Goodwin
       name: Mark Goodwin
     -
       ins: J. Walker
@@ -53,16 +67,42 @@ informative:
     title: Pixel Perfect Timing Attacks with HTML5
     author:
     -
-        ins: P. Stone
-        name: Paul Stone
+      ins: P. Stone
+      name: Paul Stone
+  app-isolation:
+    target: http://www.collinjackson.com/research/papers/appisolation.pdf
+    title: App Isolation - Get the Security of Multiple Browsers with Just One
+    author:
+    -
+      ins: E. Chen
+      name: Eric Y. Chen
+    -
+      ins: J. Bau
+      name: Jason Bau
+    -
+      ins: C. Reis
+      name: Charles Reis
+    -
+      ins: A. Barth
+      name: Adam Barth
+    -
+      ins: C. Jackson
+      name: Collin Jackson
+  prerendering:
+    target: https://www.chromium.org/developers/design-documents/prerender
+    title: Chrome Prerendering
+    author:
+    -
+      ins: C. Bentzel
+      name: Chris Bentzel      
 
 --- abstract
 
 This document updates RFC6265 by defining a `First-Party-Only` attribute which
 allows servers to assert that a cookie ought to be sent only in a "first-party"
-context. This assertion allows user agents to mitigate the risk of cross-site
-request forgery attacks, and other related paths to cross-origin information
-leakage.
+context. This assertion allows user agents to mitigate the risk of cross-origin
+information leakage, and provides some minimal protection against cross-site
+request forgery attacks.
 
 --- middle
 
@@ -77,14 +117,54 @@ authority) by asking the user agent to send HTTP requests to unwary servers.
 Here, we update {{RFC6265}} with a simple mitigation strategy that allows
 servers to declare certain cookies as "First-party-only", meaning they should be
 attached to requests if and only if those requests occur in a first-party
-context. We define "first-party context" in terms of a user agent's top-level
-browsing context, which is the only security context a user can reasonably be
-expected to understand.
+context (as defined in section 2.1).
 
 Note that the mechanism outlined here is backwards compatible with the existing
 cookie syntax. Servers may serve first-party cookies to all user agents; those
 that do not support the `First-Party-Only` attribute will simply store a cookie
 which is returned in all applicable contexts, just as they do today.
+
+## Goals
+
+These first-party-only cookies are intended to provide a solid layer of
+defense-in-depth against attacks which require embedding an authenticated
+request into an attacker-controlled context:
+
+1. Timing attacks which yield cross-origin information leakage (such as those
+   detailed in {{pixel-perfect}}) can be substantially mitigated by setting
+   the `First-Party-Only` attribute on authentication cookies. The attacker will
+   only be able to embed unauthenticated resources, as embedding mechanisms such
+   as `<iframe>` will not create first-party contexts.
+
+2. Cross-site script inclusion (XSSI) attacks are likewise mitigated by setting
+   the `First-Party-Only` attribute on authentication cookies. The attacker
+   will not be able to include authenticated resources via `<script>` or
+   `<link>`, as these embedding mechanisms will not create first-party contexts.
+
+Aside from these attack mitigations, first-party-only cookies can also be useful
+for policy or regulatory purposes. That is, it may be valuable for an origin to
+assert that its cookies should not be sent along with third-party requests in
+order to limit its exposure to non-technical risk.
+
+## Limitations
+
+First-party-only cookies provide only very limited defense against naïve
+cross-site request forgery attacks (CSRF). They defend against directly
+embedding vulnerable endpoints into an attacker-controlled context (as discussed
+above), but this is not a robust defense in and of itself.
+
+1. Attackers can still pop up new windows or trigger top-level navigations in
+   order to create a first-party context (as described in section 2.1), which is
+   only a speedbump along the road to exploitation.
+
+2. Features like `<link rel='prerender'>` {{prerendering}} can be exploited
+   to create first-party contexts without the risk of user detection. 
+
+In addition to the usual server-side defenses (CSRF tokens, etc), client-side
+techniques such as those described in {{app-isolation}} may prove effective
+against CSRF, and are certainly worth exploring in combination with
+first-party-only cookies. First-party-only cookies on their own, however, are
+not a substantial barrier to CSRF attacks.
 
 ## Examples
 
@@ -111,48 +191,78 @@ Two sequences of octets are said to case-insensitively match each other if and
 only if they are equivalent under the `i;ascii-casemap` collation defined in
 {{RFC4790}}.
 
-The terms "active document", and "top-level browsing context" are defined in
-the HTML Living Standard. {{HTML}}
+The terms "active document", "ancestor browsing context", "browsing context",
+"document", "parent browsing context", and "top-level browsing context" are
+defined in the HTML Living Standard. {{HTML}}
 
-The term "origin" and the mechanism of deriving an origin from a URI are defined
-in {{RFC6454}}.
+The term "origin", the mechanism of deriving an origin from a URI, and the "the
+same" matching algorithm for origins are defined in {{RFC6454}}.
 
 ## First-party and Third-party Requests  {#first-and-third-party}
 
-The URL displayed in a user agent's address bar is the only security context
-directly exposed to users, and therefore the only signal users can reasonably
-rely upon to determine whether or not they trust a particular website.
+### Document-based requests
 
-With that in mind, we define a "first-party" request as an HTTP request for a
-resource whose URL's origin matches the origin of the URL the user sees in the
-address bar. A "third-party" request is an HTTP request for a resource at any
-other origin.
+When considering a request generated while parsing a document, or executing
+script in its context, we need to consider the document's origin as well as
+the origin of each of it's ancestors, in order to determine whether the
+request should be considered "first-party".
 
-To be more precise, given an HTTP request `request`:
+For this kind of request, the URI displayed in a user agent's address bar is
+the only security context directly exposed to users, and therefore the only
+signal users can reasonably rely upon to determine whether or not they trust
+a particular website. The origin of that URI is, therefore, the "first-party
+origin".
 
-1. Let `context` be the top-level browsing context in the window responsible
-   for `request`.
+In order to prevent the kinds of "multiple-nested scenarios" described in
+Section 4 of {{RFC7034}}, we must check the first-party origin against the
+origins of each of a document's ancestor browsing contexts' active documents.
+A document is considered a "first-party context" if and only if the origin
+of its URI is the same as the first-party origin, **and** if each of the
+active documents in its ancestors' browsing contexts' is a first-party context.
 
-2. Let `top-origin` be the origin of the location of the active document in
-   `context`.
+To be more precise, given an HTTP request `request`, the following algorithm
+returns `First-Party` if the request is a first-party request, and `Third-Party`
+otherwise:
 
-3. If the origin of `request`'s URL is the same as `top-origin`, `request`
-   is a **first-party request**. Otherwise, `request` is a **third-party
-   request**.
+1.  Let `document` be the document responsible for `request`.
 
-Note that we deal with the document's location in step 2 above, not with the
-document's origin. For example, a top-level document from `https://example.com`
-which has been sandboxed into a unique origin still creates a non-unique
-first-party context for subsequent requests.
+2.  Let `top-origin` be the origin of the URI of the active document in the
+    top-level browsing context of the document responsible for `request`.
+
+3.  If `document`'s URI's origin is not `top-origin`, return `Third-Party`.
+
+4.  While `document` has a parent browsing context:
+
+    1.  Let `document` be `document`'s parent browsing context's active
+        document.
+
+    2.  If `document`'s URI's origin is not `top-origin`, return `Third-Party`.
+
+5.  Return `First-Party`.
+
+Note that we deal with the document's location in steps 2, 3, and 4.2 above, not
+with the document's origin. For example, a top-level document from
+`https://example.com` which has been sandboxed into a unique origin still
+creates a non-unique first-party context for subsequent requests.
 
 This definition has a few implications:
 
-* New windows create new first-party contexts.
-* Full-page navigations create new first-party contexts. Notably, this
-  includes both HTTP and `<meta>`-driven redirects.
-* `<iframe>`s do not create new first-party contexts; their requests MUST
-  be considered in the context of the origin of the URL the user actually
-  sees in the user agent's address bar.
+*  New windows create new first-party contexts (as the active document is
+   rendered into a top-level browsing context).
+
+*  Full-page navigations create new first-party contexts. Notably, this
+   includes both HTTP and `<meta>`-driven redirects.
+
+*  `<iframe>`s do not create new first-party contexts; their requests MUST
+   be considered in the context of the origin of the URL the user actually
+   sees in the user agent's address bar.
+
+### Worker-based requests
+
+Worker-driven requests aren't as clear-cut as document-driven requests, as
+there isn't a clear link between a top-level browsing context and a worker.
+This is especially true for Service Workers {{SERVICE-WORKERS}}, which may
+execute code in the background, without any document visible at all.
 
 # Server Requirements
 
@@ -260,42 +370,10 @@ to link distinct requests even in the absence of cookies. Connection and/or
 socket pooling, Token Binding, and Channel ID all offer explicit methods of
 identification that servers could take advantage of.
 
-We recommend, therefore, that servers interested in reducing the ambient
-authority of requests generated in a third-party context use such identification
-mechanisms only in addition to first-party-only cookies, and not as a
-replacement for them.
-
-# Security Considerations
-
-## Limitations
-
-It is possible to bypass the protection that first-party-only cookies offer
-against cross-site request forgery attacks by creating first-party contexts in
-which to execute the attack. Consider, for instance, the URL
-`https://example.com/logout` which logs the current user out of `example.com`.
-If the user's session cookie is a first-party-only cookie, then embedding the
-logout URL in an `<iframe>` element or an `<img>` element won't log her out, as
-the cookie won't be sent. Popping up a new window, or triggering a top-level
-navigation, on the other hand, will create a first-party context, attach
-cookies, and perform the logout.
-
-Note, though, that popping up a window, or doing a top-level navigation are both
-significantly more visible to the user than loading a subresource. Users will
-at least have the opportunity to notice that something strange is going on,
-which hopefully reduces an attacker's ability to perform untargeted attacks.
-
-Further, note that certain kinds of attacks are no longer possible if a
-first-party context is required. Information leakage attacks which rely on
-visible side-effects of loading a session-protected image, for example, can no
-longer access those side-effects if the image is loaded in a new window. Timing
-attacks like those Paul Stone outlines in {{pixel-perfect}} are no longer
-possible if the session cookie is first-party-only, as they rely on `<iframes>`
-to contain the protected content in a way the attacker can manipulate. 
+--- back
 
 # Acknowledgements
 
 The first-party cookie concept documented here is indebited to Mark Goodwin's
-and Joe Walker's {{samedomain-cookies}}.
-
---- back
-
+and Joe Walker's {{samedomain-cookies}}. Michal Zalewski, Artur Janc, and Ryan
+Sleevi provided particularly valuable feedback on this document.
