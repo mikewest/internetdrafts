@@ -252,8 +252,11 @@ otherwise:
 
 1.  Let `document` be the document responsible for `request`.
 
-2.  Return `First-Party` if `document` is a first-party context, and
-    `Third-Party` otherwise.
+2.  If `document` is a first-party context, and `request`'s URI's origin is
+    the same as the origin of the URI of the active document in the top-level
+    browsing context of `document`, then return `First-Party`.
+
+3.  Return `Third-Party`.
 
 Given a Document `document`, the following algorithm returns `First-Party` if
 `document` is a first-party context, and `Third-Party` otherwise:
@@ -305,8 +308,11 @@ otherwise:
 
 2.  Let `document` be `worker`'s owner document.
 
-3.  Return `First-Party` if `document` is a first-party context (as defined in
-    section 2.1.1), and `Third-Party` otherwise.
+3.  If `document` is a first-party context, and `request`'s URI's origin is
+    the same as the origin of the URI of the active document in the top-level
+    browsing context of `document`, then return `First-Party`.
+
+4.  Return `Third-Party`.
 
 #### Shared Workers
 
@@ -327,6 +333,10 @@ otherwise:
 
     1. Return `Third-Party` if `document` is not a first-party context (as
        defined in section 2.1.1).
+
+    2. Return `Third-Party` if `request`'s URI's origin is not the same as the
+       origin of the URI of the active document in the top-level browsing
+       context of `document`.
 
 3.  Return `First-Party`.
 
