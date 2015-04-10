@@ -192,8 +192,8 @@ only if they are equivalent under the `i;ascii-casemap` collation defined in
 {{RFC4790}}.
 
 The terms "active document", "ancestor browsing context", "browsing context",
-"document", "parent browsing context", and "top-level browsing context" are
-defined in the HTML Living Standard. {{HTML}}
+"document", "iframe srcdoc document", "parent browsing context", and "top-level
+browsing context" are defined in the HTML Living Standard. {{HTML}}
 
 The term "origin", the mechanism of deriving an origin from a URI, and the "the
 same" matching algorithm for origins are defined in {{RFC6454}}.
@@ -236,7 +236,8 @@ otherwise:
     1.  Let `document` be `document`'s parent browsing context's active
         document.
 
-    2.  If `document`'s URI's origin is not `top-origin`, return `Third-Party`.
+    2.  If `document`'s URI's origin is not `top-origin` and `document` is not
+        an iframe srcdoc document, return `Third-Party`.
 
 5.  Return `First-Party`.
 
