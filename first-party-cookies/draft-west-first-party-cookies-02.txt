@@ -79,8 +79,8 @@ Table of Contents
      4.1.  The "First-Party" attribute . . . . . . . . . . . . . . .   8
      4.2.  Monkey-patching the Storage Model . . . . . . . . . . . .   9
      4.3.  Monkey-patching the "Cookie" header . . . . . . . . . . .   9
-   5.  Authoring Considerations  . . . . . . . . . . . . . . . . . .   9
-     5.1.  Mashups and Widgets . . . . . . . . . . . . . . . . . . .   9
+   5.  Authoring Considerations  . . . . . . . . . . . . . . . . . .  10
+     5.1.  Mashups and Widgets . . . . . . . . . . . . . . . . . . .  10
    6.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  10
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .  10
@@ -267,12 +267,12 @@ Internet-Draft             first-party-cookies                April 2015
 
    1.  Let "document" be the document responsible for "request".
 
-   2.  Return "First-Party" if "document" is a first-party context, and
-       "Third-Party" otherwise.
+   2.  If "document" is a first-party context, and "request"'s URI's
+       origin is the same as the origin of the URI of the active
+       document in the top-level browsing context of "document", then
+       return "First-Party".
 
-   Given a Document "document", the following algorithm returns "First-
-   Party" if "document" is a first-party context, and "Third-Party"
-   otherwise:
+   3.  Return "Third-Party".
 
 
 
@@ -281,6 +281,10 @@ West                    Expires October 12, 2015                [Page 5]
 
 Internet-Draft             first-party-cookies                April 2015
 
+
+   Given a Document "document", the following algorithm returns "First-
+   Party" if "document" is a first-party context, and "Third-Party"
+   otherwise:
 
    1.  Let "top-origin" be the origin of the URI of the active document
        in the top-level browsing context of the document responsible for
@@ -327,10 +331,6 @@ Internet-Draft             first-party-cookies                April 2015
    "XMLHttpRequest", "fetch()", and so on) are first-party requests if
    and only if the worker's owner document is a first-party context.
 
-   To be more precise, given an HTTP request "request", the following
-   algorithm returns "First-Party" if "request" is a first-party
-   request, and "Third-Party" otherwise:
-
 
 
 West                    Expires October 12, 2015                [Page 6]
@@ -338,12 +338,20 @@ West                    Expires October 12, 2015                [Page 6]
 Internet-Draft             first-party-cookies                April 2015
 
 
+   To be more precise, given an HTTP request "request", the following
+   algorithm returns "First-Party" if "request" is a first-party
+   request, and "Third-Party" otherwise:
+
    1.  Let "worker" be the dedicated worker responsible for "request".
 
    2.  Let "document" be "worker"'s owner document.
 
-   3.  Return "First-Party" if "document" is a first-party context (as
-       defined in section 2.1.1), and "Third-Party" otherwise.
+   3.  If "document" is a first-party context, and "request"'s URI's
+       origin is the same as the origin of the URI of the active
+       document in the top-level browsing context of "document", then
+       return "First-Party".
+
+   4.  Return "Third-Party".
 
 2.1.2.2.  Shared Workers
 
@@ -366,6 +374,10 @@ Internet-Draft             first-party-cookies                April 2015
        1.  Return "Third-Party" if "document" is not a first-party
            context (as defined in section 2.1.1).
 
+       2.  Return "Third-Party" if "request"'s URI's origin is not the
+           same as the origin of the URI of the active document in the
+           top-level browsing context of "document".
+
    3.  Return "First-Party".
 
 2.1.2.3.  Service Workers
@@ -374,18 +386,6 @@ Internet-Draft             first-party-cookies                April 2015
    separate execution context, with very little relationship to the
    Document which registered them.
 
-   Until we have more implementation experience, we will consider
-   Service Workers as third-party contexts in all cases.
-
-   Note: Requests which simply pass through a service worker will be
-   handled as described above; the only requests which will be effected
-   by this categorization are those which the service worker itself
-   initiates (via "fetch()", for instance).
-
-
-
-
-
 
 
 
@@ -393,6 +393,14 @@ West                    Expires October 12, 2015                [Page 7]
 
 Internet-Draft             first-party-cookies                April 2015
 
+
+   Until we have more implementation experience, we will consider
+   Service Workers as third-party contexts in all cases.
+
+   Note: Requests which simply pass through a service worker will be
+   handled as described above; the only requests which will be effected
+   by this categorization are those which the service worker itself
+   initiates (via "fetch()", for instance).
 
 3.  Server Requirements
 
@@ -434,14 +442,6 @@ Internet-Draft             first-party-cookies                April 2015
    The following attribute definition should be considered part of the
    the "Set-Cookie" algorithm as described in Section 5.2 of [RFC6265]:
 
-   If the attribute-name case-insensitively matches the string "First-
-   Party-Only", the user agent MUST append an attribute to the "cookie-
-   attribute-list" with an "attribute-name" of "First-Party-Only" and an
-   empty "attribute-value".
-
-
-
-
 
 
 
@@ -449,6 +449,11 @@ West                    Expires October 12, 2015                [Page 8]
 
 Internet-Draft             first-party-cookies                April 2015
 
+
+   If the attribute-name case-insensitively matches the string "First-
+   Party-Only", the user agent MUST append an attribute to the "cookie-
+   attribute-list" with an "attribute-name" of "First-Party-Only" and an
+   empty "attribute-value".
 
 4.2.  Monkey-patching the Storage Model
 
@@ -490,14 +495,9 @@ Internet-Draft             first-party-cookies                April 2015
    the resource being requested.  The cookie's "domain", "path", and
    "secure" attributes do not come into play for this comparison.
 
-5.  Authoring Considerations
 
-5.1.  Mashups and Widgets
 
-   The "First-Party-Only" attribute is inappropriate for some important
-   use-cases.  In particular, note that content intended for embedding
-   in a third-party context (social networking widgets or commenting
-   services, for instance) will not have access to first-party-only
+
 
 
 
@@ -506,6 +506,14 @@ West                    Expires October 12, 2015                [Page 9]
 Internet-Draft             first-party-cookies                April 2015
 
 
+5.  Authoring Considerations
+
+5.1.  Mashups and Widgets
+
+   The "First-Party-Only" attribute is inappropriate for some important
+   use-cases.  In particular, note that content intended for embedding
+   in a third-party context (social networking widgets or commenting
+   services, for instance) will not have access to first-party-only
    cookies.  Non-first-party cookies may be required in order to provide
    seamless functionality that relies on a user's state.
 
@@ -545,6 +553,15 @@ Internet-Draft             first-party-cookies                April 2015
    [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
               April 2011.
 
+
+
+
+
+West                    Expires October 12, 2015               [Page 10]
+
+Internet-Draft             first-party-cookies                April 2015
+
+
    [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454, December
               2011.
 
@@ -554,13 +571,6 @@ Internet-Draft             first-party-cookies                April 2015
    [SERVICE-WORKERS]
               Russell, A., Song, J., and J. Archibald, "Service
               Workers", n.d., <http://www.w3.org/TR/service-workers/>.
-
-
-
-West                    Expires October 12, 2015               [Page 10]
-
-Internet-Draft             first-party-cookies                April 2015
-
 
    [WORKERS]  Hickson, I., "Web Workers", n.d.,
               <http://www.w3.org/TR/workers/>.
@@ -597,6 +607,17 @@ Appendix A.  Acknowledgements
 
 Author's Address
 
+
+
+
+
+
+
+West                    Expires October 12, 2015               [Page 11]
+
+Internet-Draft             first-party-cookies                April 2015
+
+
    Mike West
    Google, Inc
 
@@ -613,4 +634,39 @@ Author's Address
 
 
 
-West                    Expires October 12, 2015               [Page 11]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+West                    Expires October 12, 2015               [Page 12]

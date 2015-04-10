@@ -546,7 +546,8 @@ Set-Cookie: SID=31d4d96e407aad42; First-Party-Only
 
 <ol>
   <li>Let <samp>document</samp> be the document responsible for <samp>request</samp>.</li>
-  <li>Return <samp>First-Party</samp> if <samp>document</samp> is a first-party context, and <samp>Third-Party</samp> otherwise.</li>
+  <li>If <samp>document</samp> is a first-party context, and <samp>request</samp>&#8217;s URI&#8217;s origin is the same as the origin of the URI of the active document in the top-level browsing context of <samp>document</samp>, then return <samp>First-Party</samp>.</li>
+  <li>Return <samp>Third-Party</samp>.</li>
 </ol>
 <p id="rfc.section.2.1.1.p.8">Given a Document <samp>document</samp>, the following algorithm returns <samp>First-Party</samp> if <samp>document</samp> is a first-party context, and <samp>Third-Party</samp> otherwise:</p>
 <p/>
@@ -569,7 +570,8 @@ Set-Cookie: SID=31d4d96e407aad42; First-Party-Only
 <ol>
   <li>Let <samp>worker</samp> be the dedicated worker responsible for <samp>request</samp>.</li>
   <li>Let <samp>document</samp> be <samp>worker</samp>&#8217;s owner document.</li>
-  <li>Return <samp>First-Party</samp> if <samp>document</samp> is a first-party context (as defined in section 2.1.1), and <samp>Third-Party</samp> otherwise.</li>
+  <li>If <samp>document</samp> is a first-party context, and <samp>request</samp>&#8217;s URI&#8217;s origin is the same as the origin of the URI of the active document in the top-level browsing context of <samp>document</samp>, then return <samp>First-Party</samp>.</li>
+  <li>Return <samp>Third-Party</samp>.</li>
 </ol>
 <h1 id="rfc.section.2.1.2.2"><a href="#rfc.section.2.1.2.2">2.1.2.2.</a> <a href="#shared-workers" id="shared-workers">Shared Workers</a></h1>
 <p id="rfc.section.2.1.2.2.p.1">Shared Workers introduce the complexity of bindings to multiple Documents. As it is quite possible for a shared worker to be bound at the same time to one Document that is a first-party context, and another that isn&#8217;t, we&#8217;ll need to walk through all the documents associated with the worker to determine its status. If and only if all associated documents are first-party contexts, then the worker is a first-party context.</p>
@@ -578,7 +580,7 @@ Set-Cookie: SID=31d4d96e407aad42; First-Party-Only
 
 <ol>
   <li>Let <samp>worker</samp> be the dedicated worker responsible for <samp>request</samp>.</li>
-  <li>For each <samp>document</samp> in <samp>worker</samp>&#8217;s list of relevant Documents:  <ol><li>Return <samp>Third-Party</samp> if <samp>document</samp> is not a first-party context (as defined in section 2.1.1).</li></ol></li>
+  <li>For each <samp>document</samp> in <samp>worker</samp>&#8217;s list of relevant Documents:  <ol><li>Return <samp>Third-Party</samp> if <samp>document</samp> is not a first-party context (as defined in section 2.1.1).</li><li>Return <samp>Third-Party</samp> if <samp>request</samp>&#8217;s URI&#8217;s origin is not the same as the origin of the URI of the active document in the top-level browsing context of <samp>document</samp>.</li></ol></li>
   <li>Return <samp>First-Party</samp>.</li>
 </ol>
 <h1 id="rfc.section.2.1.2.3"><a href="#rfc.section.2.1.2.3">2.1.2.3.</a> <a href="#service-workers" id="service-workers">Service Workers</a></h1>

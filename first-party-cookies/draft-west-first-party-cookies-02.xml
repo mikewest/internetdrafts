@@ -204,8 +204,10 @@ otherwise:</t>
 
 <t><list style="numbers">
   <t>Let <spanx style="verb">document</spanx> be the document responsible for <spanx style="verb">request</spanx>.</t>
-  <t>Return <spanx style="verb">First-Party</spanx> if <spanx style="verb">document</spanx> is a first-party context, and
-<spanx style="verb">Third-Party</spanx> otherwise.</t>
+  <t>If <spanx style="verb">document</spanx> is a first-party context, and <spanx style="verb">request</spanx>’s URI’s origin is
+the same as the origin of the URI of the active document in the top-level
+browsing context of <spanx style="verb">document</spanx>, then return <spanx style="verb">First-Party</spanx>.</t>
+  <t>Return <spanx style="verb">Third-Party</spanx>.</t>
 </list></t>
 
 <t>Given a Document <spanx style="verb">document</spanx>, the following algorithm returns <spanx style="verb">First-Party</spanx> if
@@ -256,8 +258,10 @@ otherwise:</t>
 <t><list style="numbers">
   <t>Let <spanx style="verb">worker</spanx> be the dedicated worker responsible for <spanx style="verb">request</spanx>.</t>
   <t>Let <spanx style="verb">document</spanx> be <spanx style="verb">worker</spanx>’s owner document.</t>
-  <t>Return <spanx style="verb">First-Party</spanx> if <spanx style="verb">document</spanx> is a first-party context (as defined in
-section 2.1.1), and <spanx style="verb">Third-Party</spanx> otherwise.</t>
+  <t>If <spanx style="verb">document</spanx> is a first-party context, and <spanx style="verb">request</spanx>’s URI’s origin is
+the same as the origin of the URI of the active document in the top-level
+browsing context of <spanx style="verb">document</spanx>, then return <spanx style="verb">First-Party</spanx>.</t>
+  <t>Return <spanx style="verb">Third-Party</spanx>.</t>
 </list></t>
 
 </section>
@@ -279,6 +283,9 @@ otherwise:</t>
   <t>For each <spanx style="verb">document</spanx> in <spanx style="verb">worker</spanx>’s list of relevant Documents:  <list style="numbers">
       <t>Return <spanx style="verb">Third-Party</spanx> if <spanx style="verb">document</spanx> is not a first-party context (as
 defined in section 2.1.1).</t>
+      <t>Return <spanx style="verb">Third-Party</spanx> if <spanx style="verb">request</spanx>’s URI’s origin is not the same as the
+origin of the URI of the active document in the top-level browsing
+context of <spanx style="verb">document</spanx>.</t>
     </list></t>
   <t>Return <spanx style="verb">First-Party</spanx>.</t>
 </list></t>
