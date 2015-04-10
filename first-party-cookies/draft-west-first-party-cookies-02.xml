@@ -151,8 +151,15 @@ only if they are equivalent under the <spanx style="verb">i;ascii-casemap</spanx
 <xref target="RFC4790"/>.</t>
 
 <t>The terms “active document”, “ancestor browsing context”, “browsing context”,
-“document”, “parent browsing context”, and “top-level browsing context” are
-defined in the HTML Living Standard. <xref target="HTML"/></t>
+“document”, “iframe srcdoc document”, “parent browsing context”, and “top-level
+browsing context” are defined in the HTML Living Standard <xref target="HTML"/>.</t>
+
+<t>“Web Workers”, “dedicated workers”, “owner document”, “list of relevant
+documents”, and “shared workers” are defined in the Web Workers specification
+<xref target="WORKERS"/>.</t>
+
+<t>“Service Workers” are defined in the Service Workers specification
+<xref target="SERVICE-WORKERS"/>.</t>
 
 <t>The term “origin”, the mechanism of deriving an origin from a URI, and the “the
 same” matching algorithm for origins are defined in <xref target="RFC6454"/>.</t>
@@ -179,28 +186,6 @@ A document is considered a “first-party context” if and only if the origin
 of its URI is the same as the first-party origin, <spanx style="strong">and</spanx> if each of the
 active documents in its ancestors’ browsing contexts’ is a first-party context.</t>
 
-<t>To be more precise, given an HTTP request <spanx style="verb">request</spanx>, the following algorithm
-returns <spanx style="verb">First-Party</spanx> if the request is a first-party request, and <spanx style="verb">Third-Party</spanx>
-otherwise:</t>
-
-<t><list style="numbers">
-  <t>Let <spanx style="verb">document</spanx> be the document responsible for <spanx style="verb">request</spanx>.</t>
-  <t>Let <spanx style="verb">top-origin</spanx> be the origin of the URI of the active document in the
-top-level browsing context of the document responsible for <spanx style="verb">request</spanx>.</t>
-  <t>If <spanx style="verb">document</spanx>’s URI’s origin is not <spanx style="verb">top-origin</spanx>, return <spanx style="verb">Third-Party</spanx>.</t>
-  <t>While <spanx style="verb">document</spanx> has a parent browsing context:  <list style="numbers">
-      <t>Let <spanx style="verb">document</spanx> be <spanx style="verb">document</spanx>’s parent browsing context’s active
-document.</t>
-      <t>If <spanx style="verb">document</spanx>’s URI’s origin is not <spanx style="verb">top-origin</spanx>, return <spanx style="verb">Third-Party</spanx>.</t>
-    </list></t>
-  <t>Return <spanx style="verb">First-Party</spanx>.</t>
-</list></t>
-
-<t>Note that we deal with the document’s location in steps 2, 3, and 4.2 above, not
-with the document’s origin. For example, a top-level document from
-<spanx style="verb">https://example.com</spanx> which has been sandboxed into a unique origin still
-creates a non-unique first-party context for subsequent requests.</t>
-
 <t>This definition has a few implications:</t>
 
 <t><list style="symbols">
@@ -213,6 +198,37 @@ be considered in the context of the origin of the URL the user actually
 sees in the user agent’s address bar.</t>
 </list></t>
 
+<t>To be more precise, given an HTTP request <spanx style="verb">request</spanx>, the following algorithm
+returns <spanx style="verb">First-Party</spanx> if <spanx style="verb">request</spanx> is a first-party request, and <spanx style="verb">Third-Party</spanx>
+otherwise:</t>
+
+<t><list style="numbers">
+  <t>Let <spanx style="verb">document</spanx> be the document responsible for <spanx style="verb">request</spanx>.</t>
+  <t>Return <spanx style="verb">First-Party</spanx> if <spanx style="verb">document</spanx> is a first-party context, and
+<spanx style="verb">Third-Party</spanx> otherwise.</t>
+</list></t>
+
+<t>Given a Document <spanx style="verb">document</spanx>, the following algorithm returns <spanx style="verb">First-Party</spanx> if
+<spanx style="verb">document</spanx> is a first-party context, and <spanx style="verb">Third-Party</spanx> otherwise:</t>
+
+<t><list style="numbers">
+  <t>Let <spanx style="verb">top-origin</spanx> be the origin of the URI of the active document in the
+top-level browsing context of the document responsible for <spanx style="verb">request</spanx>.</t>
+  <t>If <spanx style="verb">document</spanx>’s URI’s origin is not <spanx style="verb">top-origin</spanx>, return <spanx style="verb">Third-Party</spanx>.</t>
+  <t>While <spanx style="verb">document</spanx> has a parent browsing context:  <list style="numbers">
+      <t>Let <spanx style="verb">document</spanx> be <spanx style="verb">document</spanx>’s parent browsing context’s active
+document.</t>
+      <t>If <spanx style="verb">document</spanx>’s URI’s origin is not <spanx style="verb">top-origin</spanx> and <spanx style="verb">document</spanx> is not
+an iframe srcdoc document, return <spanx style="verb">Third-Party</spanx>.</t>
+    </list></t>
+  <t>Return <spanx style="verb">First-Party</spanx>.</t>
+</list></t>
+
+<t>Note that we deal with the document’s location in steps 2, 3, and 4.2 above, not
+with the document’s origin. For example, a top-level document from
+<spanx style="verb">https://example.com</spanx> which has been sandboxed into a unique origin still
+creates a non-unique first-party context for subsequent requests.</t>
+
 </section>
 <section anchor="worker-based-requests" title="Worker-based requests">
 
@@ -221,6 +237,67 @@ there isn’t a clear link between a top-level browsing context and a worker.
 This is especially true for Service Workers <xref target="SERVICE-WORKERS"/>, which may
 execute code in the background, without any document visible at all.</t>
 
+<t>Note: The descriptions below assume that workers must be same-origin with
+the documents that instantiate them. If this invariant changes, we’ll need to
+take the worker’s script’s URI into account when determining their status.</t>
+
+<section anchor="dedicated-workers" title="Dedicated Workers">
+
+<t>Dedicated workers are fairly straightforward to categorize, as each dedicated
+worker is bound to one and only one Document. Requests generated from a
+dedicated worker (via <spanx style="verb">importScripts</spanx>, <spanx style="verb">XMLHttpRequest</spanx>, <spanx style="verb">fetch()</spanx>, and so on)
+are first-party requests if and only if the worker’s owner document is a
+first-party context.</t>
+
+<t>To be more precise, given an HTTP request <spanx style="verb">request</spanx>, the following algorithm
+returns <spanx style="verb">First-Party</spanx> if <spanx style="verb">request</spanx> is a first-party request, and <spanx style="verb">Third-Party</spanx>
+otherwise:</t>
+
+<t><list style="numbers">
+  <t>Let <spanx style="verb">worker</spanx> be the dedicated worker responsible for <spanx style="verb">request</spanx>.</t>
+  <t>Let <spanx style="verb">document</spanx> be <spanx style="verb">worker</spanx>’s owner document.</t>
+  <t>Return <spanx style="verb">First-Party</spanx> if <spanx style="verb">document</spanx> is a first-party context (as defined in
+section 2.1.1), and <spanx style="verb">Third-Party</spanx> otherwise.</t>
+</list></t>
+
+</section>
+<section anchor="shared-workers" title="Shared Workers">
+
+<t>Shared Workers introduce the complexity of bindings to multiple Documents. As
+it is quite possible for a shared worker to be bound at the same time to one
+Document that is a first-party context, and another that isn’t, we’ll need to
+walk through all the documents associated with the worker to determine its
+status. If and only if all associated documents are first-party contexts, then
+the worker is a first-party context.</t>
+
+<t>To be more precise, given an HTTP request <spanx style="verb">request</spanx>, the following algorithm
+returns <spanx style="verb">First-Party</spanx> if <spanx style="verb">request</spanx> is a first-party request, and <spanx style="verb">Third-Party</spanx>
+otherwise:</t>
+
+<t><list style="numbers">
+  <t>Let <spanx style="verb">worker</spanx> be the dedicated worker responsible for <spanx style="verb">request</spanx>.</t>
+  <t>For each <spanx style="verb">document</spanx> in <spanx style="verb">worker</spanx>’s list of relevant Documents:  <list style="numbers">
+      <t>Return <spanx style="verb">Third-Party</spanx> if <spanx style="verb">document</spanx> is not a first-party context (as
+defined in section 2.1.1).</t>
+    </list></t>
+  <t>Return <spanx style="verb">First-Party</spanx>.</t>
+</list></t>
+
+</section>
+<section anchor="service-workers" title="Service Workers">
+
+<t>Service Workers are more complex still, as they act as a completely separate
+execution context, with very little relationship to the Document which
+registered them.</t>
+
+<t>Until we have more implementation experience, we will consider Service Workers
+as third-party contexts in all cases.</t>
+
+<t>Note: Requests which simply pass through a service worker will be handled as described
+above; the only requests which will be effected by this categorization are those which
+the service worker itself initiates (via <spanx style="verb">fetch()</spanx>, for instance).</t>
+
+</section>
 </section>
 </section>
 </section>
@@ -371,6 +448,15 @@ identification that servers could take advantage of.</t>
       <organization></organization>
     </author>
     <author initials="J." surname="Archibald" fullname="Jake Archibald">
+      <organization></organization>
+    </author>
+    <date year="n.d."/>
+  </front>
+</reference>
+<reference anchor="WORKERS" target="http://www.w3.org/TR/workers/">
+  <front>
+    <title>Web Workers</title>
+    <author initials="I." surname="Hickson" fullname="Ian Hickson">
       <organization></organization>
     </author>
     <date year="n.d."/>

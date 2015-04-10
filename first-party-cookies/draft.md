@@ -43,6 +43,13 @@ normative:
     -
       ins: J. Archibald
       name: Jake Archibald
+  WORKERS:
+    target: http://www.w3.org/TR/workers/
+    title: Web Workers
+    author:
+    -
+      ins: I. Hickson
+      name: Ian Hickson
   RFC2119:
   RFC4790:
   RFC5234:
@@ -193,7 +200,14 @@ only if they are equivalent under the `i;ascii-casemap` collation defined in
 
 The terms "active document", "ancestor browsing context", "browsing context",
 "document", "iframe srcdoc document", "parent browsing context", and "top-level
-browsing context" are defined in the HTML Living Standard. {{HTML}}
+browsing context" are defined in the HTML Living Standard {{HTML}}.
+
+"Web Workers", "dedicated workers", "owner document", "list of relevant
+documents", and "shared workers" are defined in the Web Workers specification
+{{WORKERS}}.
+
+"Service Workers" are defined in the Service Workers specification
+{{SERVICE-WORKERS}}.
 
 The term "origin", the mechanism of deriving an origin from a URI, and the "the
 same" matching algorithm for origins are defined in {{RFC6454}}.
@@ -220,32 +234,6 @@ A document is considered a "first-party context" if and only if the origin
 of its URI is the same as the first-party origin, **and** if each of the
 active documents in its ancestors' browsing contexts' is a first-party context.
 
-To be more precise, given an HTTP request `request`, the following algorithm
-returns `First-Party` if the request is a first-party request, and `Third-Party`
-otherwise:
-
-1.  Let `document` be the document responsible for `request`.
-
-2.  Let `top-origin` be the origin of the URI of the active document in the
-    top-level browsing context of the document responsible for `request`.
-
-3.  If `document`'s URI's origin is not `top-origin`, return `Third-Party`.
-
-4.  While `document` has a parent browsing context:
-
-    1.  Let `document` be `document`'s parent browsing context's active
-        document.
-
-    2.  If `document`'s URI's origin is not `top-origin` and `document` is not
-        an iframe srcdoc document, return `Third-Party`.
-
-5.  Return `First-Party`.
-
-Note that we deal with the document's location in steps 2, 3, and 4.2 above, not
-with the document's origin. For example, a top-level document from
-`https://example.com` which has been sandboxed into a unique origin still
-creates a non-unique first-party context for subsequent requests.
-
 This definition has a few implications:
 
 *  New windows create new first-party contexts (as the active document is
@@ -258,12 +246,102 @@ This definition has a few implications:
    be considered in the context of the origin of the URL the user actually
    sees in the user agent's address bar.
 
+To be more precise, given an HTTP request `request`, the following algorithm
+returns `First-Party` if `request` is a first-party request, and `Third-Party`
+otherwise:
+
+1.  Let `document` be the document responsible for `request`.
+
+2.  Return `First-Party` if `document` is a first-party context, and
+    `Third-Party` otherwise.
+
+Given a Document `document`, the following algorithm returns `First-Party` if
+`document` is a first-party context, and `Third-Party` otherwise:
+
+1.  Let `top-origin` be the origin of the URI of the active document in the
+    top-level browsing context of the document responsible for `request`.
+
+2.  If `document`'s URI's origin is not `top-origin`, return `Third-Party`.
+
+3.  While `document` has a parent browsing context:
+
+    1.  Let `document` be `document`'s parent browsing context's active
+        document.
+
+    2.  If `document`'s URI's origin is not `top-origin` and `document` is not
+        an iframe srcdoc document, return `Third-Party`.
+
+4.  Return `First-Party`.
+
+Note that we deal with the document's location in steps 2, 3, and 4.2 above, not
+with the document's origin. For example, a top-level document from
+`https://example.com` which has been sandboxed into a unique origin still
+creates a non-unique first-party context for subsequent requests.
+
 ### Worker-based requests
 
 Worker-driven requests aren't as clear-cut as document-driven requests, as
 there isn't a clear link between a top-level browsing context and a worker.
 This is especially true for Service Workers {{SERVICE-WORKERS}}, which may
 execute code in the background, without any document visible at all.
+
+Note: The descriptions below assume that workers must be same-origin with
+the documents that instantiate them. If this invariant changes, we'll need to
+take the worker's script's URI into account when determining their status.
+
+#### Dedicated Workers
+
+Dedicated workers are fairly straightforward to categorize, as each dedicated
+worker is bound to one and only one Document. Requests generated from a
+dedicated worker (via `importScripts`, `XMLHttpRequest`, `fetch()`, and so on)
+are first-party requests if and only if the worker's owner document is a
+first-party context.
+
+To be more precise, given an HTTP request `request`, the following algorithm
+returns `First-Party` if `request` is a first-party request, and `Third-Party`
+otherwise:
+
+1.  Let `worker` be the dedicated worker responsible for `request`.
+
+2.  Let `document` be `worker`'s owner document.
+
+3.  Return `First-Party` if `document` is a first-party context (as defined in
+    section 2.1.1), and `Third-Party` otherwise.
+
+#### Shared Workers
+
+Shared Workers introduce the complexity of bindings to multiple Documents. As
+it is quite possible for a shared worker to be bound at the same time to one
+Document that is a first-party context, and another that isn't, we'll need to
+walk through all the documents associated with the worker to determine its
+status. If and only if all associated documents are first-party contexts, then
+the worker is a first-party context.
+
+To be more precise, given an HTTP request `request`, the following algorithm
+returns `First-Party` if `request` is a first-party request, and `Third-Party`
+otherwise:
+
+1.  Let `worker` be the dedicated worker responsible for `request`.
+
+2.  For each `document` in `worker`'s list of relevant Documents:
+
+    1. Return `Third-Party` if `document` is not a first-party context (as
+       defined in section 2.1.1).
+
+3.  Return `First-Party`.
+
+#### Service Workers
+
+Service Workers are more complex still, as they act as a completely separate
+execution context, with very little relationship to the Document which
+registered them.
+
+Until we have more implementation experience, we will consider Service Workers
+as third-party contexts in all cases.
+
+Note: Requests which simply pass through a service worker will be handled as described
+above; the only requests which will be effected by this categorization are those which
+the service worker itself initiates (via `fetch()`, for instance).
 
 # Server Requirements
 
