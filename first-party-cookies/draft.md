@@ -101,7 +101,7 @@ informative:
     author:
     -
       ins: C. Bentzel
-      name: Chris Bentzel      
+      name: Chris Bentzel
 
 --- abstract
 
@@ -148,6 +148,10 @@ request into an attacker-controlled context:
    will not be able to include authenticated resources via `<script>` or
    `<link>`, as these embedding mechanisms will not create first-party contexts.
 
+First-party-only cookies also mitigate one specific kind of cross-site request
+forgery (CSRF) attack by treating cross-origin `POST` requests (including
+navigations) as as third-party requests.
+
 Aside from these attack mitigations, first-party-only cookies can also be useful
 for policy or regulatory purposes. That is, it may be valuable for an origin to
 assert that its cookies should not be sent along with third-party requests in
@@ -155,17 +159,16 @@ order to limit its exposure to non-technical risk.
 
 ## Limitations
 
-First-party-only cookies provide only very limited defense against naïve
-cross-site request forgery attacks (CSRF). They defend against directly
-embedding vulnerable endpoints into an attacker-controlled context (as discussed
-above), but this is not a robust defense in and of itself.
+First-party-only cookies provide limited defense against one kind of naïve
+cross-site request forgery attack (CSRF). It does not offer a robust defense
+against CSRF as a general category of attack:
 
 1. Attackers can still pop up new windows or trigger top-level navigations in
    order to create a first-party context (as described in section 2.1), which is
    only a speedbump along the road to exploitation.
 
 2. Features like `<link rel='prerender'>` {{prerendering}} can be exploited
-   to create first-party contexts without the risk of user detection. 
+   to create first-party contexts without the risk of user detection.
 
 In addition to the usual server-side defenses (CSRF tokens, etc), client-side
 techniques such as those described in {{app-isolation}} may prove effective
@@ -423,16 +426,21 @@ what that is, monkey-patching!
 
 Alter Section 5.4 of {{RFC6265}} as follows:
 
-1.  Add the following requirement to the list in step 1:
+1.  Add the following requirements to the list in step 1:
 
     * If the cookie's `first-party-only-flag` is true, then exclude the cookie
       if the HTTP request is a third-party request (see
       {{first-and-third-party}}).
 
+    * If the cookie's `first-party-only-flag` is true, then exclude the cookie
+      if the HTTP request's method is not `GET` and the origin of the document
+      which originated the request is not the same as the origin of the HTTP
+      request's URI.
+
 Note that the modifications suggested here concern themselves only with the
-origin of the top-level browsing context and the origin of the resource being
+origins of ancestor browsing contexts and the origin of the resource being
 requested. The cookie's `domain`, `path`, and `secure` attributes do not come
-into play for this comparison.
+into play for these comparisons.
 
 # Authoring Considerations
 
