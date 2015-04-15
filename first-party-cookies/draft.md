@@ -392,7 +392,7 @@ additional detail.
 This section describes extensions to {{RFC6265}} necessary in order to implement
 the client-side requirements of the `First-Party-Only` attribute.
 
-## The "First-Party" attribute
+## The "First-Party-Only" attribute
 
 The following attribute definition should be considered part of the the
 `Set-Cookie` algorithm as described in Section 5.2 of {{RFC6265}}:
