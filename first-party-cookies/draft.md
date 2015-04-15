@@ -1,7 +1,7 @@
 ---
 title: First-Party-Only Cookies
 abbrev: first-party-cookies
-docname: draft-west-first-party-cookies-02
+docname: draft-west-first-party-cookies-03
 date: 2015
 category: std
 updates: 6265
@@ -56,6 +56,7 @@ normative:
   RFC6265:
   RFC6454:
   RFC7034:
+  RFC7231:
 
 informative:
   samedomain-cookies:
