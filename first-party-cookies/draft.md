@@ -149,8 +149,8 @@ request into an attacker-controlled context:
    `<link>`, as these embedding mechanisms will not create first-party contexts.
 
 First-party-only cookies also mitigate one specific kind of cross-site request
-forgery (CSRF) attack by treating cross-origin `POST` requests (including
-navigations) as as third-party requests.
+forgery (CSRF) attack by treating cross-origin requests with unsafe methods
+(including top-level navigations) as as third-party requests.
 
 Aside from these attack mitigations, first-party-only cookies can also be useful
 for policy or regulatory purposes. That is, it may be valuable for an origin to
@@ -214,6 +214,9 @@ documents", and "shared workers" are defined in the Web Workers specification
 
 The term "origin", the mechanism of deriving an origin from a URI, and the "the
 same" matching algorithm for origins are defined in {{RFC6454}}.
+
+"Safe" HTTP methods include `GET`, `HEAD`, `OPTIONS`, and `TRACE`, as defined
+in Section 4.2.1 of {{RFC7231}}.
 
 ## First-party and Third-party Requests  {#first-and-third-party}
 
@@ -433,7 +436,7 @@ Alter Section 5.4 of {{RFC6265}} as follows:
       {{first-and-third-party}}).
 
     * If the cookie's `first-party-only-flag` is true, then exclude the cookie
-      if the HTTP request's method is not `GET` and the origin of the document
+      if the HTTP request's method is not safe and the origin of the document
       which originated the request is not the same as the origin of the HTTP
       request's URI.
 
