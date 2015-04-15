@@ -1,7 +1,7 @@
 ---
 title: First-Party-Only Cookies
 abbrev: first-party-cookies
-docname: draft-west-first-party-cookies-01
+docname: draft-west-first-party-cookies-02
 date: 2015
 category: std
 updates: 6265

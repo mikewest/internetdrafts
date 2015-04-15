@@ -10,7 +10,7 @@ Expires: October 17, 2015
 
 
                         First-Party-Only Cookies
-                   draft-west-first-party-cookies-01
+                   draft-west-first-party-cookies-02
 
 Abstract
 

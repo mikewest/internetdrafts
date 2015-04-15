@@ -10,7 +10,7 @@
 <!ENTITY RFC7034 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7034.xml">
 ]>
 
-<rfc ipr="trust200902" docName="draft-west-first-party-cookies-01" category="std" updates="6265">
+<rfc ipr="trust200902" docName="draft-west-first-party-cookies-02" category="std" updates="6265">
 
 <?rfc toc="yes"?>
 <?rfc tocindent="yes"?>
