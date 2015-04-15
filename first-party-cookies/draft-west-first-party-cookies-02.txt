@@ -4,9 +4,9 @@
 
 HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
-Updates: 6265 (if approved)                               April 10, 2015
+Updates: 6265 (if approved)                               April 15, 2015
 Intended status: Standards Track
-Expires: October 12, 2015
+Expires: October 17, 2015
 
 
                         First-Party-Only Cookies
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on October 12, 2015.
+   This Internet-Draft will expire on October 17, 2015.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-West                    Expires October 12, 2015                [Page 1]
+West                    Expires October 17, 2015                [Page 1]
 
 Internet-Draft             first-party-cookies                April 2015
 
@@ -86,7 +86,7 @@ Table of Contents
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .  10
      7.2.  Informative References  . . . . . . . . . . . . . . . . .  11
    Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  11
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  11
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  12
 
 1.  Introduction
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-West                    Expires October 12, 2015                [Page 2]
+West                    Expires October 17, 2015                [Page 2]
 
 Internet-Draft             first-party-cookies                April 2015
 
@@ -136,6 +136,10 @@ Internet-Draft             first-party-cookies                April 2015
        resources via "<script>" or "<link>", as these embedding
        mechanisms will not create first-party contexts.
 
+   First-party-only cookies also mitigate one specific kind of cross-
+   site request forgery (CSRF) attack by treating cross-origin "POST"
+   requests (including navigations) as as third-party requests.
+
    Aside from these attack mitigations, first-party-only cookies can
    also be useful for policy or regulatory purposes.  That is, it may be
    valuable for an origin to assert that its cookies should not be sent
@@ -144,11 +148,9 @@ Internet-Draft             first-party-cookies                April 2015
 
 1.2.  Limitations
 
-   First-party-only cookies provide only very limited defense against
-   naive cross-site request forgery attacks (CSRF).  They defend against
-   directly embedding vulnerable endpoints into an attacker-controlled
-   context (as discussed above), but this is not a robust defense in and
-   of itself.
+   First-party-only cookies provide limited defense against one kind of
+   naive cross-site request forgery attack (CSRF).  It does not offer a
+   robust defense against CSRF as a general category of attack:
 
    1.  Attackers can still pop up new windows or trigger top-level
        navigations in order to create a first-party context (as
@@ -159,17 +161,18 @@ Internet-Draft             first-party-cookies                April 2015
        exploited to create first-party contexts without the risk of user
        detection.
 
-   In addition to the usual server-side defenses (CSRF tokens, etc),
-   client-side techniques such as those described in [app-isolation] may
-   prove effective against CSRF, and are certainly worth exploring in
 
 
 
-West                    Expires October 12, 2015                [Page 3]
+
+West                    Expires October 17, 2015                [Page 3]
 
 Internet-Draft             first-party-cookies                April 2015
 
 
+   In addition to the usual server-side defenses (CSRF tokens, etc),
+   client-side techniques such as those described in [app-isolation] may
+   prove effective against CSRF, and are certainly worth exploring in
    combination with first-party-only cookies.  First-party-only cookies
    on their own, however, are not a substantial barrier to CSRF attacks.
 
@@ -218,10 +221,7 @@ Internet-Draft             first-party-cookies                April 2015
 
 
 
-
-
-
-West                    Expires October 12, 2015                [Page 4]
+West                    Expires October 17, 2015                [Page 4]
 
 Internet-Draft             first-party-cookies                April 2015
 
@@ -277,7 +277,7 @@ Internet-Draft             first-party-cookies                April 2015
 
 
 
-West                    Expires October 12, 2015                [Page 5]
+West                    Expires October 17, 2015                [Page 5]
 
 Internet-Draft             first-party-cookies                April 2015
 
@@ -333,7 +333,7 @@ Internet-Draft             first-party-cookies                April 2015
 
 
 
-West                    Expires October 12, 2015                [Page 6]
+West                    Expires October 17, 2015                [Page 6]
 
 Internet-Draft             first-party-cookies                April 2015
 
@@ -389,7 +389,7 @@ Internet-Draft             first-party-cookies                April 2015
 
 
 
-West                    Expires October 12, 2015                [Page 7]
+West                    Expires October 17, 2015                [Page 7]
 
 Internet-Draft             first-party-cookies                April 2015
 
@@ -445,7 +445,7 @@ Internet-Draft             first-party-cookies                April 2015
 
 
 
-West                    Expires October 12, 2015                [Page 8]
+West                    Expires October 17, 2015                [Page 8]
 
 Internet-Draft             first-party-cookies                April 2015
 
@@ -484,27 +484,30 @@ Internet-Draft             first-party-cookies                April 2015
 
    Alter Section 5.4 of [RFC6265] as follows:
 
-   1.  Add the following requirement to the list in step 1:
+   1.  Add the following requirements to the list in step 1:
 
        *  If the cookie's "first-party-only-flag" is true, then exclude
           the cookie if the HTTP request is a third-party request (see
           Section 2.1).
 
+       *  If the cookie's "first-party-only-flag" is true, then exclude
+          the cookie if the HTTP request's method is not "GET" and the
+          origin of the document which originated the request is not the
+          same as the origin of the HTTP request's URI.
+
    Note that the modifications suggested here concern themselves only
-   with the origin of the top-level browsing context and the origin of
-   the resource being requested.  The cookie's "domain", "path", and
-   "secure" attributes do not come into play for this comparison.
+   with the origins of ancestor browsing contexts and the origin of the
 
 
 
 
-
-
-
-West                    Expires October 12, 2015                [Page 9]
+West                    Expires October 17, 2015                [Page 9]
 
 Internet-Draft             first-party-cookies                April 2015
 
+
+   resource being requested.  The cookie's "domain", "path", and
+   "secure" attributes do not come into play for these comparisons.
 
 5.  Authoring Considerations
 
@@ -550,17 +553,17 @@ Internet-Draft             first-party-cookies                April 2015
    [RFC5234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
               Specifications: ABNF", STD 68, RFC 5234, January 2008.
 
-   [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
-              April 2011.
 
 
 
 
-
-West                    Expires October 12, 2015               [Page 10]
+West                    Expires October 17, 2015               [Page 10]
 
 Internet-Draft             first-party-cookies                April 2015
 
+
+   [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
+              April 2011.
 
    [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454, December
               2011.
@@ -580,8 +583,9 @@ Internet-Draft             first-party-cookies                April 2015
    [app-isolation]
               Chen, E., Bau, J., Reis, C., Barth, A., and C. Jackson,
               "App Isolation - Get the Security of Multiple Browsers
-              with Just One", n.d., <http://www.collinjackson.com/
-              research/papers/appisolation.pdf>.
+              with Just One", n.d.,
+              <http://www.collinjackson.com/research/papers/
+              appisolation.pdf>.
 
    [pixel-perfect]
               Stone, P., "Pixel Perfect Timing Attacks with HTML5",
@@ -605,18 +609,16 @@ Appendix A.  Acknowledgements
    Artur Janc, and Ryan Sleevi provided particularly valuable feedback
    on this document.
 
-Author's Address
 
 
 
 
-
-
-
-West                    Expires October 12, 2015               [Page 11]
+West                    Expires October 17, 2015               [Page 11]
 
 Internet-Draft             first-party-cookies                April 2015
 
+
+Author's Address
 
    Mike West
    Google, Inc
@@ -667,6 +669,4 @@ Internet-Draft             first-party-cookies                April 2015
 
 
 
-
-
-West                    Expires October 12, 2015               [Page 12]
+West                    Expires October 17, 2015               [Page 12]

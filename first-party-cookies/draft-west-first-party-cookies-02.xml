@@ -93,6 +93,10 @@ will not be able to include authenticated resources via <spanx style="verb">&lt;
 <spanx style="verb">&lt;link&gt;</spanx>, as these embedding mechanisms will not create first-party contexts.</t>
 </list></t>
 
+<t>First-party-only cookies also mitigate one specific kind of cross-site request
+forgery (CSRF) attack by treating cross-origin <spanx style="verb">POST</spanx> requests (including
+navigations) as as third-party requests.</t>
+
 <t>Aside from these attack mitigations, first-party-only cookies can also be useful
 for policy or regulatory purposes. That is, it may be valuable for an origin to
 assert that its cookies should not be sent along with third-party requests in
@@ -101,17 +105,16 @@ order to limit its exposure to non-technical risk.</t>
 </section>
 <section anchor="limitations" title="Limitations">
 
-<t>First-party-only cookies provide only very limited defense against naïve
-cross-site request forgery attacks (CSRF). They defend against directly
-embedding vulnerable endpoints into an attacker-controlled context (as discussed
-above), but this is not a robust defense in and of itself.</t>
+<t>First-party-only cookies provide limited defense against one kind of naïve
+cross-site request forgery attack (CSRF). It does not offer a robust defense
+against CSRF as a general category of attack:</t>
 
 <t><list style="numbers">
   <t>Attackers can still pop up new windows or trigger top-level navigations in
 order to create a first-party context (as described in section 2.1), which is
 only a speedbump along the road to exploitation.</t>
   <t>Features like <spanx style="verb">&lt;link rel='prerender'&gt;</spanx> <xref target="prerendering"/> can be exploited
-to create first-party contexts without the risk of user detection. </t>
+to create first-party contexts without the risk of user detection.</t>
 </list></t>
 
 <t>In addition to the usual server-side defenses (CSRF tokens, etc), client-side
@@ -386,17 +389,21 @@ what that is, monkey-patching!</t>
 <t>Alter Section 5.4 of <xref target="RFC6265"/> as follows:</t>
 
 <t><list style="numbers">
-  <t>Add the following requirement to the list in step 1:  <list style="symbols">
+  <t>Add the following requirements to the list in step 1:  <list style="symbols">
       <t>If the cookie’s <spanx style="verb">first-party-only-flag</spanx> is true, then exclude the cookie
 if the HTTP request is a third-party request (see
 <xref target="first-and-third-party"/>).</t>
+      <t>If the cookie’s <spanx style="verb">first-party-only-flag</spanx> is true, then exclude the cookie
+if the HTTP request’s method is not <spanx style="verb">GET</spanx> and the origin of the document
+which originated the request is not the same as the origin of the HTTP
+request’s URI.</t>
     </list></t>
 </list></t>
 
 <t>Note that the modifications suggested here concern themselves only with the
-origin of the top-level browsing context and the origin of the resource being
+origins of ancestor browsing contexts and the origin of the resource being
 requested. The cookie’s <spanx style="verb">domain</spanx>, <spanx style="verb">path</spanx>, and <spanx style="verb">secure</spanx> attributes do not come
-into play for this comparison.</t>
+into play for these comparisons.</t>
 
 </section>
 </section>
