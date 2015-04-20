@@ -1,8 +1,8 @@
 ---
 title: Origin Cookies
 abbrev: Origin-Cookies
-docname: draft-west-origin-cookies-00
-date: 2014
+docname: draft-west-origin-cookies-01
+date: 2015
 category: std
 updates: 6265
 
@@ -180,7 +180,7 @@ The user agent sends stored origin cookies to the origin server in the
 {{user-agent-requirements}}), the user agent will send an `Origin-Cookie`
 header which conforms to the following grammar:
 
-    origin-cookie-header = "Cookie:" OWS 1#(cookie-string) OWS
+    origin-cookie-header = "Origin-Cookie:" OWS [ cookie-string ] OWS
 
 ### Semantics
 
