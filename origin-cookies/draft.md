@@ -225,13 +225,12 @@ Alter Section 5.3 of {{RFC6265}} as follows:
         `attribute-name` of "Origin":
 
         1.  Set the cookie's `domain` attribute to the empty string.
-        2.  Set the cookie's `http-only-flag` to true.
-        3.  Set the cookie's `host-only-flag` to true.
-        4.  Set the cookie's `origin` to the origin of `request-uri`, as
+        2.  Set the cookie's `host-only-flag` to true.
+        3.  Set the cookie's `origin` to the origin of `request-uri`, as
             defined by Section 4 of {{RFC6454}}.
-        5.  Set the cookie's `origin-flag` to true.
-        6.  Set the cookie's `path` attribute to the empty string.
-        7.  Set the cookie's `secure-only-flag` to false.
+        4.  Set the cookie's `origin-flag` to true.
+        5.  Set the cookie's `path` attribute to the empty string.
+        6.  Set the cookie's `secure-only-flag` to false.
 
         Otherwise: set the cookie's `origin-flag` to false, and its `origin`
         to `null`.
@@ -290,8 +289,6 @@ compute the `cookie-string` from a cookie store and a `request-uri`:
 
     *   The cookie's `origin-flag` is true.
     *   The cookie's `origin` matches the origin of `request-uri`. {{RFC6454}}
-    *   The `cookie-string` is not being generated for a "non-HTTP" API (as
-        defined by the user agent).
 
 2.  The user agent SHOULD sort the `cookie-list` in the following order:
 
@@ -316,11 +313,6 @@ The security considerations listed in Section 8 of {{RFC6265}} apply equally
 to origin cookies, with the exceptions of Sections 8.6 ("Weak
 Confidentiality") and Sections 8.7 ("Weak Isolation"), both of which are
 substantially improved if the `Origin` attribute is set. Further:
-
-## "HttpOnly"
-
-Note that origin cookies are only accessible via HTTP. "Non-HTTP" APIs like
-HTML's `document.cookie` cannot read these cookies' values.
 
 ## Paths are ignored
 
@@ -363,15 +355,10 @@ with the following registration:
 - Author/Change controller: IETF
 - Specification document: This specification (see {{origin-cookie-header-field}})
 
+--- back
+
 # Acknowledgements
 
 The origin cookie concept documented here is heavily indebted to and based upon
 Adam Barth's {{draft-abarth-cake-01}} document, as well as Andrew Bortz, Adam
 Barth, and Alexei Czeskis' paper {{origin-cookies-w2sp}}.
-
---- back
-
-#  Open Issues
-
-*   Should origin cookies be settable via `document.cookie`? Does that weaken
-    the guarantees in any way we care about?
