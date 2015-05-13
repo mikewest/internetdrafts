@@ -50,6 +50,9 @@ normative:
     -
       ins: I. Hickson
       name: Ian Hickson
+  PSL:
+    target: https://publicsuffix.org/list/
+    title: "Public Suffix List"
   RFC2119:
   RFC4790:
   RFC5234:
@@ -160,9 +163,9 @@ order to limit its exposure to non-technical risk.
 
 ## Limitations
 
-First-party-only cookies provide limited defense against one kind of naïve
-cross-site request forgery attack (CSRF). It does not offer a robust defense
-against CSRF as a general category of attack:
+First-party-only cookies provide reasonable defense in depth against CSRF
+attacks that rely on unsafe HTTP methods (like `POST`). They do not offer a
+robust defense against CSRF as a general category of attack:
 
 1. Attackers can still pop up new windows or trigger top-level navigations in
    order to create a first-party context (as described in section 2.1), which is
@@ -171,11 +174,12 @@ against CSRF as a general category of attack:
 2. Features like `<link rel='prerender'>` {{prerendering}} can be exploited
    to create first-party contexts without the risk of user detection.
 
-In addition to the usual server-side defenses (CSRF tokens, etc), client-side
-techniques such as those described in {{app-isolation}} may prove effective
-against CSRF, and are certainly worth exploring in combination with
-first-party-only cookies. First-party-only cookies on their own, however, are
-not a substantial barrier to CSRF attacks.
+In addition to the usual server-side defenses (CSRF tokens, ensuring that "safe"
+HTTP methods are idempotent, etc), client-side techniques such as those
+described in {{app-isolation}} may prove effective against CSRF, and are
+certainly worth exploring in combination with first-party-only cookies.
+First-party-only cookies on their own, however, are not a barrier to CSRF
+attacks as a general category.
 
 ## Examples
 
@@ -219,6 +223,15 @@ same" matching algorithm for origins are defined in {{RFC6454}}.
 "Safe" HTTP methods include `GET`, `HEAD`, `OPTIONS`, and `TRACE`, as defined
 in Section 4.2.1 of {{RFC7231}}.
 
+The term "public suffix" is defined in a note in Section 5.3 of {{RFC6265}} as
+"a domain that is controlled by a public registry". For example, `example.com`'s
+public suffix is `com`. User agents SHOULD use an up-to-date public suffix list,
+such as the one maintained by Mozilla at {{PSL}}.
+
+An origin's "registerable domain" is the origin's host's public suffix plus the
+label to its left. That is, `https://www.example.com`'s registerable domain is
+`example.com`. This concept is defined more rigorously in {{PSL}}.
+
 ## First-party and Third-party Requests  {#first-and-third-party}
 
 ### Document-based requests
@@ -237,9 +250,10 @@ origin".
 In order to prevent the kinds of "multiple-nested scenarios" described in
 Section 4 of {{RFC7034}}, we must check the first-party origin against the
 origins of each of a document's ancestor browsing contexts' active documents.
-A document is considered a "first-party context" if and only if the origin
-of its URI is the same as the first-party origin, **and** if each of the
-active documents in its ancestors' browsing contexts' is a first-party context.
+A document is considered a "first-party context" if and only if the registerable
+domain of the origin of its URI is the same as the registerable domain of the
+first-party origin, **and** if each of the active documents in its ancestors'
+browsing contexts' is a first-party context.
 
 This definition has a few implications:
 
@@ -259,9 +273,10 @@ otherwise:
 
 1.  Let `document` be the document responsible for `request`.
 
-2.  If `document` is a first-party context, and `request`'s URI's origin is
-    the same as the origin of the URI of the active document in the top-level
-    browsing context of `document`, then return `First-Party`.
+2.  If `document` is a first-party context, and `request`'s URI's origin's
+    registerable domain is the same the registerable domain of the origin of the
+    URI of the active document in the top-level browsing context of `document`,
+    then return `First-Party`.
 
 3.  Return `Third-Party`.
 
@@ -278,8 +293,9 @@ Given a Document `document`, the following algorithm returns `First-Party` if
     1.  Let `document` be `document`'s parent browsing context's active
         document.
 
-    2.  If `document`'s URI's origin is not `top-origin` and `document` is not
-        an iframe srcdoc document, return `Third-Party`.
+    2.  If `document`'s URI's origin does not have the same registerable domain
+        as `top-origin` and `document` is not an iframe srcdoc document, return
+        `Third-Party`.
 
 4.  Return `First-Party`.
 
@@ -315,9 +331,10 @@ otherwise:
 
 2.  Let `document` be `worker`'s owner document.
 
-3.  If `document` is a first-party context, and `request`'s URI's origin is
-    the same as the origin of the URI of the active document in the top-level
-    browsing context of `document`, then return `First-Party`.
+3.  If `document` is a first-party context, and `request`'s URI's origin's
+    registerable domain is the same as the registerable domain of the origin of
+    the URI of the active document in the top-level browsing context of
+    `document`, then return `First-Party`.
 
 4.  Return `Third-Party`.
 
@@ -341,9 +358,9 @@ otherwise:
     1. Return `Third-Party` if `document` is not a first-party context (as
        defined in section 2.1.1).
 
-    2. Return `Third-Party` if `request`'s URI's origin is not the same as the
-       origin of the URI of the active document in the top-level browsing
-       context of `document`.
+    2. Return `Third-Party` if `request`'s URI's origin's registerable domain
+       is not the same as the registerable domain of the origin of the URI of
+       the active document in the top-level browsing context of `document`.
 
 3.  Return `First-Party`.
 
@@ -437,9 +454,10 @@ Alter Section 5.4 of {{RFC6265}} as follows:
       {{first-and-third-party}}).
 
     * If the cookie's `first-party-only-flag` is true, then exclude the cookie
-      if the HTTP request's method is not safe and the origin of the document
-      which originated the request is not the same as the origin of the HTTP
-      request's URI.
+      if the HTTP request's method is not safe and the registerable domain of
+      the origin of the URI of the document which originated the request is not
+      the same as the registerable domain of the origin of the HTTP request's
+      URI.
 
 Note that the modifications suggested here concern themselves only with the
 origins of ancestor browsing contexts and the origin of the resource being
@@ -456,7 +474,7 @@ In particular, note that content intended for embedding in a third-party context
 access to first-party-only cookies. Non-first-party cookies may be required in
 order to provide seamless functionality that relies on a user's state.
 
-Likewise, some forms of Single-Sign On might require authentication in a
+Likewise, some forms of Single-Sign-On might require authentication in a
 third-party context; these mechanisms will not function as intended with
 first-party-only cookies.
 

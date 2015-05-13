@@ -4,9 +4,9 @@
 
 HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
-Updates: 6265 (if approved)                               April 15, 2015
+Updates: 6265 (if approved)                                 May 13, 2015
 Intended status: Standards Track
-Expires: October 17, 2015
+Expires: November 14, 2015
 
 
                         First-Party-Only Cookies
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on October 17, 2015.
+   This Internet-Draft will expire on November 14, 2015.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-West                    Expires October 17, 2015                [Page 1]
+West                    Expires November 14, 2015               [Page 1]
 
-Internet-Draft             first-party-cookies                April 2015
+Internet-Draft             first-party-cookies                  May 2015
 
 
    the Trust Legal Provisions and are provided without warranty as
@@ -70,21 +70,21 @@ Table of Contents
    2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   4
      2.1.  First-party and Third-party Requests  . . . . . . . . . .   5
        2.1.1.  Document-based requests . . . . . . . . . . . . . . .   5
-       2.1.2.  Worker-based requests . . . . . . . . . . . . . . . .   6
+       2.1.2.  Worker-based requests . . . . . . . . . . . . . . . .   7
    3.  Server Requirements . . . . . . . . . . . . . . . . . . . . .   8
      3.1.  Grammar . . . . . . . . . . . . . . . . . . . . . . . . .   8
      3.2.  Semantics of the "First-Party-Only" Attribute (Non-
-           Normative)  . . . . . . . . . . . . . . . . . . . . . . .   8
-   4.  User Agent Requirements . . . . . . . . . . . . . . . . . . .   8
+           Normative)  . . . . . . . . . . . . . . . . . . . . . . .   9
+   4.  User Agent Requirements . . . . . . . . . . . . . . . . . . .   9
      4.1.  The "First-Party-Only" attribute  . . . . . . . . . . . .   9
      4.2.  Monkey-patching the Storage Model . . . . . . . . . . . .   9
-     4.3.  Monkey-patching the "Cookie" header . . . . . . . . . . .   9
+     4.3.  Monkey-patching the "Cookie" header . . . . . . . . . . .  10
    5.  Authoring Considerations  . . . . . . . . . . . . . . . . . .  10
      5.1.  Mashups and Widgets . . . . . . . . . . . . . . . . . . .  10
    6.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  10
-   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .  10
-     7.2.  Informative References  . . . . . . . . . . . . . . . . .  11
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .  12
    Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  12
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  12
 
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-West                    Expires October 17, 2015                [Page 2]
+West                    Expires November 14, 2015               [Page 2]
 
-Internet-Draft             first-party-cookies                April 2015
+Internet-Draft             first-party-cookies                  May 2015
 
 
    attribute will simply store a cookie which is returned in all
@@ -149,9 +149,10 @@ Internet-Draft             first-party-cookies                April 2015
 
 1.2.  Limitations
 
-   First-party-only cookies provide limited defense against one kind of
-   naive cross-site request forgery attack (CSRF).  It does not offer a
-   robust defense against CSRF as a general category of attack:
+   First-party-only cookies provide reasonable defense in depth against
+   CSRF attacks that rely on unsafe HTTP methods (like "POST").  They do
+   not offer a robust defense against CSRF as a general category of
+   attack:
 
    1.  Attackers can still pop up new windows or trigger top-level
        navigations in order to create a first-party context (as
@@ -164,17 +165,17 @@ Internet-Draft             first-party-cookies                April 2015
 
 
 
-
-West                    Expires October 17, 2015                [Page 3]
+West                    Expires November 14, 2015               [Page 3]
 
-Internet-Draft             first-party-cookies                April 2015
+Internet-Draft             first-party-cookies                  May 2015
 
 
-   In addition to the usual server-side defenses (CSRF tokens, etc),
-   client-side techniques such as those described in [app-isolation] may
-   prove effective against CSRF, and are certainly worth exploring in
-   combination with first-party-only cookies.  First-party-only cookies
-   on their own, however, are not a substantial barrier to CSRF attacks.
+   In addition to the usual server-side defenses (CSRF tokens, ensuring
+   that "safe" HTTP methods are idempotent, etc), client-side techniques
+   such as those described in [app-isolation] may prove effective
+   against CSRF, and are certainly worth exploring in combination with
+   first-party-only cookies.  First-party-only cookies on their own,
+   however, are not a barrier to CSRF attacks as a general category.
 
 1.3.  Examples
 
@@ -220,14 +221,24 @@ Internet-Draft             first-party-cookies                April 2015
 
 
 
-
-West                    Expires October 17, 2015                [Page 4]
+West                    Expires November 14, 2015               [Page 4]
 
-Internet-Draft             first-party-cookies                April 2015
+Internet-Draft             first-party-cookies                  May 2015
 
 
    "Safe" HTTP methods include "GET", "HEAD", "OPTIONS", and "TRACE", as
    defined in Section 4.2.1 of [RFC7231].
+
+   The term "public suffix" is defined in a note in Section 5.3 of
+   [RFC6265] as "a domain that is controlled by a public registry".  For
+   example, "example.com"'s public suffix is "com".  User agents SHOULD
+   use an up-to-date public suffix list, such as the one maintained by
+   Mozilla at [PSL].
+
+   An origin's "registerable domain" is the origin's host's public
+   suffix plus the label to its left.  That is,
+   "https://www.example.com"'s registerable domain is "example.com".
+   This concept is defined more rigorously in [PSL].
 
 2.1.  First-party and Third-party Requests
 
@@ -248,9 +259,10 @@ Internet-Draft             first-party-cookies                April 2015
    described in Section 4 of [RFC7034], we must check the first-party
    origin against the origins of each of a document's ancestor browsing
    contexts' active documents.  A document is considered a "first-party
-   context" if and only if the origin of its URI is the same as the
-   first-party origin, *and* if each of the active documents in its
-   ancestors' browsing contexts' is a first-party context.
+   context" if and only if the registerable domain of the origin of its
+   URI is the same as the registerable domain of the first-party origin,
+   *and* if each of the active documents in its ancestors' browsing
+   contexts' is a first-party context.
 
    This definition has a few implications:
 
@@ -259,6 +271,16 @@ Internet-Draft             first-party-cookies                April 2015
 
    o  Full-page navigations create new first-party contexts.  Notably,
       this includes both HTTP and "<meta>"-driven redirects.
+
+
+
+
+
+
+West                    Expires November 14, 2015               [Page 5]
+
+Internet-Draft             first-party-cookies                  May 2015
+
 
    o  "<iframe>"s do not create new first-party contexts; their requests
       MUST be considered in the context of the origin of the URL the
@@ -271,16 +293,9 @@ Internet-Draft             first-party-cookies                April 2015
    1.  Let "document" be the document responsible for "request".
 
    2.  If "document" is a first-party context, and "request"'s URI's
-       origin is the same as the origin of the URI of the active
-       document in the top-level browsing context of "document", then
-       return "First-Party".
-
-
-
-West                    Expires October 17, 2015                [Page 5]
-
-Internet-Draft             first-party-cookies                April 2015
-
+       origin's registerable domain is the same the registerable domain
+       of the origin of the URI of the active document in the top-level
+       browsing context of "document", then return "First-Party".
 
    3.  Return "Third-Party".
 
@@ -300,9 +315,9 @@ Internet-Draft             first-party-cookies                April 2015
        1.  Let "document" be "document"'s parent browsing context's
            active document.
 
-       2.  If "document"'s URI's origin is not "top-origin" and
-           "document" is not an iframe srcdoc document, return "Third-
-           Party".
+       2.  If "document"'s URI's origin does not have the same
+           registerable domain as "top-origin" and "document" is not an
+           iframe srcdoc document, return "Third-Party".
 
    4.  Return "First-Party".
 
@@ -311,6 +326,17 @@ Internet-Draft             first-party-cookies                April 2015
    document from "https://example.com" which has been sandboxed into a
    unique origin still creates a non-unique first-party context for
    subsequent requests.
+
+
+
+
+
+
+
+West                    Expires November 14, 2015               [Page 6]
+
+Internet-Draft             first-party-cookies                  May 2015
+
 
 2.1.2.  Worker-based requests
 
@@ -330,14 +356,6 @@ Internet-Draft             first-party-cookies                April 2015
    Dedicated workers are fairly straightforward to categorize, as each
    dedicated worker is bound to one and only one Document.  Requests
    generated from a dedicated worker (via "importScripts",
-
-
-
-West                    Expires October 17, 2015                [Page 6]
-
-Internet-Draft             first-party-cookies                April 2015
-
-
    "XMLHttpRequest", "fetch()", and so on) are first-party requests if
    and only if the worker's owner document is a first-party context.
 
@@ -350,9 +368,10 @@ Internet-Draft             first-party-cookies                April 2015
    2.  Let "document" be "worker"'s owner document.
 
    3.  If "document" is a first-party context, and "request"'s URI's
-       origin is the same as the origin of the URI of the active
-       document in the top-level browsing context of "document", then
-       return "First-Party".
+       origin's registerable domain is the same as the registerable
+       domain of the origin of the URI of the active document in the
+       top-level browsing context of "document", then return "First-
+       Party".
 
    4.  Return "Third-Party".
 
@@ -366,6 +385,15 @@ Internet-Draft             first-party-cookies                April 2015
    all associated documents are first-party contexts, then the worker is
    a first-party context.
 
+
+
+
+
+West                    Expires November 14, 2015               [Page 7]
+
+Internet-Draft             first-party-cookies                  May 2015
+
+
    To be more precise, given an HTTP request "request", the following
    algorithm returns "First-Party" if "request" is a first-party
    request, and "Third-Party" otherwise:
@@ -377,22 +405,12 @@ Internet-Draft             first-party-cookies                April 2015
        1.  Return "Third-Party" if "document" is not a first-party
            context (as defined in section 2.1.1).
 
-       2.  Return "Third-Party" if "request"'s URI's origin is not the
-           same as the origin of the URI of the active document in the
+       2.  Return "Third-Party" if "request"'s URI's origin's
+           registerable domain is not the same as the registerable
+           domain of the origin of the URI of the active document in the
            top-level browsing context of "document".
 
    3.  Return "First-Party".
-
-
-
-
-
-
-
-West                    Expires October 17, 2015                [Page 7]
-
-Internet-Draft             first-party-cookies                April 2015
-
 
 2.1.2.3.  Service Workers
 
@@ -425,6 +443,13 @@ Internet-Draft             first-party-cookies                April 2015
                          first-party-only-av / extension-av
    first-party-only-av = "First-Party-Only"
 
+
+
+West                    Expires November 14, 2015               [Page 8]
+
+Internet-Draft             first-party-cookies                  May 2015
+
+
 3.2.  Semantics of the "First-Party-Only" Attribute (Non-Normative)
 
    The "First-Party-Only" attribute limits the scope of the cookie such
@@ -442,13 +467,6 @@ Internet-Draft             first-party-cookies                April 2015
    This section describes extensions to [RFC6265] necessary in order to
    implement the client-side requirements of the "First-Party-Only"
    attribute.
-
-
-
-West                    Expires October 17, 2015                [Page 8]
-
-Internet-Draft             first-party-cookies                April 2015
-
 
 4.1.  The "First-Party-Only" attribute
 
@@ -479,6 +497,15 @@ Internet-Draft             first-party-cookies                April 2015
 
        2.  If the cookie's "first-party-only-flag" is set to true, and
            the request which generated the cookie is not a first-party
+
+
+
+
+West                    Expires November 14, 2015               [Page 9]
+
+Internet-Draft             first-party-cookies                  May 2015
+
+
            request (as defined in Section 2.1), then abort these steps
            and ignore the newly created cookie entirely.
 
@@ -497,17 +524,9 @@ Internet-Draft             first-party-cookies                April 2015
 
        *  If the cookie's "first-party-only-flag" is true, then exclude
           the cookie if the HTTP request's method is not safe and the
-
-
-
-
-West                    Expires October 17, 2015                [Page 9]
-
-Internet-Draft             first-party-cookies                April 2015
-
-
-          origin of the document which originated the request is not the
-          same as the origin of the HTTP request's URI.
+          registerable domain of the origin of the URI of the document
+          which originated the request is not the same as the
+          registerable domain of the origin of the HTTP request's URI.
 
    Note that the modifications suggested here concern themselves only
    with the origins of ancestor browsing contexts and the origin of the
@@ -525,7 +544,7 @@ Internet-Draft             first-party-cookies                April 2015
    cookies.  Non-first-party cookies may be required in order to provide
    seamless functionality that relies on a user's state.
 
-   Likewise, some forms of Single-Sign On might require authentication
+   Likewise, some forms of Single-Sign-On might require authentication
    in a third-party context; these mechanisms will not function as
    intended with first-party-only cookies.
 
@@ -535,6 +554,14 @@ Internet-Draft             first-party-cookies                April 2015
    address the general privacy concerns outlined in Section 7.1 of
    [RFC6265].  The attribute is set by the server, and serves to
    mitigate the risk of certain kinds of attacks that the server is
+
+
+
+West                    Expires November 14, 2015              [Page 10]
+
+Internet-Draft             first-party-cookies                  May 2015
+
+
    worried about.  The user is not involved in this decision.  Moreover,
    a number of side-channels exist which could allow a server to link
    distinct requests even in the absence of cookies.  Connection and/or
@@ -548,19 +575,15 @@ Internet-Draft             first-party-cookies                April 2015
    [HTML]     Hickson, I., "HTML Living Standard", n.d.,
               <https://html.spec.whatwg.org/>.
 
+   [PSL]      "Public Suffix List", n.d., <https://publicsuffix.org/
+              list/>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
    [RFC4790]  Newman, C., Duerst, M., and A. Gulbrandsen, "Internet
               Application Protocol Collation Registry", RFC 4790, March
               2007.
-
-
-
-West                    Expires October 17, 2015               [Page 10]
-
-Internet-Draft             first-party-cookies                April 2015
-
 
    [RFC5234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
               Specifications: ABNF", STD 68, RFC 5234, January 2008.
@@ -584,14 +607,24 @@ Internet-Draft             first-party-cookies                April 2015
    [WORKERS]  Hickson, I., "Web Workers", n.d.,
               <http://www.w3.org/TR/workers/>.
 
+
+
+
+
+
+
+West                    Expires November 14, 2015              [Page 11]
+
+Internet-Draft             first-party-cookies                  May 2015
+
+
 7.2.  Informative References
 
    [app-isolation]
               Chen, E., Bau, J., Reis, C., Barth, A., and C. Jackson,
               "App Isolation - Get the Security of Multiple Browsers
-              with Just One", n.d.,
-              <http://www.collinjackson.com/research/papers/
-              appisolation.pdf>.
+              with Just One", n.d., <http://www.collinjackson.com/
+              research/papers/appisolation.pdf>.
 
    [pixel-perfect]
               Stone, P., "Pixel Perfect Timing Attacks with HTML5",
@@ -607,16 +640,6 @@ Internet-Draft             first-party-cookies                April 2015
               Goodwin, M. and J. Walker, "SameDomain Cookie Flag", 2011,
               <http://people.mozilla.org/~mgoodwin/SameDomain/
               samedomain-latest.txt>.
-
-
-
-
-
-
-West                    Expires October 17, 2015               [Page 11]
-
-Internet-Draft             first-party-cookies                April 2015
-
 
 Appendix A.  Acknowledgements
 
@@ -646,27 +669,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-West                    Expires October 17, 2015               [Page 12]
+West                    Expires November 14, 2015              [Page 12]
