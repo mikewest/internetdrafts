@@ -274,7 +274,7 @@ otherwise:
 1.  Let `document` be the document responsible for `request`.
 
 2.  If `document` is a first-party context, and `request`'s URI's origin's
-    registerable domain is the same the registerable domain of the origin of the
+    registerable domain is the same as the registerable domain of the origin of the
     URI of the active document in the top-level browsing context of `document`,
     then return `First-Party`.
 
