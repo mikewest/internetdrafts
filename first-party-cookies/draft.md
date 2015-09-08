@@ -1,7 +1,7 @@
 ---
 title: First-Party-Only Cookies
 abbrev: first-party-cookies
-docname: draft-west-first-party-cookies-03
+docname: draft-west-first-party-cookies-04
 date: 2015
 category: std
 updates: 6265
@@ -20,6 +20,12 @@ author:
   organization: Google, Inc
   email: mkwst@google.com
   uri: https://mikewest.org/
+-
+  ins: M. Goodwin
+  name: Mark Goodwin
+  organization: Mozilla
+  email: mgoodwin@mozilla.com
+  uri: https://www.computerist.org/
 
 normative:
   HTML:
