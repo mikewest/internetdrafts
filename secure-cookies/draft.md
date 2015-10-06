@@ -1,5 +1,5 @@
 ---
-title: Deprecate Modification of 'secure' cookies from non-secure origins
+title: Deprecate modification of 'secure' cookies from non-secure origins
 abbrev: leave-secure-cookies-alone
 docname: draft-west-leave-secure-cookies-alone-00
 date: 2015

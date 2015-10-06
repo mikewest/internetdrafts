@@ -9,7 +9,7 @@ Intended status: Standards Track
 Expires: April 8, 2016
 
 
-   Deprecate Modification of 'secure' cookies from non-secure origins
+   Deprecate modification of 'secure' cookies from non-secure origins
                 draft-west-leave-secure-cookies-alone-00
 
 Abstract
