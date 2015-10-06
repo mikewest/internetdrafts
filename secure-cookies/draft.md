@@ -1,7 +1,7 @@
 ---
 title: Deprecate Modification of 'secure' cookies from non-secure origins
 abbrev: leave-secure-cookies-alone
-docname: draft-west-leave-secure-cookies-alone
+docname: draft-west-leave-secure-cookies-alone-00
 date: 2015
 category: std
 updates: 6265
@@ -22,15 +22,8 @@ author:
   uri: https://mikewest.org/
 
 normative:
-  HTML:
-    target: https://html.spec.whatwg.org/
-    title: HTML Living Standard
-    author:
-    -
-      ins: I. Hickson
-      name: Ian Hickson
-      organization: Google, Inc.
   RFC2119:
+  RFC3986:
   RFC6265:
 
 informative:
@@ -66,6 +59,7 @@ informative:
       ins: N. Weaver
       name: Nicholas Weaver
       organization: International Computer Science Institute and University of California, Berkeley
+  RFC6797:
 
 --- abstract
 
@@ -95,6 +89,8 @@ whose 'secure' flag is set.
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in {{RFC2119}}.
+
+The `scheme` component of a URI is defined in Section 3 of {{RFC3986}}.
 
 # Recommendations
 

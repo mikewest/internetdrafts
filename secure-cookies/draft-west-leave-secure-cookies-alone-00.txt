@@ -10,7 +10,7 @@ Expires: April 8, 2016
 
 
    Deprecate Modification of 'secure' cookies from non-secure origins
-                 draft-west-leave-secure-cookies-alone
+                draft-west-leave-secure-cookies-alone-00
 
 Abstract
 
@@ -66,9 +66,10 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   2
    3.  Recommendations . . . . . . . . . . . . . . . . . . . . . . .   2
-   4.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   3
-     4.1.  Normative References  . . . . . . . . . . . . . . . . . .   3
-     4.2.  Informative References  . . . . . . . . . . . . . . . . .   3
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   3
+   5.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   3
+     5.1.  Normative References  . . . . . . . . . . . . . . . . . .   3
+     5.2.  Informative References  . . . . . . . . . . . . . . . . .   3
    Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   4
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   4
 
@@ -85,14 +86,15 @@ Table of Contents
    for non-secure origins to influence the state of secure origins.
    Accordingly, this document recommends the deprecation and removal of
    non-secure origins' ability to write cookies with a 'secure' flag,
-   and their ability to overwrite cookies whose 'secure' flag is set
-   with a non-secure variant.
+   and their ability to overwrite cookies whose 'secure' flag is set.
 
 2.  Terminology and notation
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
+
+   The "scheme" component of a URI is defined in Section 3 of [RFC3986].
 
 3.  Recommendations
 
@@ -101,10 +103,8 @@ Table of Contents
    1.  After step 8 of the current algorithm, which sets the cookie's
        "secure-only-flag", execute the following step:
 
-       1.  If the "scheme" component of the "request-uri" is not
+       8.  If the "scheme" component of the "request-uri" is not
            "https", and the cookie's "secure-only-flag" is "true", then
-           abort these steps and ignore the newly created cookie
-           entirely.
 
 
 
@@ -114,44 +114,46 @@ West                      Expires April 8, 2016                 [Page 2]
 Internet-Draft         leave-secure-cookies-alone           October 2015
 
 
+           abort these steps and ignore the newly created cookie
+           entirely.
+
    2.  Before step 3 of step 11 of the current algorithm, execute the
        following step:
 
-       1.  If the "scheme" component of the "request-uri" is not
+       3.  If the "scheme" component of the "request-uri" is not
            "https", and the "old-cookie"'s "secure-only-flag" is set,
            then abort these steps and ignore the newly create cookie
            entirely.
 
-4.  References
+4.  Security Considerations
 
-4.1.  Normative References
+   This specification increases a site's confidence that secure cookies
+   it sets will remain unmodified by insecure pages on hosts which it
+   'domain-match's.  Ideally, sites would use HSTS as described in
+   [RFC6797] to defend more robustly against the dangers of non-secure
+   transport in general, but until adoption of that protection becomes
+   ubiquitous, this deprecation this document recommends will mitigate a
+   number of risks.
 
-   [HTML]     Hickson, I., "HTML Living Standard", n.d.,
-              <https://html.spec.whatwg.org/>.
+5.  References
+
+5.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
               RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
 
+   [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
+              Resource Identifier (URI): Generic Syntax", STD 66, RFC
+              3986, DOI 10.17487/RFC3986, January 2005,
+              <http://www.rfc-editor.org/info/rfc3986>.
+
    [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
               DOI 10.17487/RFC6265, April 2011,
               <http://www.rfc-editor.org/info/rfc6265>.
 
-   [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454, DOI 10
-              .17487/RFC6454, December 2011,
-              <http://www.rfc-editor.org/info/rfc6454>.
-
-   [RFC7034]  Ross, D. and T. Gondrom, "HTTP Header Field X-Frame-
-              Options", RFC 7034, DOI 10.17487/RFC7034, October 2013,
-              <http://www.rfc-editor.org/info/rfc7034>.
-
-   [RFC7231]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
-              Protocol (HTTP/1.1): Semantics and Content", RFC 7231, DOI
-              10.17487/RFC7231, June 2014,
-              <http://www.rfc-editor.org/info/rfc7231>.
-
-4.2.  Informative References
+5.2.  Informative References
 
    [COOKIE-INTEGRITY]
               Zheng, X., Jiang, J., Liang, J., Duan, H., Chen, S., Wan,
@@ -163,12 +165,15 @@ Internet-Draft         leave-secure-cookies-alone           October 2015
 
 
 
-
-
 West                      Expires April 8, 2016                 [Page 3]
 
 Internet-Draft         leave-secure-cookies-alone           October 2015
 
+
+   [RFC6797]  Hodges, J., Jackson, C., and A. Barth, "HTTP Strict
+              Transport Security (HSTS)", RFC 6797, DOI 10.17487/
+              RFC6797, November 2012,
+              <http://www.rfc-editor.org/info/rfc6797>.
 
 Appendix A.  Acknowledgements
 
@@ -183,11 +188,6 @@ Author's Address
 
    Email: mkwst@google.com
    URI:   https://mikewest.org/
-
-
-
-
-
 
 
 
