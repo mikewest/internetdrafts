@@ -4,13 +4,13 @@
 
 HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
-Updates: 6265 (if approved)                              October 6, 2015
+Updates: 6265 (if approved)                              October 8, 2015
 Intended status: Standards Track
-Expires: April 8, 2016
+Expires: April 10, 2016
 
 
    Deprecate modification of 'secure' cookies from non-secure origins
-                draft-west-leave-secure-cookies-alone-00
+                draft-west-leave-secure-cookies-alone-01
 
 Abstract
 
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 8, 2016.
+   This Internet-Draft will expire on April 10, 2016.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-West                      Expires April 8, 2016                 [Page 1]
+West                     Expires April 10, 2016                 [Page 1]
 
 Internet-Draft         leave-secure-cookies-alone           October 2015
 
@@ -103,33 +103,33 @@ Table of Contents
    1.  After step 8 of the current algorithm, which sets the cookie's
        "secure-only-flag", execute the following step:
 
-       8.  If the "scheme" component of the "request-uri" is not
-           "https", and the cookie's "secure-only-flag" is "true", then
+       1.  If the "scheme" component of the "request-uri" does not
+           denote a "secure" protocol (as defined by the user agent),
 
 
 
 
-West                      Expires April 8, 2016                 [Page 2]
+West                     Expires April 10, 2016                 [Page 2]
 
 Internet-Draft         leave-secure-cookies-alone           October 2015
 
 
-           abort these steps and ignore the newly created cookie
-           entirely.
+           and the cookie's "secure-only-flag" is "true", then abort
+           these steps and ignore the newly created cookie entirely.
 
    2.  Before step 3 of step 11 of the current algorithm, execute the
        following step:
 
-       3.  If the "scheme" component of the "request-uri" is not
-           "https", and the "old-cookie"'s "secure-only-flag" is set,
-           then abort these steps and ignore the newly create cookie
-           entirely.
+       1.  If the "scheme" component of the "request-uri" does not
+           denote a "secure" protocol (as defined by the user agent),
+           and the "old-cookie"'s "secure-only-flag" is set, then abort
+           these steps and ignore the newly create cookie entirely.
 
 4.  Security Considerations
 
    This specification increases a site's confidence that secure cookies
    it sets will remain unmodified by insecure pages on hosts which it
-   'domain-match's.  Ideally, sites would use HSTS as described in
+   domain-matches.  Ideally, sites would use HSTS as described in
    [RFC6797] to defend more robustly against the dangers of non-secure
    transport in general, but until adoption of that protection becomes
    ubiquitous, this deprecation this document recommends will mitigate a
@@ -165,7 +165,7 @@ Internet-Draft         leave-secure-cookies-alone           October 2015
 
 
 
-West                      Expires April 8, 2016                 [Page 3]
+West                     Expires April 10, 2016                 [Page 3]
 
 Internet-Draft         leave-secure-cookies-alone           October 2015
 
@@ -221,4 +221,4 @@ Author's Address
 
 
 
-West                      Expires April 8, 2016                 [Page 4]
+West                     Expires April 10, 2016                 [Page 4]
