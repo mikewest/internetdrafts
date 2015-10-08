@@ -4,8 +4,8 @@ kramdown-rfc2629 ?= kramdown-rfc2629
 idnits ?= idnits
 
 title = west-cookie-prefixes
-latest = $(shell (ls draft-${title}-*.xml || echo "draft-${title}-00.xml") | sort | tail -1)
-version = $(shell basename ${latest} .xml | awk -F- '{print $$NF}')
+latest = $(shell (ls draft-${title}-*.txt || echo "draft-${title}-00.xml") | sort | tail -1)
+version = $(shell basename ${latest} .txt | awk -F- '{print $$NF}')
 
 target = draft-$(title)-$(version)
 prev = draft-$(title)-$(shell printf "%.2d" `echo ${version}-1 | bc`)
@@ -19,7 +19,7 @@ clean:
 	rm -f $(target).html $(target).txt
 
 next: 
-	cp $(target).xml $(next).xml
+	cp $(target).txt $(next).txt
 	sed -i '' -e"s/$(target)/$(next)/" draft.md
 
 diff: 

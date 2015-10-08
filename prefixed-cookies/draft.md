@@ -1,7 +1,7 @@
 ---
 title: Cookie Prefixes
 abbrev: cookie-prefixes
-docname: draft-west-cookie-prefixes-00
+docname: draft-west-cookie-prefixes-01
 date: 2015
 category: std
 updates: 6265
@@ -80,27 +80,33 @@ While the following would be accepted:
 If a cookie's name begins with "$Origin-", the cookie MUST be:
 
 1.  Sent only to hosts which are identical to the host which set the cookie.
-    That is, a cookie named "$Origin-cookie1" set from `https://example.com` MUST
-    NOT contain a `Domain` attribute, and will therefore sent only to
-    `example.com`, and not to `subdomain.example.com`.
+    That is, a cookie named "$Origin-cookie1" set from `https://example.com`
+    MUST NOT contain a `Domain` attribute (and will therefore sent only to
+    `example.com`, and not to `subdomain.example.com`).
 
-2.  Sent only to secure origins, if set from a secure origin. That is, a cookie
+2.  Sent to every request for a host. That is, a cookie named "$Origin-cookie1"
+    MUST contain a `Path` attribute with a value of "/".
+
+3.  Sent only to secure origins, if set from a secure origin. That is, a cookie
     named "$Origin-cookie1" set from `https://example.com` MUST contain a
-    `Secure` attribute, as it was set from a URI whose `scheme` is "HTTPS".
+    `Secure` attribute, as it was set from a URI whose `scheme` is considered
+    "secure" by the user agent.
 
 The following cookies would always be rejected:
 
+    Set-Cookie: $Origin-SID=12345
+    Set-Cookie: $Origin-SID=12345; Secure
     Set-Cookie: $Origin-SID=12345; Domain=example.com
     Set-Cookie: $Origin-SID=12345; Secure; Domain=example.com
 
 The following would be rejected, if set from a secure origin, but accepted if
 set from a non-secure origin:
 
-    Set-Cookie: $Origin-SID=12345
+    Set-Cookie: $Origin-SID=12345; Path=/
 
 While the following would be accepted, if set from a secure origin:
 
-    Set-Cookie: $Origin-SID=12345; Secure
+    Set-Cookie: $Origin-SID=12345; Secure; Path=/
 
 # User Agent Requirements
 
@@ -111,12 +117,16 @@ following steps to perform the prefix checks this document specifies:
 
 11. If the `cookie-name` begins with the string "$Origin-", then:
 
-    1.  If the `scheme` component of the `request-uri` is "HTTPS", and the
-        cookie's `secure-only-flag` is `false`, abort these steps and ignore
-        the cookie entirely.
+    1.  If the `scheme` component of the `request-uri` denotes a "secure"
+        protocol (as determined by the user agent), and the cookie's
+        `secure-only-flag` is `false`, abort these steps and ignore the cookie
+        entirely.
 
     2.  If the cookie's `host-only-flag` is `false`, abort these steps and
         ignore the cookie entirely.
+
+    3.  If the cookie's `path` is not "/", abort these steps and ignore the
+        cookie entirely.
 
 12. If the `cookie-name` begins with the string "$Secure-", and the cookie's
     `secure-only-flag` is `false`, abort these steps and ignore the cookie
