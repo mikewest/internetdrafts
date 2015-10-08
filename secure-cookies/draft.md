@@ -1,7 +1,7 @@
 ---
 title: Deprecate modification of 'secure' cookies from non-secure origins
 abbrev: leave-secure-cookies-alone
-docname: draft-west-leave-secure-cookies-alone-00
+docname: draft-west-leave-secure-cookies-alone-01
 date: 2015
 category: std
 updates: 6265
@@ -99,21 +99,23 @@ This document updates Section 5.3 of {{RFC6265}} as follows:
 1.  After step 8 of the current algorithm, which sets the cookie's
     `secure-only-flag`, execute the following step:
 
-    9.  If the `scheme` component of the `request-uri` is not "https", and
-        the cookie's `secure-only-flag` is `true`, then abort these steps
-        and ignore the newly created cookie entirely.
+    9.  If the `scheme` component of the `request-uri` does not denote a
+        "secure" protocol (as defined by the user agent), and the cookie's
+        `secure-only-flag` is `true`, then abort these steps and ignore the
+        newly created cookie entirely.
 
 2.  Before step 3 of step 11 of the current algorithm, execute the following
     step:
 
-    3.  If the `scheme` component of the `request-uri` is not "https", and
-        the `old-cookie`'s `secure-only-flag` is set, then abort these steps
-        and ignore the newly create cookie entirely.
+    3.  If the `scheme` component of the `request-uri` does not denote a
+        "secure" protocol (as defined by the user agent), and the
+        `old-cookie`'s `secure-only-flag` is set, then abort these steps and
+        ignore the newly create cookie entirely.
 
 # Security Considerations
 
 This specification increases a site's confidence that secure cookies it sets
-will remain unmodified by insecure pages on hosts which it 'domain-match's.
+will remain unmodified by insecure pages on hosts which it domain-matches.
 Ideally, sites would use HSTS as described in {{RFC6797}} to defend more
 robustly against the dangers of non-secure transport in general, but until
 adoption of that protection becomes ubiquitous, this deprecation this document

@@ -1,0 +1,224 @@
+
+
+
+
+HTTPbis                                                          M. West
+Internet-Draft                                               Google, Inc
+Updates: 6265 (if approved)                              October 8, 2015
+Intended status: Standards Track
+Expires: April 10, 2016
+
+
+   Deprecate modification of 'secure' cookies from non-secure origins
+                draft-west-leave-secure-cookies-alone-01
+
+Abstract
+
+   This document updates RFC6265 by removing the ability for a non-
+   secure origin to set cookies with a 'secure' flag, and to overwrite
+   cookies whose 'secure' flag is set.  This deprecation improves the
+   isolation between HTTP and HTTPS origins, and reduces the risk of
+   malicious interference.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on April 10, 2016.
+
+Copyright Notice
+
+   Copyright (c) 2015 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+
+
+
+
+West                     Expires April 10, 2016                 [Page 1]
+
+Internet-Draft         leave-secure-cookies-alone           October 2015
+
+
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   2
+   3.  Recommendations . . . . . . . . . . . . . . . . . . . . . . .   2
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   3
+   5.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   3
+     5.1.  Normative References  . . . . . . . . . . . . . . . . . .   3
+     5.2.  Informative References  . . . . . . . . . . . . . . . . .   3
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   4
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   4
+
+1.  Introduction
+
+   Section 8.5 and Section 8.6 of [RFC6265] spell out some of the
+   drawbacks of cookies' implementation: due to historical accident,
+   non-secure origins can set cookies which will be delivered to secure
+   origins in a manner indistinguishable from cookies set by that origin
+   itself.  This enables a number of attacks, which have been recently
+   spelled out in some detail in [COOKIE-INTEGRITY].
+
+   We can mitigate the risk of these attacks by making it more difficult
+   for non-secure origins to influence the state of secure origins.
+   Accordingly, this document recommends the deprecation and removal of
+   non-secure origins' ability to write cookies with a 'secure' flag,
+   and their ability to overwrite cookies whose 'secure' flag is set.
+
+2.  Terminology and notation
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
+   The "scheme" component of a URI is defined in Section 3 of [RFC3986].
+
+3.  Recommendations
+
+   This document updates Section 5.3 of [RFC6265] as follows:
+
+   1.  After step 8 of the current algorithm, which sets the cookie's
+       "secure-only-flag", execute the following step:
+
+       1.  If the "scheme" component of the "request-uri" does not
+           denote a "secure" protocol (as defined by the user agent),
+
+
+
+
+West                     Expires April 10, 2016                 [Page 2]
+
+Internet-Draft         leave-secure-cookies-alone           October 2015
+
+
+           and the cookie's "secure-only-flag" is "true", then abort
+           these steps and ignore the newly created cookie entirely.
+
+   2.  Before step 3 of step 11 of the current algorithm, execute the
+       following step:
+
+       1.  If the "scheme" component of the "request-uri" does not
+           denote a "secure" protocol (as defined by the user agent),
+           and the "old-cookie"'s "secure-only-flag" is set, then abort
+           these steps and ignore the newly create cookie entirely.
+
+4.  Security Considerations
+
+   This specification increases a site's confidence that secure cookies
+   it sets will remain unmodified by insecure pages on hosts which it
+   domain-matches.  Ideally, sites would use HSTS as described in
+   [RFC6797] to defend more robustly against the dangers of non-secure
+   transport in general, but until adoption of that protection becomes
+   ubiquitous, this deprecation this document recommends will mitigate a
+   number of risks.
+
+5.  References
+
+5.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
+              RFC2119, March 1997,
+              <http://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
+              Resource Identifier (URI): Generic Syntax", STD 66, RFC
+              3986, DOI 10.17487/RFC3986, January 2005,
+              <http://www.rfc-editor.org/info/rfc3986>.
+
+   [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
+              DOI 10.17487/RFC6265, April 2011,
+              <http://www.rfc-editor.org/info/rfc6265>.
+
+5.2.  Informative References
+
+   [COOKIE-INTEGRITY]
+              Zheng, X., Jiang, J., Liang, J., Duan, H., Chen, S., Wan,
+              T., and N. Weaver, "Cookies Lack Integrity: Real-World
+              Implications", n.d., <https://www.usenix.org/system/files/
+              conference/usenixsecurity15/sec15-paper-zheng.pdf>.
+
+
+
+
+
+West                     Expires April 10, 2016                 [Page 3]
+
+Internet-Draft         leave-secure-cookies-alone           October 2015
+
+
+   [RFC6797]  Hodges, J., Jackson, C., and A. Barth, "HTTP Strict
+              Transport Security (HSTS)", RFC 6797, DOI 10.17487/
+              RFC6797, November 2012,
+              <http://www.rfc-editor.org/info/rfc6797>.
+
+Appendix A.  Acknowledgements
+
+   Richard Barnes encouraged a formalization of the deprecation
+   proposal.  [COOKIE-INTEGRITY] was a useful exploration of the issues
+   [RFC6265] described.
+
+Author's Address
+
+   Mike West
+   Google, Inc
+
+   Email: mkwst@google.com
+   URI:   https://mikewest.org/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+West                     Expires April 10, 2016                 [Page 4]
