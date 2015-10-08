@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference  anchor='RFC1123' target='http://www.rfc-editor.org/info/rfc1123'>
+<front>
+<title>Requirements for Internet Hosts - Application and Support</title>
+<author initials='R.' surname='Braden' fullname='R. Braden' role='editor'><organization /></author>
+<date year='1989' month='October' />
+<abstract><t>This RFC is an official specification for the Internet community.  It incorporates by reference, amends, corrects, and supplements the primary protocol standards documents relating to hosts.  [STANDARDS-TRACK]</t></abstract>
+</front>
+<seriesInfo name='STD' value='3'/>
+<seriesInfo name='RFC' value='1123'/>
+<seriesInfo name='DOI' value='10.17487/RFC1123'/>
+</reference>

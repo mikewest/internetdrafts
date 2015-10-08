@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference  anchor='RFC1034' target='http://www.rfc-editor.org/info/rfc1034'>
+<front>
+<title>Domain names - concepts and facilities</title>
+<author initials='P.V.' surname='Mockapetris' fullname='P.V. Mockapetris'><organization /></author>
+<date year='1987' month='November' />
+<abstract><t>This RFC is the revised basic definition of The Domain Name System.  It obsoletes RFC-882.  This memo describes the domain style names and their used for host address look up and electronic mail forwarding.  It discusses the clients and servers in the domain name system and the protocol used between them.</t></abstract>
+</front>
+<seriesInfo name='STD' value='13'/>
+<seriesInfo name='RFC' value='1034'/>
+<seriesInfo name='DOI' value='10.17487/RFC1034'/>
+</reference>

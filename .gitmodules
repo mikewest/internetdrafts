@@ -1,0 +1,3 @@
+[submodule "RFCbootstrap"]
+	path = RFCbootstrap
+	url = git@github.com:mnot/RFCbootstrap.git

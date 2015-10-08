@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference  anchor='RFC2965' target='http://www.rfc-editor.org/info/rfc2965'>
+<front>
+<title>HTTP State Management Mechanism</title>
+<author initials='D.' surname='Kristol' fullname='D. Kristol'><organization /></author>
+<author initials='L.' surname='Montulli' fullname='L. Montulli'><organization /></author>
+<date year='2000' month='October' />
+<abstract><t>This document specifies a way to create a stateful session with Hypertext Transfer Protocol (HTTP) requests and responses.  [STANDARDS-TRACK]</t></abstract>
+</front>
+<seriesInfo name='RFC' value='2965'/>
+<seriesInfo name='DOI' value='10.17487/RFC2965'/>
+</reference>

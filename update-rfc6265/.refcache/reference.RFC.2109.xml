@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference  anchor='RFC2109' target='http://www.rfc-editor.org/info/rfc2109'>
+<front>
+<title>HTTP State Management Mechanism</title>
+<author initials='D.' surname='Kristol' fullname='D. Kristol'><organization /></author>
+<author initials='L.' surname='Montulli' fullname='L. Montulli'><organization /></author>
+<date year='1997' month='February' />
+<abstract><t>This document specifies a way to create a stateful session with HTTP requests and responses.  It describes two new headers, Cookie and Set- Cookie, which carry state information between participating origin servers and user agents.  The method described here differs from Netscape's Cookie proposal, but it can interoperate with HTTP/1.0 user agents that use Netscape's method.  [STANDARDS-TRACK]</t></abstract>
+</front>
+<seriesInfo name='RFC' value='2109'/>
+<seriesInfo name='DOI' value='10.17487/RFC2109'/>
+</reference>
