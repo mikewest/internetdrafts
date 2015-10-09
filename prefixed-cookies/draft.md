@@ -1,7 +1,7 @@
 ---
 title: Cookie Prefixes
 abbrev: cookie-prefixes
-docname: draft-west-cookie-prefixes-01
+docname: draft-west-cookie-prefixes-02
 date: 2015
 category: std
 updates: 6265
@@ -108,6 +108,22 @@ While the following would be accepted, if set from a secure origin:
 
     Set-Cookie: $Origin-SID=12345; Secure; Path=/
 
+## The "$SecureOrigin-" prefix
+
+If a cookie's name begins with "$SecureOrigin-", the cookie MUST be:
+
+1.  Sent only to hosts which are identical to the host which set the cookie.
+    That is, a cookie named "$SecureOrigin-cookie1" set from `https://example.com`
+    MUST NOT contain a `Domain` attribute (and will therefore sent only to
+    `example.com`, and not to `subdomain.example.com`).
+
+2.  Sent to every request for a host. That is, a cookie named "$SecureOrigin-cookie1"
+    MUST contain a `Path` attribute with a value of "/".
+
+3.  Sent only to secure origins. That is, a cookie named "$SecureOrigin-cookie1"
+    MUST contain a `Secure` attribute.
+
+
 # User Agent Requirements
 
 This document updates Section 5.3 of {{RFC6265}} as follows:
@@ -131,6 +147,17 @@ following steps to perform the prefix checks this document specifies:
 12. If the `cookie-name` begins with the string "$Secure-", and the cookie's
     `secure-only-flag` is `false`, abort these steps and ignore the cookie
     entirely.
+
+13. If the `cookie-name` begins with the string "$SecureOrigin-", then:
+
+    1.  If the  cookie's `secure-only-flag` is `false`, abort these steps
+        and ignore the cookie entirely.
+
+    2.  If the cookie's `host-only-flag` is `false`, abort these steps and
+        ignore the cookie entirely.
+
+    3.  If the cookie's `path` is not "/", abort these steps and ignore the
+        cookie entirely.
 
 # Aesthetic Considerations
 
