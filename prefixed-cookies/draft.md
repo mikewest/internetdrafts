@@ -1,7 +1,7 @@
 ---
 title: Cookie Prefixes
 abbrev: cookie-prefixes
-docname: draft-west-cookie-prefixes-02
+docname: draft-west-cookie-prefixes-03
 date: 2015
 category: std
 updates: 6265
@@ -25,6 +25,35 @@ normative:
   RFC2119:
   RFC3986:
   RFC6265:
+
+informative:
+  POWERFUL-FEATURES:
+    target: https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features
+    title: "Prefer Secure Origins for Powerful New Features"
+    author:
+      ins: C. Palmer
+      name: Chris Palmer
+
+  SECURE-CONTEXTS:
+    target: https://w3c.github.io/webappsec-secure-contexts/
+    title: "Secure Contexts"
+    author:
+      ins: M. West
+      name: Mike West
+
+  DEPRECATING-HTTP:
+    target: https://blog.mozilla.org/security/2015/04/30/deprecating-non-secure-http/
+    title: "Deprecating Non-Secure HTTP"
+    author:
+      ins: R. Barnes
+      name: Richard Barnes
+
+  Lawrence2015:
+    target: http://textslashplain.com/2015/10/09/duct-tape-and-baling-wirecookie-prefixes/
+    title: "Duct Tape and Baling Wire -- Cookie Prefixes"
+    author:
+      ins: E. Lawrence
+      name: Eric Lawrence
 
 --- abstract
 
@@ -64,65 +93,51 @@ The `scheme` component of a URI is defined in Section 3 of {{RFC3986}}.
 
 ## The "$Secure-" prefix
 
-If a cookie's name begins with "$Secure-", the cookie MUST be set with a
-`Secure` attribute.
+If a cookie's name begins with "$Secure-", the cookie MUST be:
 
-The following cookie would be rejected:
+1.  Set with a `Secure` attribute
+
+2.  Set from a URI whose `scheme` is considered "secure" by the user agent.
+
+The following cookie would be rejected when set from any origin, as the `Secure`
+flag is not set
 
     Set-Cookie: $Secure-SID=12345; Domain=example.com
 
-While the following would be accepted:
+While the following would be accepted if set from a secure origin (e.g.
+`https://example.com/`), and rejected otherwise:
 
     Set-Cookie: $Secure-SID=12345; Secure; Domain=example.com
 
-## The "$Origin-" prefix
+## The "$Host-" prefix
 
-If a cookie's name begins with "$Origin-", the cookie MUST be:
+If a cookie's name begins with "$Host-", the cookie MUST be:
 
-1.  Sent only to hosts which are identical to the host which set the cookie.
-    That is, a cookie named "$Origin-cookie1" set from `https://example.com`
-    MUST NOT contain a `Domain` attribute (and will therefore sent only to
-    `example.com`, and not to `subdomain.example.com`).
+1.  Set with a `Secure` attribute
 
-2.  Sent to every request for a host. That is, a cookie named "$Origin-cookie1"
+2.  Set from a URI whose `scheme` is considered "secure" by the user agent.
+
+3.  Sent only to the host which set the cookie. That is, a cookie named
+    "$Host-cookie1" set from `https://example.com` MUST NOT contain a `Domain`
+    attribute (and will therefore be sent only to `example.com`, and not to
+    `subdomain.example.com`).
+
+4.  Sent to every request for a host. That is, a cookie named"$Host-cookie1"
     MUST contain a `Path` attribute with a value of "/".
-
-3.  Sent only to secure origins, if set from a secure origin. That is, a cookie
-    named "$Origin-cookie1" set from `https://example.com` MUST contain a
-    `Secure` attribute, as it was set from a URI whose `scheme` is considered
-    "secure" by the user agent.
 
 The following cookies would always be rejected:
 
-    Set-Cookie: $Origin-SID=12345
-    Set-Cookie: $Origin-SID=12345; Secure
-    Set-Cookie: $Origin-SID=12345; Domain=example.com
-    Set-Cookie: $Origin-SID=12345; Secure; Domain=example.com
+    Set-Cookie: $Host-SID=12345
+    Set-Cookie: $Host-SID=12345; Secure
+    Set-Cookie: $Host-SID=12345; Secure; Path=/
+    Set-Cookie: $Host-SID=12345; Domain=example.com
+    Set-Cookie: $Host-SID=12345; Domain=example.com; Path=/
+    Set-Cookie: $Host-SID=12345; Secure; Domain=example.com; Path=/
 
-The following would be rejected, if set from a secure origin, but accepted if
-set from a non-secure origin:
+While the following would be accepted if set from a secure origin (e.g.
+`https://example.com/`), and rejected otherwise:
 
-    Set-Cookie: $Origin-SID=12345; Path=/
-
-While the following would be accepted, if set from a secure origin:
-
-    Set-Cookie: $Origin-SID=12345; Secure; Path=/
-
-## The "$SecureOrigin-" prefix
-
-If a cookie's name begins with "$SecureOrigin-", the cookie MUST be:
-
-1.  Sent only to hosts which are identical to the host which set the cookie.
-    That is, a cookie named "$SecureOrigin-cookie1" set from `https://example.com`
-    MUST NOT contain a `Domain` attribute (and will therefore sent only to
-    `example.com`, and not to `subdomain.example.com`).
-
-2.  Sent to every request for a host. That is, a cookie named "$SecureOrigin-cookie1"
-    MUST contain a `Path` attribute with a value of "/".
-
-3.  Sent only to secure origins. That is, a cookie named "$SecureOrigin-cookie1"
-    MUST contain a `Secure` attribute.
-
+    Set-Cookie: $Host-SID=12345; Secure; Path=/
 
 # User Agent Requirements
 
@@ -131,39 +146,44 @@ This document updates Section 5.3 of {{RFC6265}} as follows:
 After step 10 of the current algorithm, the cookies flags are set. Insert the
 following steps to perform the prefix checks this document specifies:
 
-11. If the `cookie-name` begins with the string "$Origin-", then:
+11.  If the `cookie-name` begins with the string "$Secure-" or "$Host-",
+     abort these steps and ignore the cookie entirely unless both of the
+     following conditions are true:
 
-    1.  If the `scheme` component of the `request-uri` denotes a "secure"
-        protocol (as determined by the user agent), and the cookie's
-        `secure-only-flag` is `false`, abort these steps and ignore the cookie
-        entirely.
+     *   The cookie's `secure-only-flag` is `true`
 
-    2.  If the cookie's `host-only-flag` is `false`, abort these steps and
-        ignore the cookie entirely.
+     *   `request-uri`'s `scheme` component denotes a "secure" protocol (as
+         determined by the user agent)
 
-    3.  If the cookie's `path` is not "/", abort these steps and ignore the
-        cookie entirely.
+12.  If the `cookie-name` begins with the string "$Host-", abort these
+     steps and ignore the cookie entirely unless the following conditions are
+     true:
 
-12. If the `cookie-name` begins with the string "$Secure-", and the cookie's
-    `secure-only-flag` is `false`, abort these steps and ignore the cookie
-    entirely.
+     *   The cookie's `host-only-flag` is `true`
 
-13. If the `cookie-name` begins with the string "$SecureOrigin-", then:
-
-    1.  If the  cookie's `secure-only-flag` is `false`, abort these steps
-        and ignore the cookie entirely.
-
-    2.  If the cookie's `host-only-flag` is `false`, abort these steps and
-        ignore the cookie entirely.
-
-    3.  If the cookie's `path` is not "/", abort these steps and ignore the
-        cookie entirely.
+     *   The cookie's `path` is "/"
 
 # Aesthetic Considerations
 
 Prefixes are ugly. :(
 
 # Security Considerations
+
+## Secure Origins Only
+
+It would certainly be possible to extend this scheme to non-secure origins (and
+an earlier draft of this document did exactly that). User agents, however, are
+slowly moving towards a world where features with security implications are
+available only over secure transport (see {{SECURE-CONTEXTS}},
+{{POWERFUL-FEATURES}}, and {{DEPRECATING-HTTP}}). This document follows that
+trend, limiting exciting new cookie properties to secure transport in order to
+ensure that user agents can make claims which middlemen will have a hard time
+violating.
+
+To that end, note that the requirements listed above mean that prefixed cookies
+will be rejected entirely if a non-secure origin attempts to set them.
+
+## Limitations
 
 This scheme gives no assurance to the server that the restrictions on cookie
 names are enforced. Servers could certainly probe the user agent's functionality
@@ -174,5 +194,6 @@ such assurances were deemed necessary.
 
 # Acknowledgements
 
-Eric Lawrence had this idea a million years ago. Devdatta Akhawe helped justify
-the potential impact of the scheme on real-world websites.
+Eric Lawrence had this idea a million years ago, and wrote about its genesis in
+{{Lawrence2015}}. Devdatta Akhawe helped justify the potential impact of the
+scheme on real-world websites.
