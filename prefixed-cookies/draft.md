@@ -1,7 +1,7 @@
 ---
 title: Cookie Prefixes
 abbrev: cookie-prefixes
-docname: draft-west-cookie-prefixes-03
+docname: draft-west-cookie-prefixes-04
 date: 2015
 category: std
 updates: 6265
@@ -122,14 +122,13 @@ If a cookie's name begins with "$Host-", the cookie MUST be:
     attribute (and will therefore be sent only to `example.com`, and not to
     `subdomain.example.com`).
 
-4.  Sent to every request for a host. That is, a cookie named"$Host-cookie1"
+4.  Sent to every request for a host. That is, a cookie named "$Host-cookie1"
     MUST contain a `Path` attribute with a value of "/".
 
 The following cookies would always be rejected:
 
     Set-Cookie: $Host-SID=12345
     Set-Cookie: $Host-SID=12345; Secure
-    Set-Cookie: $Host-SID=12345; Secure; Path=/
     Set-Cookie: $Host-SID=12345; Domain=example.com
     Set-Cookie: $Host-SID=12345; Domain=example.com; Path=/
     Set-Cookie: $Host-SID=12345; Secure; Domain=example.com; Path=/
