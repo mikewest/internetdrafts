@@ -1,7 +1,7 @@
 ---
 title: Deprecate modification of 'secure' cookies from non-secure origins
 abbrev: leave-secure-cookies-alone
-docname: draft-west-leave-secure-cookies-alone-01
+docname: draft-west-leave-secure-cookies-alone-02
 date: 2015
 category: std
 updates: 6265
@@ -104,13 +104,43 @@ This document updates Section 5.3 of {{RFC6265}} as follows:
         `secure-only-flag` is `true`, then abort these steps and ignore the
         newly created cookie entirely.
 
-2.  Before step 3 of step 11 of the current algorithm, execute the following
-    step:
+2.  Before step 11, execute the following step:
 
-    3.  If the `scheme` component of the `request-uri` does not denote a
-        "secure" protocol (as defined by the user agent), and the
-        `old-cookie`'s `secure-only-flag` is set, then abort these steps and
-        ignore the newly create cookie entirely.
+    11. If the newly created cookie's `secure-only-flag` is not set, and the
+        `scheme` component of the `request-uri` does not denote a "secure"
+        protocol, then abort these steps and ignore the newly created cookie
+        entirely if the cookie store contains one or more cookies that meet all
+        of the following criteria:
+
+        1.  Their `name` matches the `name` of the newly created cookie.
+
+        2.  Their `secure-only-flag` is set.
+
+        3.  Their `domain` domain-matches the `domain` of the newly created
+            cookie, or vice-versa.
+
+        Note: This comparison intentionally ignores the `path` component. The
+        intent is to allow the `secure` flag to supercede the `path`
+        restrictions to protect sites against cookie fixing attacks.
+
+        Note: This allows "secure" pages to override `secure` cookies with
+        non-secure variants. Perhaps we should restrict that as well?        
+
+3.  Adjust the eviction priority order at the bottom of Section 5.3 to be the
+    following:
+
+    1.  Expired cookies.
+
+    2.  Cookies whose `secure-only-flag` is not set.
+
+    3.  Cookies that share a `domain` field with more than a predetermined
+        number of other cookies.
+
+    4.  All cookies.
+
+    Note: This means that we'd remove every non-secure cookie for every origin
+    before removing any non-expired secure cookie. That seems like a good reason
+    for sites to prefer the `secure` flag.
 
 # Security Considerations
 
