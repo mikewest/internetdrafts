@@ -1,7 +1,7 @@
 ---
 title: Deprecate modification of 'secure' cookies from non-secure origins
 abbrev: leave-secure-cookies-alone
-docname: draft-west-leave-secure-cookies-alone-03
+docname: draft-west-leave-secure-cookies-alone-04
 date: 2015
 category: std
 updates: 6265
@@ -126,8 +126,9 @@ This document updates Section 5.3 of {{RFC6265}} as follows:
         Note: This allows "secure" pages to override `secure` cookies with
         non-secure variants. Perhaps we should restrict that as well?
 
-3.  Adjust the eviction priority order at the bottom of Section 5.3 to be the
-    following:
+3.  In order to ensure that a non-secure site can never cause a `secure` cookie
+    to be evisted, adjust the "remove excess cookies" priority order at the
+    bottom of Section 5.3 to be the following:
 
     1.  Expired cookies.
 
@@ -139,9 +140,10 @@ This document updates Section 5.3 of {{RFC6265}} as follows:
 
     4.  All cookies.
 
-    Note: This means that we'd remove every non-secure cookie for an origin
-    before removing any non-expired secure cookie. That seems like a good reason
-    for sites to prefer the `secure` flag.
+    Note that the eviction algorithm specified here is triggered only after
+    insertion of a cookie which causes the user agent to exceed some
+    predetermined upper bound. Conforming user agents MUST ensure that inserting
+    a non-secure cookie does not cause a secure cookie to be removed.
 
 # Security Considerations
 
