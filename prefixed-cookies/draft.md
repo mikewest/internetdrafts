@@ -1,7 +1,7 @@
 ---
 title: Cookie Prefixes
 abbrev: cookie-prefixes
-docname: draft-west-cookie-prefixes-04
+docname: draft-west-cookie-prefixes-05
 date: 2015
 category: std
 updates: 6265
@@ -27,6 +27,7 @@ normative:
   RFC6265:
 
 informative:
+  RFC2109:
   POWERFUL-FEATURES:
     target: https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features
     title: "Prefer Secure Origins for Powerful New Features"
@@ -91,9 +92,9 @@ The `scheme` component of a URI is defined in Section 3 of {{RFC3986}}.
 
 # Prefixes
 
-## The "$Secure-" prefix
+## The "__Secure-" prefix
 
-If a cookie's name begins with "$Secure-", the cookie MUST be:
+If a cookie's name begins with "__Secure-", the cookie MUST be:
 
 1.  Set with a `Secure` attribute
 
@@ -102,41 +103,41 @@ If a cookie's name begins with "$Secure-", the cookie MUST be:
 The following cookie would be rejected when set from any origin, as the `Secure`
 flag is not set
 
-    Set-Cookie: $Secure-SID=12345; Domain=example.com
+    Set-Cookie: __Secure-SID=12345; Domain=example.com
 
 While the following would be accepted if set from a secure origin (e.g.
 `https://example.com/`), and rejected otherwise:
 
-    Set-Cookie: $Secure-SID=12345; Secure; Domain=example.com
+    Set-Cookie: __Secure-SID=12345; Secure; Domain=example.com
 
-## The "$Host-" prefix
+## The "__Host-" prefix
 
-If a cookie's name begins with "$Host-", the cookie MUST be:
+If a cookie's name begins with "__Host-", the cookie MUST be:
 
 1.  Set with a `Secure` attribute
 
 2.  Set from a URI whose `scheme` is considered "secure" by the user agent.
 
 3.  Sent only to the host which set the cookie. That is, a cookie named
-    "$Host-cookie1" set from `https://example.com` MUST NOT contain a `Domain`
+    "__Host-cookie1" set from `https://example.com` MUST NOT contain a `Domain`
     attribute (and will therefore be sent only to `example.com`, and not to
     `subdomain.example.com`).
 
-4.  Sent to every request for a host. That is, a cookie named "$Host-cookie1"
+4.  Sent to every request for a host. That is, a cookie named "__Host-cookie1"
     MUST contain a `Path` attribute with a value of "/".
 
 The following cookies would always be rejected:
 
-    Set-Cookie: $Host-SID=12345
-    Set-Cookie: $Host-SID=12345; Secure
-    Set-Cookie: $Host-SID=12345; Domain=example.com
-    Set-Cookie: $Host-SID=12345; Domain=example.com; Path=/
-    Set-Cookie: $Host-SID=12345; Secure; Domain=example.com; Path=/
+    Set-Cookie: __Host-SID=12345
+    Set-Cookie: __Host-SID=12345; Secure
+    Set-Cookie: __Host-SID=12345; Domain=example.com
+    Set-Cookie: __Host-SID=12345; Domain=example.com; Path=/
+    Set-Cookie: __Host-SID=12345; Secure; Domain=example.com; Path=/
 
 While the following would be accepted if set from a secure origin (e.g.
 `https://example.com/`), and rejected otherwise:
 
-    Set-Cookie: $Host-SID=12345; Secure; Path=/
+    Set-Cookie: __Host-SID=12345; Secure; Path=/
 
 # User Agent Requirements
 
@@ -145,7 +146,7 @@ This document updates Section 5.3 of {{RFC6265}} as follows:
 After step 10 of the current algorithm, the cookies flags are set. Insert the
 following steps to perform the prefix checks this document specifies:
 
-11.  If the `cookie-name` begins with the string "$Secure-" or "$Host-",
+11.  If the `cookie-name` begins with the string "__Secure-" or "__Host-",
      abort these steps and ignore the cookie entirely unless both of the
      following conditions are true:
 
@@ -154,7 +155,7 @@ following steps to perform the prefix checks this document specifies:
      *   `request-uri`'s `scheme` component denotes a "secure" protocol (as
          determined by the user agent)
 
-12.  If the `cookie-name` begins with the string "$Host-", abort these
+12.  If the `cookie-name` begins with the string "__Host-", abort these
      steps and ignore the cookie entirely unless the following conditions are
      true:
 
@@ -164,7 +165,17 @@ following steps to perform the prefix checks this document specifies:
 
 # Aesthetic Considerations
 
+## Not pretty.
+
 Prefixes are ugly. :(
+
+## Why "__"?
+
+We started with `$`, but ran into issues with servers that had implemented
+{{RFC2109}}-style cookies. `__` is a prefix used for a number of well-known
+cookies in the wild (notably Google Analytics's `__ut*` cookies, and
+CloudFlare's `__cfduid`), and so is unlikely to produce such compatibility
+issues, while being uncommon enough to mitigate the risk of collisions.
 
 # Security Considerations
 
@@ -195,4 +206,6 @@ such assurances were deemed necessary.
 
 Eric Lawrence had this idea a million years ago, and wrote about its genesis in
 {{Lawrence2015}}. Devdatta Akhawe helped justify the potential impact of the
-scheme on real-world websites.
+scheme on real-world websites. Thomas Broyer pointed out the issues with a
+leading `$` in the prefixes, and Brian Smith provided valuable contributions to
+the discussion around a replacement (ISO C indeed).
