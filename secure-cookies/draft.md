@@ -1,8 +1,8 @@
 ---
 title: Deprecate modification of 'secure' cookies from non-secure origins
 abbrev: leave-secure-cookies-alone
-docname: draft-west-leave-secure-cookies-alone-04
-date: 2015
+docname: draft-west-leave-secure-cookies-alone-05
+date: 2016
 category: std
 updates: 6265
 
@@ -59,6 +59,17 @@ informative:
       ins: N. Weaver
       name: Nicholas Weaver
       organization: International Computer Science Institute and University of California, Berkeley
+  COOKIE-PREFIXES:
+    target: https://tools.ietf.org/html/draft-west-cookie-prefixes
+    title: "Cookie Prefixes"
+    author:
+    -
+      ins: M. West
+      name: Mike West
+      organization: Google, Inc
+  HSTS-PRELOADING:
+    target: https://hstspreload.appspot.com/
+    title: "HSTS Preload Submission"
   RFC6797:
 
 --- abstract
@@ -153,6 +164,17 @@ Ideally, sites would use HSTS as described in {{RFC6797}} to defend more
 robustly against the dangers of non-secure transport in general, but until
 adoption of that protection becomes ubiquitous, this deprecation this document
 recommends will mitigate a number of risks.
+
+The mitigations in this document do not, however, give complete confidence that
+a given cookie was set securely. If an attacker is able to impersonate a
+response from `http://example.com/` before a user visits `https://example.com/`,
+the user agent will accept any cookie that the insecure origin sets, as the
+"secure" cookie won't yet be present in the user agent's cookie store. An
+active network attacker may still be able to use this ability to mount an attack
+against `example.com`, even if that site uses HTTPS exclusively.
+
+The proposal in {{COOKIE-PREFIXES}} could mitigate this risk, as could
+"preloading" HSTS for `example.com` into the user agent {{HSTS-PRELOADING}}.
 
 --- back
 
