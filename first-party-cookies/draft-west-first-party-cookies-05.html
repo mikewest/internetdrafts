@@ -537,6 +537,7 @@ Set-Cookie: SID=31d4d96e407aad42; SameSite
 <p/>
 
 <ol>
+  <li>If <samp>request</samp>&#8217;s client is <samp>null</samp>, return <samp>same-site</samp>.</li>
   <li>Let <samp>site</samp> be <samp>request</samp>&#8217;s client&#8217;s &#8220;site for cookies&#8221; (as defined in the following sections).</li>
   <li>Let <samp>target</samp> be the registrable domain of <samp>request</samp>&#8217;s current url.</li>
   <li>If <samp>site</samp> is an exact match for <samp>target</samp>, return <samp>same-site</samp>.</li>

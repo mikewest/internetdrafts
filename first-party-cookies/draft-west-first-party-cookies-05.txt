@@ -246,15 +246,17 @@ Internet-Draft             first-party-cookies              January 2016
    given request ("request"), the following algorithm returns "same-
    site" or "cross-site":
 
-   1.  Let "site" be "request"'s client's "site for cookies" (as defined
+   1.  If "request"'s client is "null", return "same-site".
+
+   2.  Let "site" be "request"'s client's "site for cookies" (as defined
        in the following sections).
 
-   2.  Let "target" be the registrable domain of "request"'s current
+   3.  Let "target" be the registrable domain of "request"'s current
        url.
 
-   3.  If "site" is an exact match for "target", return "same-site".
+   4.  If "site" is an exact match for "target", return "same-site".
 
-   4.  Return "cross-site".
+   5.  Return "cross-site".
 
 2.1.1.  Document-based requests
 
@@ -272,8 +274,6 @@ Internet-Draft             first-party-cookies              January 2016
    For documents which are displayed in nested browsing contexts, we
    need to audit the origins of each of a document's ancestor browsing
    contexts' active documents in order to account for the "multiple-
-   nested scenarios" described in Section 4 of [RFC7034].  These
-   document's "site for cookies" is the top-level site if and only if
 
 
 
@@ -282,6 +282,8 @@ West & Goodwin            Expires July 23, 2016                 [Page 5]
 Internet-Draft             first-party-cookies              January 2016
 
 
+   nested scenarios" described in Section 4 of [RFC7034].  These
+   document's "site for cookies" is the top-level site if and only if
    the document and each of its ancestor documents' origins have the
    same registrable domain as the top-level site.  Otherwise its "site
    for cookies" is the empty string.
@@ -325,8 +327,6 @@ Internet-Draft             first-party-cookies              January 2016
    with the documents that instantiate them.  If this invariant changes,
    we'll need to take the worker's script's URI into account when
    determining their status.
-
-
 
 
 

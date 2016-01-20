@@ -261,14 +261,16 @@ is an exact match for the request's initiator's "site for cookies", and
 "cross-site" otherwise. To be more precise, for a given request ("request"), the
 following algorithm returns `same-site` or `cross-site`:
 
-1.  Let `site` be `request`'s client's "site for cookies" (as defined in the
+1.  If `request`'s client is `null`, return `same-site`.
+
+2.  Let `site` be `request`'s client's "site for cookies" (as defined in the
     following sections).
 
-2.  Let `target` be the registrable domain of `request`'s current url.
+3.  Let `target` be the registrable domain of `request`'s current url.
 
-3.  If `site` is an exact match for `target`, return `same-site`.
+4.  If `site` is an exact match for `target`, return `same-site`.
 
-4.  Return `cross-site`.
+5.  Return `cross-site`.
 
 ### Document-based requests {#document-requests}
 

@@ -194,6 +194,7 @@ is an exact match for the request’s initiator’s “site for cookies”, and
 following algorithm returns <spanx style="verb">same-site</spanx> or <spanx style="verb">cross-site</spanx>:</t>
 
 <t><list style="numbers">
+  <t>If <spanx style="verb">request</spanx>’s client is <spanx style="verb">null</spanx>, return <spanx style="verb">same-site</spanx>.</t>
   <t>Let <spanx style="verb">site</spanx> be <spanx style="verb">request</spanx>’s client’s “site for cookies” (as defined in the
 following sections).</t>
   <t>Let <spanx style="verb">target</spanx> be the registrable domain of <spanx style="verb">request</spanx>’s current url.</t>
