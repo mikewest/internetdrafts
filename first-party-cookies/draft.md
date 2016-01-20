@@ -1,8 +1,8 @@
 ---
-title: First-Party-Only Cookies
+title: Same-site Cookies
 abbrev: first-party-cookies
-docname: draft-west-first-party-cookies-04
-date: 2015
+docname: draft-west-first-party-cookies-05
+date: 2016
 category: std
 updates: 6265
 
@@ -28,13 +28,37 @@ author:
   uri: https://www.computerist.org/
 
 normative:
+  FETCH:
+    target: https://fetch.spec.whatwg.org/
+    title: Fetch
+    author:
+    -
+      ins: A. van Kesteren
+      name: Anne van Kesteren
+      organization: Mozilla
   HTML:
     target: https://html.spec.whatwg.org/
-    title: HTML Living Standard
+    title: HTML
     author:
     -
       ins: I. Hickson
       name: Ian Hickson
+      organization: Google, Inc.
+    -
+      ins: S. Pieters
+      name: Simon Pieters
+      organization: Opera
+    -
+      ins: A. van Kesteren
+      name: Anne van Kesteren
+      organization: Mozilla
+    -
+      ins: P. Jägenstedt
+      name: Philip Jägenstedt
+      organization: Opera
+    -
+      ins: D. Denicola
+      name: Domenic Denicola
       organization: Google, Inc.
   SERVICE-WORKERS:
     target: http://www.w3.org/TR/service-workers/
@@ -49,13 +73,6 @@ normative:
     -
       ins: J. Archibald
       name: Jake Archibald
-  WORKERS:
-    target: http://www.w3.org/TR/workers/
-    title: Web Workers
-    author:
-    -
-      ins: I. Hickson
-      name: Ian Hickson
   PSL:
     target: https://publicsuffix.org/list/
     title: "Public Suffix List"
@@ -64,10 +81,10 @@ normative:
   RFC5234:
   RFC6265:
   RFC6454:
-  RFC7034:
   RFC7231:
 
 informative:
+  RFC7034:
   samedomain-cookies:
     target: http://people.mozilla.org/~mgoodwin/SameDomain/samedomain-latest.txt
     title: SameDomain Cookie Flag
@@ -115,11 +132,11 @@ informative:
 
 --- abstract
 
-This document updates RFC6265 by defining a `First-Party-Only` attribute which
-allows servers to assert that a cookie ought to be sent only in a "first-party"
-context. This assertion allows user agents to mitigate the risk of cross-origin
-information leakage, and provides some minimal protection against cross-site
-request forgery attacks.
+This document updates RFC6265 by defining a `SameSite` attribute which allows
+servers to assert that a cookie ought not to be sent along with cross-site
+requests. This assertion allows user agents to mitigate the risk of cross-origin
+information leakage, and provides some protection against cross-site request
+forgery attacks.
 
 --- middle
 
@@ -132,68 +149,67 @@ she can still execute commands on the user's behalf (and with the user's
 authority) by asking the user agent to send HTTP requests to unwary servers.
 
 Here, we update {{RFC6265}} with a simple mitigation strategy that allows
-servers to declare certain cookies as "First-party-only", meaning they should be
-attached to requests if and only if those requests occur in a first-party
-context (as defined in section 2.1).
+servers to declare certain cookies as "same-site", meaning they should not be
+attached to "cross-site" requests (as defined in section 2.1).
 
 Note that the mechanism outlined here is backwards compatible with the existing
-cookie syntax. Servers may serve first-party cookies to all user agents; those
-that do not support the `First-Party-Only` attribute will simply store a cookie
-which is returned in all applicable contexts, just as they do today.
+cookie syntax. Servers may serve these cookies to all user agents; those that do
+not support the `SameSite` attribute will simply store a cookie which is
+attached to all relevant requests, just as they do today.
 
 ## Goals
 
-These first-party-only cookies are intended to provide a solid layer of
-defense-in-depth against attacks which require embedding an authenticated
-request into an attacker-controlled context:
+These cookies are intended to provide a solid layer of defense-in-depth against
+attacks which require embedding an authenticated request into an
+attacker-controlled context:
 
 1. Timing attacks which yield cross-origin information leakage (such as those
    detailed in {{pixel-perfect}}) can be substantially mitigated by setting
-   the `First-Party-Only` attribute on authentication cookies. The attacker will
+   the `SameSite` attribute on authentication cookies. The attacker will
    only be able to embed unauthenticated resources, as embedding mechanisms such
-   as `<iframe>` will not create first-party contexts.
+   as `<iframe>` will yield cross-site requests.
 
 2. Cross-site script inclusion (XSSI) attacks are likewise mitigated by setting
-   the `First-Party-Only` attribute on authentication cookies. The attacker
-   will not be able to include authenticated resources via `<script>` or
-   `<link>`, as these embedding mechanisms will not create first-party contexts.
+   the `SameSite` attribute on authentication cookies. The attacker will not be
+   able to include authenticated resources via `<script>` or `<link>`, as these
+   embedding mechanisms will likewise yield cross-site requests.
 
-First-party-only cookies also mitigate one specific kind of cross-site request
-forgery (CSRF) attack by treating cross-origin requests with unsafe methods
-(including top-level navigations) as as third-party requests.
+3. Cross-site request forgery (CSRF) attacks which rely on top-level navigation
+   (HTML `<form>` POSTs, for instance) can also be mitigated by treating these
+   navigational requests as "cross-site".
 
-Aside from these attack mitigations, first-party-only cookies can also be useful
-for policy or regulatory purposes. That is, it may be valuable for an origin to
-assert that its cookies should not be sent along with third-party requests in
-order to limit its exposure to non-technical risk.
+4. Same-site cookies have some marginal value for policy or regulatory
+   purposes, as cookies which are not delivered with cross-site requests cannot
+   be directly used for tracking purposes. It may be valuable for an origin to
+   assert that its cookies should not be sent along with cross-site requests in
+   order to limit its exposure to non-technical risk.
 
 ## Limitations
 
-First-party-only cookies provide reasonable defense in depth against CSRF
-attacks that rely on unsafe HTTP methods (like `POST`). They do not offer a
-robust defense against CSRF as a general category of attack:
+Same-site cookies provide reasonable defense in depth against CSRF attacks that
+rely on unsafe HTTP methods (like `POST`). They do not offer a robust defense
+against CSRF as a general category of attack:
 
 1. Attackers can still pop up new windows or trigger top-level navigations in
-   order to create a first-party context (as described in section 2.1), which is
+   order to create a "same-site" request (as described in section 2.1), which is
    only a speedbump along the road to exploitation.
 
 2. Features like `<link rel='prerender'>` {{prerendering}} can be exploited
-   to create first-party contexts without the risk of user detection.
+   to create "same-site" requests without the risk of user detection.
 
 In addition to the usual server-side defenses (CSRF tokens, ensuring that "safe"
 HTTP methods are idempotent, etc), client-side techniques such as those
 described in {{app-isolation}} may prove effective against CSRF, and are
-certainly worth exploring in combination with first-party-only cookies.
-First-party-only cookies on their own, however, are not a barrier to CSRF
-attacks as a general category.
+certainly worth exploring in combination with "SameSite" cookies. These cookies
+on their own, however, are not a barrier to CSRF attacks as a general category.
 
 ## Examples
 
-First-party-only cookies are set via the `First-Party-Only` attribute in the
-`Set-Cookie` header field. That is, given a server's response to a user agent
-which contains the following header field:
+Same-site cookies are set via the `SameSite` attribute in the `Set-Cookie`
+header field. That is, given a server's response to a user agent which contains
+the following header field:
 
-    Set-Cookie: SID=31d4d96e407aad42; First-Party-Only
+    Set-Cookie: SID=31d4d96e407aad42; SameSite
 
 Subsequent requests from that user agent can be expected to contain the
 following header field if and only if both the requested resource and the
@@ -213,12 +229,9 @@ only if they are equivalent under the `i;ascii-casemap` collation defined in
 {{RFC4790}}.
 
 The terms "active document", "ancestor browsing context", "browsing context",
-"document", "iframe srcdoc document", "parent browsing context", and "top-level
-browsing context" are defined in the HTML Living Standard {{HTML}}.
-
-"Web Workers", "dedicated workers", "owner document", "list of relevant
-documents", and "shared workers" are defined in the Web Workers specification
-{{WORKERS}}.
+"document", "WorkerGlobalScope", "sandboxed origin browsing context flag",
+"parent browsing context", "the worker's Documents", "nested browsing context",
+and "top-level browsing context" are defined in {{HTML}}.
 
 "Service Workers" are defined in the Service Workers specification
 {{SERVICE-WORKERS}}.
@@ -234,83 +247,73 @@ The term "public suffix" is defined in a note in Section 5.3 of {{RFC6265}} as
 public suffix is `com`. User agents SHOULD use an up-to-date public suffix list,
 such as the one maintained by Mozilla at {{PSL}}.
 
-An origin's "registerable domain" is the origin's host's public suffix plus the
-label to its left. That is, `https://www.example.com`'s registerable domain is
+An origin's "registrable domain" is the origin's host's public suffix plus the
+label to its left. That is, `https://www.example.com`'s registrable domain is
 `example.com`. This concept is defined more rigorously in {{PSL}}.
 
-## First-party and Third-party Requests  {#first-and-third-party}
+The term "request", as well as a request's "client", "current url", "method",
+and "target browsing context", are defined in {{FETCH}}.
 
-### Document-based requests
+## "Same-site" and "cross-site" Requests  {#same-site-requests}
 
-When considering a request generated while parsing a document, or executing
-script in its context, we need to consider the document's origin as well as
-the origin of each of it's ancestors, in order to determine whether the
-request should be considered "first-party".
+A request is "same-site" if it's target's URI's origin's registrable domain
+is an exact match for the request's initiator's "site for cookies", and
+"cross-site" otherwise. To be more precise, for a given request ("request"), the
+following algorithm returns `same-site` or `cross-site`:
 
-For this kind of request, the URI displayed in a user agent's address bar is
-the only security context directly exposed to users, and therefore the only
-signal users can reasonably rely upon to determine whether or not they trust
-a particular website. The origin of that URI is, therefore, the "first-party
-origin".
+1.  Let `site` be `request`'s client's "site for cookies" (as defined in the
+    following sections).
 
-In order to prevent the kinds of "multiple-nested scenarios" described in
-Section 4 of {{RFC7034}}, we must check the first-party origin against the
-origins of each of a document's ancestor browsing contexts' active documents.
-A document is considered a "first-party context" if and only if the registerable
-domain of the origin of its URI is the same as the registerable domain of the
-first-party origin, **and** if each of the active documents in its ancestors'
-browsing contexts' is a first-party context.
+2.  Let `target` be the registrable domain of `request`'s current url.
 
-This definition has a few implications:
+3.  If `site` is an exact match for `target`, return `same-site`.
 
-*  New windows create new first-party contexts (as the active document is
-   rendered into a top-level browsing context).
+4.  Return `cross-site`.
 
-*  Full-page navigations create new first-party contexts. Notably, this
-   includes both HTTP and `<meta>`-driven redirects.
+### Document-based requests {#document-requests}
 
-*  `<iframe>`s do not create new first-party contexts; their requests MUST
-   be considered in the context of the origin of the URL the user actually
-   sees in the user agent's address bar.
+The URI displayed in a user agent's address bar is the only security context
+directly exposed to users, and therefore the only signal users can reasonably
+rely upon to determine whether or not they trust a particular website. The
+registrable domain of that URI's origin represents the context in which a user
+most likely believes themselves to be interacting. We'll label this domain the
+"top-level site".
 
-To be more precise, given an HTTP request `request`, the following algorithm
-returns `First-Party` if `request` is a first-party request, and `Third-Party`
-otherwise:
+For a document displayed in a top-level browsing context, we can stop here: the
+document's "site for cookies" is the top-level site.
 
-1.  Let `document` be the document responsible for `request`.
+For documents which are displayed in nested browsing contexts, we need to audit
+the origins of each of a document's ancestor browsing contexts' active documents
+in order to account for the "multiple-nested scenarios" described in Section 4
+of {{RFC7034}}. These document's "site for cookies" is the top-level site if and
+only if the document and each of its ancestor documents' origins have the same
+registrable domain as the top-level site. Otherwise its "site for cookies" is
+the empty string.
 
-2.  If `document` is a first-party context, and `request`'s URI's origin's
-    registerable domain is the same as the registerable domain of the origin of the
-    URI of the active document in the top-level browsing context of `document`,
-    then return `First-Party`.
+Given a Document (`document`), the following algorithm returns its "site for
+cookies" (either a registrable domain, or the empty string):
 
-3.  Return `Third-Party`.
+1.  Let `top-document` be the active document in `document`'s browsing context's
+    top-level browsing context.
 
-Given a Document `document`, the following algorithm returns `First-Party` if
-`document` is a first-party context, and `Third-Party` otherwise:
+2.  Let `top-origin` be the origin of `top-document`'s URI if `top-document`'s
+    sandboxed origin browsing context flag is set, and `top-document`'s origin
+    otherwise.
 
-1.  Let `top-origin` be the origin of the URI of the active document in the
-    top-level browsing context of the document responsible for `request`.
+3.  Let `documents` be an empty list be a list containing `document` and each of
+    `document`'s ancestor browsing contexts' active documents.
 
-2.  If `document`'s URI's origin is not `top-origin`, return `Third-Party`.
+4.  For each `item` in `documents`:
 
-3.  While `document` has a parent browsing context:
+    1.  Let `origin` be the origin of `item`'s URI if `item`'s sandboxed origin
+        browsing context flag is set, and `item`'s origin otherwise.
 
-    1.  Let `document` be `document`'s parent browsing context's active
-        document.
+    2.  If `origin`'s host's registrable domain is not an exact match for
+        `top-origin`'s host's registrable domain, return the empty string.
 
-    2.  If `document`'s URI's origin does not have the same registerable domain
-        as `top-origin` and `document` is not an iframe srcdoc document, return
-        `Third-Party`.
+4.  Return `top-site`.
 
-4.  Return `First-Party`.
-
-Note that we deal with the document's location in steps 2, 3, and 4.2 above, not
-with the document's origin. For example, a top-level document from
-`https://example.com` which has been sandboxed into a unique origin still
-creates a non-unique first-party context for subsequent requests.
-
-### Worker-based requests
+### Worker-based requests {#worker-requests}
 
 Worker-driven requests aren't as clear-cut as document-driven requests, as
 there isn't a clear link between a top-level browsing context and a worker.
@@ -321,92 +324,77 @@ Note: The descriptions below assume that workers must be same-origin with
 the documents that instantiate them. If this invariant changes, we'll need to
 take the worker's script's URI into account when determining their status.
 
-#### Dedicated Workers
+#### Dedicated and Shared Workers {#dedicated-and-shared-requests}
 
-Dedicated workers are fairly straightforward to categorize, as each dedicated
-worker is bound to one and only one Document. Requests generated from a
-dedicated worker (via `importScripts`, `XMLHttpRequest`, `fetch()`, and so on)
-are first-party requests if and only if the worker's owner document is a
-first-party context.
+Dedicated workers are simple, as each dedicated worker is bound to one and only
+one document. Requests generated from a dedicated worker (via `importScripts`,
+`XMLHttpRequest`, `fetch()`, etc) define their "site for cookies" as that
+document's "site for cookies".
 
-To be more precise, given an HTTP request `request`, the following algorithm
-returns `First-Party` if `request` is a first-party request, and `Third-Party`
-otherwise:
+Shared workers may be bound to multiple documents at once. As it is quite
+possible for those documents to have distinct "site for cookie" values, the
+worker's "site for cookies" will be the empty string in cases where the values
+diverge, and the shared value in cases where the values agree.
 
-1.  Let `worker` be the dedicated worker responsible for `request`.
+Given a WorkerGlobalScope (`worker`), the following algorithm returns its "site
+for cookies" (either a registrable domain, or the empty string):
 
-2.  Let `document` be `worker`'s owner document.
+1.  Let `site` be `worker`'s origin's host's registrable domain.
 
-3.  If `document` is a first-party context, and `request`'s URI's origin's
-    registerable domain is the same as the registerable domain of the origin of
-    the URI of the active document in the top-level browsing context of
-    `document`, then return `First-Party`.
+2.  For each `document` in `worker`'s Documents:
 
-4.  Return `Third-Party`.
+    1.  Let `document-site` be `document`'s "site for cookies" (as defined
+        in {{document-requests}}).
 
-#### Shared Workers
+    2.  If `document-site` is not an exact match for `site`, return the empty
+        string.
 
-Shared Workers introduce the complexity of bindings to multiple Documents. As
-it is quite possible for a shared worker to be bound at the same time to one
-Document that is a first-party context, and another that isn't, we'll need to
-walk through all the documents associated with the worker to determine its
-status. If and only if all associated documents are first-party contexts, then
-the worker is a first-party context.
-
-To be more precise, given an HTTP request `request`, the following algorithm
-returns `First-Party` if `request` is a first-party request, and `Third-Party`
-otherwise:
-
-1.  Let `worker` be the dedicated worker responsible for `request`.
-
-2.  For each `document` in `worker`'s list of relevant Documents:
-
-    1. Return `Third-Party` if `document` is not a first-party context (as
-       defined in section 2.1.1).
-
-    2. Return `Third-Party` if `request`'s URI's origin's registerable domain
-       is not the same as the registerable domain of the origin of the URI of
-       the active document in the top-level browsing context of `document`.
-
-3.  Return `First-Party`.
+3.  Return `site`.
 
 #### Service Workers
 
-Service Workers are more complex still, as they act as a completely separate
-execution context, with very little relationship to the Document which
+Service Workers are more complicated, as they act as a completely separate
+execution context with only tangential relationship to the Document which
 registered them.
 
-Until we have more implementation experience, we will consider Service Workers
-as third-party contexts in all cases.
+Requests which simply pass through a service worker will be handled as described
+above: the request's client will be the Document or Worker which initiated the
+request, and its "site for cookies" will be those defined in
+{{document-requests}} and {{dedicated-and-shared-requests}}
 
-Note: Requests which simply pass through a service worker will be handled as described
-above; the only requests which will be effected by this categorization are those which
-the service worker itself initiates (via `fetch()`, for instance).
+Requests which are initiated by the Service Worker itself (via a direct call to
+`fetch()`, for instance), on the other hand, will have a client which is a
+ServiceWorkerGlobalScope. Its "site for cookies" will be the registrable domain
+of the Service Worker's URI.
+
+Given a ServiceWorkerGlobalScope (`worker`), the following algorithm returns its
+"site for cookies" (either a registrable domain, or the empty string):
+
+1.  Return `worker`'s origin's host's registrable domain.
 
 # Server Requirements
 
 This section describes extensions to {{RFC6265}} necessary to implement the
-server-side requirements of the `First-Party-Only` attribute.
+server-side requirements of the `SameSite` attribute.
 
 ## Grammar
 
-Add `First-Party-Only` to the list of accepted attributes in the `Set-Cookie`
-header field's value by replacing the `cookie-av` token definition in Section
-4.1.1 of {{RFC6265}} with the following ABNF grammar:
+Add `SameSite` to the list of accepted attributes in the `Set-Cookie` header
+field's value by replacing the `cookie-av` token definition in Section 4.1.1
+of {{RFC6265}} with the following ABNF grammar:
 
-    cookie-av           = expires-av / max-age-av / domain-av /
-                          path-av / secure-av / httponly-av /
-                          first-party-only-av / extension-av
-    first-party-only-av = "First-Party-Only"
+    cookie-av   = expires-av / max-age-av / domain-av /
+                  path-av / secure-av / httponly-av /
+                  samesite-av / extension-av
+    samesite-av = "SameSite"
 
-## Semantics of the "First-Party-Only" Attribute (Non-Normative)
+## Semantics of the "SameSite" Attribute (Non-Normative)
 
-The "First-Party-Only" attribute limits the scope of the cookie such that it
-will only be attached to requests if those requests are "first-party", as
-described in {{first-and-third-party}}. For example, requests for
-`https://example.com/sekrit-image` will attach first-party-only cookies if and
-only if the top-level browsing context is currently displaying a document from
-`https://example.com`.
+The "SameSite" attribute limits the scope of the cookie such that it will only
+be attached to requests if those requests are "same-site", as defined by the
+algorithm in {{same-site-requests}}. For example, requests for
+`https://example.com/sekrit-image` will attach same-site cookies if and only if
+initiated from a context whose "site for cookies" is "example.com".
 
 The changes to the `Cookie` header field suggested in {{cookie-header}} provide
 additional detail.
@@ -414,16 +402,16 @@ additional detail.
 # User Agent Requirements
 
 This section describes extensions to {{RFC6265}} necessary in order to implement
-the client-side requirements of the `First-Party-Only` attribute.
+the client-side requirements of the `SameSite` attribute.
 
-## The "First-Party-Only" attribute
+## The "SameSite" attribute
 
 The following attribute definition should be considered part of the the
 `Set-Cookie` algorithm as described in Section 5.2 of {{RFC6265}}:
 
-If the attribute-name case-insensitively matches the string "First-Party-Only",
-the user agent MUST append an attribute to the `cookie-attribute-list` with an
-`attribute-name` of "First-Party-Only" and an empty `attribute-value`.
+If the attribute-name case-insensitively matches the string "SameSite", the user
+agent MUST append an attribute to the `cookie-attribute-list` with an
+`attribute-name` of "SameSite" and an empty `attribute-value`.
 
 ## Monkey-patching the Storage Model
 
@@ -432,19 +420,18 @@ what that is, monkey-patching!
 
 Alter Section 5.3 of {{RFC6265}} as follows:
 
-1.  Add `first-party-only-flag` to the list of fields stored for each cookie.
+1.  Add `samesite-flag` to the list of fields stored for each cookie.
 
 2.  Before step 11 of the current algorithm, add the following:
 
     11.  If the `cookie-attribute-list` contains an attribute with an
-         `attribute-name` of "First-Party-Only", set the cookie's
-         `first-party-only-flag` to true. Otherwise, set the cookie's
-         `first-party-only-flag` to false.
+         `attribute-name` of "SameSite", set the cookie's `samesite-flag` to
+         true. Otherwise, set the cookie's `samesite-flag` to false.
 
-    12.  If the cookie's `first-party-only-flag` is set to true, and the request
-         which generated the cookie is not a first-party request (as defined
-         in {{first-and-third-party}}), then abort these steps and ignore the
-         newly created cookie entirely.
+    12.  If the cookie's `samesite-flag` is set to true, and the request
+         which generated the cookie's client's "site for cookies" is not an
+         exact match for `request-uri`'s host's registrable domain, then
+         abort these steps and ignore the newly created cookie entirely.
 
 ## Monkey-patching the "Cookie" header {#cookie-header}
 
@@ -453,40 +440,39 @@ what that is, monkey-patching!
 
 Alter Section 5.4 of {{RFC6265}} as follows:
 
-1.  Add the following requirements to the list in step 1:
+1.  Add the following requirement to the list in step 1:
 
-    * If the cookie's `first-party-only-flag` is true, then exclude the cookie
-      if the HTTP request is a third-party request (see
-      {{first-and-third-party}}).
+    *   If the cookie's `samesite-flag` is true, and the HTTP request is
+        cross-site (as defined in {{same-site-requests}} then exclude the cookie
+        unless all of the following statements hold:
 
-    * If the cookie's `first-party-only-flag` is true, then exclude the cookie
-      if the HTTP request's method is not safe and the registerable domain of
-      the origin of the URI of the document which originated the request is not
-      the same as the registerable domain of the origin of the HTTP request's
-      URI.
+        1.  The HTTP request's method is "safe".
+
+        2.  The HTTP request's target browsing context is a top-level browsing
+            context. 
 
 Note that the modifications suggested here concern themselves only with the
-origins of ancestor browsing contexts and the origin of the resource being
-requested. The cookie's `domain`, `path`, and `secure` attributes do not come
-into play for these comparisons.
+"site for cookies" of the request's client, and the registrable domain of the
+resource being requested. The cookie's `domain`, `path`, and `secure` attributes
+do not come into play for these comparisons.
 
 # Authoring Considerations
 
 ## Mashups and Widgets
 
-The `First-Party-Only` attribute is inappropriate for some important use-cases.
-In particular, note that content intended for embedding in a third-party context
+The `SameSite` attribute is inappropriate for some important use-cases. In
+particular, note that content intended for embedding in a cross-site contexts
 (social networking widgets or commenting services, for instance) will not have
-access to first-party-only cookies. Non-first-party cookies may be required in
-order to provide seamless functionality that relies on a user's state.
+access to such cookies. Cross-site cookies may be required in order to provide
+seamless functionality that relies on a user's state.
 
 Likewise, some forms of Single-Sign-On might require authentication in a
-third-party context; these mechanisms will not function as intended with
-first-party-only cookies.
+cross-site context; these mechanisms will not function as intended with
+same-site cookies.
 
 # Privacy Considerations
 
-First-party-only cookies in and of themselves don't do anything to address the
+Same-site cookies in and of themselves don't do anything to address the
 general privacy concerns outlined in Section 7.1 of {{RFC6265}}. The attribute
 is set by the server, and serves to mitigate the risk of certain kinds of
 attacks that the server is worried about. The user is not involved in this
@@ -499,6 +485,6 @@ identification that servers could take advantage of.
 
 # Acknowledgements
 
-The first-party cookie concept documented here is indebited to Mark Goodwin's
+The same-site cookie concept documented here is indebited to Mark Goodwin's
 and Joe Walker's {{samedomain-cookies}}. Michal Zalewski, Artur Janc, and Ryan
 Sleevi provided particularly valuable feedback on this document.
