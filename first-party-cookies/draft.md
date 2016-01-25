@@ -1,7 +1,7 @@
 ---
 title: Same-site Cookies
 abbrev: first-party-cookies
-docname: draft-west-first-party-cookies-05
+docname: draft-west-first-party-cookies-06
 date: 2016
 category: std
 updates: 6265
@@ -183,25 +183,6 @@ attacker-controlled context:
    be directly used for tracking purposes. It may be valuable for an origin to
    assert that its cookies should not be sent along with cross-site requests in
    order to limit its exposure to non-technical risk.
-
-## Limitations
-
-Same-site cookies provide reasonable defense in depth against CSRF attacks that
-rely on unsafe HTTP methods (like `POST`). They do not offer a robust defense
-against CSRF as a general category of attack:
-
-1. Attackers can still pop up new windows or trigger top-level navigations in
-   order to create a "same-site" request (as described in section 2.1), which is
-   only a speedbump along the road to exploitation.
-
-2. Features like `<link rel='prerender'>` {{prerendering}} can be exploited
-   to create "same-site" requests without the risk of user detection.
-
-In addition to the usual server-side defenses (CSRF tokens, ensuring that "safe"
-HTTP methods are idempotent, etc), client-side techniques such as those
-described in {{app-isolation}} may prove effective against CSRF, and are
-certainly worth exploring in combination with "SameSite" cookies. These cookies
-on their own, however, are not a barrier to CSRF attacks as a general category.
 
 ## Examples
 
@@ -385,10 +366,11 @@ Add `SameSite` to the list of accepted attributes in the `Set-Cookie` header
 field's value by replacing the `cookie-av` token definition in Section 4.1.1
 of {{RFC6265}} with the following ABNF grammar:
 
-    cookie-av   = expires-av / max-age-av / domain-av /
-                  path-av / secure-av / httponly-av /
-                  samesite-av / extension-av
-    samesite-av = "SameSite"
+    cookie-av      = expires-av / max-age-av / domain-av /
+                     path-av / secure-av / httponly-av /
+                     samesite-av / extension-av
+    samesite-av    = "SameSite" / "SameSite=" samesite-value
+    samesite-value = "Strict" / "Lax"
 
 ## Semantics of the "SameSite" Attribute (Non-Normative)
 
@@ -397,6 +379,11 @@ be attached to requests if those requests are "same-site", as defined by the
 algorithm in {{same-site-requests}}. For example, requests for
 `https://example.com/sekrit-image` will attach same-site cookies if and only if
 initiated from a context whose "site for cookies" is "example.com".
+
+If the "SameSite" attribute has no value, if the value is "Strict", or if the
+value is invalid, the cookie will only be sent along with "same-site" requests.
+If the value is "Lax", the cookie will be sent with "same-site" requests, and
+with "cross-site" top-level navigations, as described in {{strict-lax}}.
 
 The changes to the `Cookie` header field suggested in {{cookie-header}} provide
 additional detail.
@@ -411,9 +398,42 @@ the client-side requirements of the `SameSite` attribute.
 The following attribute definition should be considered part of the the
 `Set-Cookie` algorithm as described in Section 5.2 of {{RFC6265}}:
 
-If the attribute-name case-insensitively matches the string "SameSite", the user
-agent MUST append an attribute to the `cookie-attribute-list` with an
-`attribute-name` of "SameSite" and an empty `attribute-value`.
+If the `attribute-name` case-insensitively matches the string "SameSite", the
+user agent MUST process the `cookie-av` as follows:
+
+1.  Let `enforcement` be "Strict".
+
+2.  If `cookie-av`'s `attribute-value` is a case-insensitive match for either
+    "Strict" or "Lax", set `enforcement` to `cookie-av`'s `attribute-value`.
+
+3.  Append an attribute to the `cookie-attribute-list` with an `attribute-name`
+    of "SameSite" and an `attribute-value` of `enforcement`.
+
+### "Strict" and "Lax" enforcement {#strict-lax}
+
+By default, same-site cookies will not be sent along with top-level navigations.
+As discussed in {{top-level-navigations}}, this might or might not be compatible
+with existing session management systems. In the interests of providing a
+drop-in mechanism that mitigates the risk of CSRF attacks, developers may set
+the `SameSite` attribute in a "Lax" enforcement mode that carves out an
+exception which sends same-site cookies along with cross-site requests if and
+only if they are top-level navigations which use a "safe" (in the {{RFC7231}}
+sense) HTTP method.
+
+Lax enforcement provides reasonable defense in depth against CSRF attacks that
+rely on unsafe HTTP methods (like `POST`), but do not offer a robust defense
+against CSRF as a general category of attack:
+
+1. Attackers can still pop up new windows or trigger top-level navigations in
+   order to create a "same-site" request (as described in section 2.1), which is
+   only a speedbump along the road to exploitation.
+
+2. Features like `<link rel='prerender'>` {{prerendering}} can be exploited
+   to create "same-site" requests without the risk of user detection.
+
+When possible, developers should use a session management mechanism such as
+that described in {{top-level-navigations}} to mitigate the risk of CSRF more
+completely.
 
 ## Monkey-patching the Storage Model
 
@@ -422,15 +442,17 @@ what that is, monkey-patching!
 
 Alter Section 5.3 of {{RFC6265}} as follows:
 
-1.  Add `samesite-flag` to the list of fields stored for each cookie.
+1.  Add `samesite-flag` to the list of fields stored for each cookie. This
+    field's value is one of "None", "Strict", or "Lax".
 
 2.  Before step 11 of the current algorithm, add the following:
 
-    11.  If the `cookie-attribute-list` contains an attribute with an
-         `attribute-name` of "SameSite", set the cookie's `samesite-flag` to
-         true. Otherwise, set the cookie's `samesite-flag` to false.
+    11. If the `cookie-attribute-list` contains an attribute with an
+        `attribute-name` of "SameSite", set the cookie's `samesite-flag` to
+        `attribute-value` ("Strict" or "Lax"). Otherwise, set the cookie's
+        `samesite-flag` to "None".
 
-    12.  If the cookie's `samesite-flag` is set to true, and the request
+    12.  If the cookie's `samesite-flag` is not "None", and the request
          which generated the cookie's client's "site for cookies" is not an
          exact match for `request-uri`'s host's registrable domain, then
          abort these steps and ignore the newly created cookie entirely.
@@ -444,13 +466,15 @@ Alter Section 5.4 of {{RFC6265}} as follows:
 
 1.  Add the following requirement to the list in step 1:
 
-    *   If the cookie's `samesite-flag` is true, and the HTTP request is
+    *   If the cookie's `samesite-flag` is not "None", and the HTTP request is
         cross-site (as defined in {{same-site-requests}} then exclude the cookie
         unless all of the following statements hold:
 
-        1.  The HTTP request's method is "safe".
+        1.  `samesite-flag` is "Lax"
 
-        2.  The HTTP request's target browsing context is a top-level browsing
+        2.  The HTTP request's method is "safe".
+
+        3.  The HTTP request's target browsing context is a top-level browsing
             context. 
 
 Note that the modifications suggested here concern themselves only with the
@@ -459,6 +483,45 @@ resource being requested. The cookie's `domain`, `path`, and `secure` attributes
 do not come into play for these comparisons.
 
 # Authoring Considerations
+
+## Defense in depth
+
+"SameSite" cookies offer a robust defense against CSRF attack when deployed in
+strict mode, and when supported by the client. It is, however, prudent to ensure
+that this designation is not the extent of a site's defense against CSRF, as
+same-site navigations and submissions can certainly be executed in conjunction
+with other attack vectors such as cross-site scripting.
+
+Developers are strongly encouraged to deploy the usual server-side defenses
+(CSRF tokens, ensuring that "safe" HTTP methods are idempotent, etc) to mitigate
+the risk more fully.
+
+Additionally, client-side techniques such as those described in
+{{app-isolation}} may also prove effective against CSRF, and are certainly worth
+exploring in combination with "SameSite" cookies.
+
+## Top-level Navigations {#top-level-navigations}
+
+Setting the `SameSite` attribute in "strict" mode provides robust defense in
+depth against CSRF attacks, but has the potential to confuse users unless sites'
+developers carefully ensure that their session management systems deal
+reasonably well with top-level navigations.
+
+Consider the scenario in which a user reads their email at MegaCorp Inc's
+webmail provider `https://example.com/`. They might expect that clicking on an
+emailed link to `https://projects.com/secret/project` would show them the secret
+project that they're authorized to see, but if `projects.com` has marked their
+session cookies as `SameSite`, then this cross-site navigation won't send them
+along with the request. `projects.com` will render a 404 error to avoid leaking
+secret information, and the user will be quite confused.
+
+Developers can avoid this confusion by adopting a session management system that
+relies on not one, but two cookies: one conceptualy granting "read" access,
+another granting "write" access. The latter could be marked as `SameSite`, and
+its absence would provide a reauthentication step before executing any
+non-idempotent action. The former could drop the `SameSite` attribute entirely,
+or choose the "Lax" version of enforcement, in order to allow users access to
+data via top-level navigation.
 
 ## Mashups and Widgets
 
