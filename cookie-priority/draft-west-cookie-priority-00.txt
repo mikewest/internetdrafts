@@ -2,11 +2,13 @@
 
 
 
-HTTPbis                                                         S. Huang
-Internet-Draft                                                    Google
-Updates: 6265 (if approved)                                      M. West
-Intended status: Standards Track                             Google, Inc
-Expires: August 23, 2016                               February 20, 2016
+HTTPbis                                                        E. Wright
+Internet-Draft
+Updates: 6265 (if approved)                                     S. Huang
+Intended status: Standards Track                                  Google
+Expires: August 24, 2016                                         M. West
+                                                             Google, Inc
+                                                       February 21, 2016
 
 
             A Retention Priority Attribute for HTTP Cookies
@@ -34,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 23, 2016.
+   This Internet-Draft will expire on August 24, 2016.
 
 Copyright Notice
 
@@ -48,25 +50,26 @@ Copyright Notice
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
-   the Trust Legal Provisions and are provided without warranty as
-   described in the Simplified BSD License.
 
 
 
-Huang & West             Expires August 23, 2016                [Page 1]
+Wright, et al.           Expires August 24, 2016                [Page 1]
 
 Internet-Draft               cookie-priority               February 2016
 
+
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
 
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   2
-   3.  Overview  . . . . . . . . . . . . . . . . . . . . . . . . . .   2
+   3.  Overview  . . . . . . . . . . . . . . . . . . . . . . . . . .   3
      3.1.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .   3
    4.  Server Requirements . . . . . . . . . . . . . . . . . . . . .   4
      4.1.  Syntax  . . . . . . . . . . . . . . . . . . . . . . . . .   4
-     4.2.  Semantics (Non-Normative) . . . . . . . . . . . . . . . .   4
+     4.2.  Semantics (Non-Normative) . . . . . . . . . . . . . . . .   5
      4.3.  The 'Priority' Attribute  . . . . . . . . . . . . . . . .   5
    5.  User Agent Requirements . . . . . . . . . . . . . . . . . . .   5
      5.1.  The 'Priority' Attribute  . . . . . . . . . . . . . . . .   5
@@ -101,18 +104,21 @@ Table of Contents
    other if and only if they are equivalent under the "i;ascii-casemap"
    collation defined in [RFC4790].
 
+
+
+
+
+
+Wright, et al.           Expires August 24, 2016                [Page 2]
+
+Internet-Draft               cookie-priority               February 2016
+
+
 3.  Overview
 
    This section outlines a way for an origin server to indicate the
    retention priority for individual cookies and for the user agent to
    respect retention priorities during cookie eviction.
-
-
-
-Huang & West             Expires August 23, 2016                [Page 2]
-
-Internet-Draft               cookie-priority               February 2016
-
 
    To indicate a cookie's retention priority, the origin server includes
    a "Priority" attribute in the "Set-Cookie" HTTP response header.  A
@@ -155,20 +161,20 @@ Internet-Draft               cookie-priority               February 2016
 
       M L H H H H M H L L M M M M M M M L L L L L M M M M M H M M L L M
 
+
+
+
+
+Wright, et al.           Expires August 24, 2016                [Page 3]
+
+Internet-Draft               cookie-priority               February 2016
+
+
    Assume that the user agent is configured to evict all but 25 cookies
    from a domain when the number of cookies exceeds 31.  [RFC6265]
    specifies the following eviction order.  Cookies are separated in the
    vertical axis by priority.  Evicted cookies are labeled with a '1'
    and retained cookies with an 'X'.
-
-
-
-
-
-Huang & West             Expires August 23, 2016                [Page 3]
-
-Internet-Draft               cookie-priority               February 2016
-
 
    == Least Recently Accessed -> Most Recently Accessed ==
 
@@ -210,21 +216,21 @@ Internet-Draft               cookie-priority               February 2016
    priority-av    = "Priority=" priority-value
    priority-value = "Low" / "Medium" / "High"
 
+
+
+
+
+
+Wright, et al.           Expires August 24, 2016                [Page 4]
+
+Internet-Draft               cookie-priority               February 2016
+
+
 4.2.  Semantics (Non-Normative)
 
    This section describes a simplified semantics of the "Priority"
    attribute in the "Set-Cookie" HTTP response header.  The full
    semantics are described in Section 5.
-
-
-
-
-
-
-Huang & West             Expires August 23, 2016                [Page 4]
-
-Internet-Draft               cookie-priority               February 2016
-
 
 4.3.  The 'Priority' Attribute
 
@@ -268,20 +274,20 @@ Internet-Draft               cookie-priority               February 2016
    number of cookies they will store.  [RFC6265], Section 5.3, describes
    a strategy that user must follow when "removing excess cookies".
 
+
+
+
+Wright, et al.           Expires August 24, 2016                [Page 5]
+
+Internet-Draft               cookie-priority               February 2016
+
+
    A user agent implementing the current specification for a retention
    priority attribute will set aside a small portion of its storage
    quota for low-priority cookies, and another portion for medium-
    priority cookies.  During eviction, compatible user agents will
    implement an extended priority order, dividing the second priority
    ("Cookies that share a domain field with more than a predetermined
-
-
-
-Huang & West             Expires August 23, 2016                [Page 5]
-
-Internet-Draft               cookie-priority               February 2016
-
-
    number of other cookies") into three, according to the retention
    priorities and the space reserved for them.  Assuming that no other
    extensions ammend the rules defined in [RFC6265], a compatible user
@@ -323,20 +329,21 @@ Internet-Draft               cookie-priority               February 2016
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
+
+
+
+
+Wright, et al.           Expires August 24, 2016                [Page 6]
+
+Internet-Draft               cookie-priority               February 2016
+
+
    [RFC4790]  Newman, C., Duerst, M., and A. Gulbrandsen, "Internet
               Application Protocol Collation Registry", RFC 4790, March
               2007.
 
    [RFC5234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
               Specifications: ABNF", STD 68, RFC 5234, January 2008.
-
-
-
-
-Huang & West             Expires August 23, 2016                [Page 6]
-
-Internet-Draft               cookie-priority               February 2016
-
 
    [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
               April 2011.
@@ -360,6 +367,9 @@ Appendix A.  Acknowledgements
 
 Authors' Addresses
 
+   Erik Wright
+
+
    Samuel Huang
    Google
 
@@ -379,14 +389,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-
-
-
-Huang & West             Expires August 23, 2016                [Page 7]
+Wright, et al.           Expires August 24, 2016                [Page 7]

@@ -15,6 +15,9 @@ pi: [toc, tocindent, sortrefs, symrefs, strict, compact, comments, inline]
 
 author:
 -
+  ins: E. Wright
+  name: Erik Wright
+-
   ins: S. Huang
   name: Samuel Huang
   organization: Google

@@ -24,6 +24,11 @@
   <front>
     <title abbrev="cookie-priority">A Retention Priority Attribute for HTTP Cookies</title>
 
+    <author initials="E." surname="Wright" fullname="Erik Wright">
+      <organization></organization>
+      <address>
+      </address>
+    </author>
     <author initials="S." surname="Huang" fullname="Samuel Huang">
       <organization>Google</organization>
       <address>
