@@ -33,7 +33,6 @@ normative:
   RFC4790:
   RFC5234:
   RFC6265:
-  RFC7231:
 
 informative:
   Wright2013:
