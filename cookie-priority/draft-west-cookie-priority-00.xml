@@ -24,12 +24,12 @@
     <title abbrev="cookie-priority">A Retention Priority Attribute for HTTP Cookies</title>
 
     <author initials="E." surname="Wright" fullname="Erik Wright">
-      <organization></organization>
+      <organization>Shopify</organization>
       <address>
       </address>
     </author>
     <author initials="S." surname="Huang" fullname="Samuel Huang">
-      <organization>Google</organization>
+      <organization>Google, Inc</organization>
       <address>
         <email>huangs@google.com</email>
       </address>

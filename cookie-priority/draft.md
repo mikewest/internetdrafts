@@ -17,10 +17,11 @@ author:
 -
   ins: E. Wright
   name: Erik Wright
+  organization: Shopify
 -
   ins: S. Huang
   name: Samuel Huang
-  organization: Google
+  organization: Google, Inc
   email: huangs@google.com
 -
   ins: M. West
