@@ -18,7 +18,7 @@
 <?rfc comments="yes"?>
 <?rfc inline="yes"?>
 
-<rfc ipr="trust200902" docName="draft-west-cookie-priority" category="std" updates="6265">
+<rfc ipr="trust200902" docName="draft-west-cookie-priority-00" category="std" updates="6265">
 
   <front>
     <title abbrev="cookie-priority">A Retention Priority Attribute for HTTP Cookies</title>

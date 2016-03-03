@@ -1,7 +1,7 @@
 ---
 title: A Retention Priority Attribute for HTTP Cookies
 abbrev: cookie-priority
-docname: draft-west-cookie-priority
+docname: draft-west-cookie-priority-00
 date: 2016
 category: std
 updates: 6265

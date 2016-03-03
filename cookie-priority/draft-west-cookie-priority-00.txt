@@ -6,13 +6,13 @@ HTTPbis                                                        E. Wright
 Internet-Draft
 Updates: 6265 (if approved)                                     S. Huang
 Intended status: Standards Track                                  Google
-Expires: August 25, 2016                                         M. West
+Expires: September 4, 2016                                       M. West
                                                              Google, Inc
-                                                       February 22, 2016
+                                                           March 3, 2016
 
 
             A Retention Priority Attribute for HTTP Cookies
-                       draft-west-cookie-priority
+                     draft-west-cookie-priority-00
 
 Abstract
 
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 25, 2016.
+   This Internet-Draft will expire on September 4, 2016.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Wright, et al.           Expires August 25, 2016                [Page 1]
+Wright, et al.          Expires September 4, 2016               [Page 1]
 
-Internet-Draft               cookie-priority               February 2016
+Internet-Draft               cookie-priority                  March 2016
 
 
    the Trust Legal Provisions and are provided without warranty as
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Wright, et al.           Expires August 25, 2016                [Page 2]
+Wright, et al.          Expires September 4, 2016               [Page 2]
 
-Internet-Draft               cookie-priority               February 2016
+Internet-Draft               cookie-priority                  March 2016
 
 
 3.  Overview
@@ -165,9 +165,9 @@ Internet-Draft               cookie-priority               February 2016
 
 
 
-Wright, et al.           Expires August 25, 2016                [Page 3]
+Wright, et al.          Expires September 4, 2016               [Page 3]
 
-Internet-Draft               cookie-priority               February 2016
+Internet-Draft               cookie-priority                  March 2016
 
 
    Assume that the user agent is configured to evict all but 25 cookies
@@ -221,9 +221,9 @@ Internet-Draft               cookie-priority               February 2016
 
 
 
-Wright, et al.           Expires August 25, 2016                [Page 4]
+Wright, et al.          Expires September 4, 2016               [Page 4]
 
-Internet-Draft               cookie-priority               February 2016
+Internet-Draft               cookie-priority                  March 2016
 
 
 4.2.  Semantics (Non-Normative)
@@ -277,9 +277,9 @@ Internet-Draft               cookie-priority               February 2016
 
 
 
-Wright, et al.           Expires August 25, 2016                [Page 5]
+Wright, et al.          Expires September 4, 2016               [Page 5]
 
-Internet-Draft               cookie-priority               February 2016
+Internet-Draft               cookie-priority                  March 2016
 
 
    A user agent implementing the current specification for a retention
@@ -327,25 +327,25 @@ Internet-Draft               cookie-priority               February 2016
 7.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
-              RFC2119, March 1997,
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
 
 
 
-Wright, et al.           Expires August 25, 2016                [Page 6]
+Wright, et al.          Expires September 4, 2016               [Page 6]
 
-Internet-Draft               cookie-priority               February 2016
+Internet-Draft               cookie-priority                  March 2016
 
 
    [RFC4790]  Newman, C., Duerst, M., and A. Gulbrandsen, "Internet
-              Application Protocol Collation Registry", RFC 4790, DOI 10
-              .17487/RFC4790, March 2007,
+              Application Protocol Collation Registry", RFC 4790,
+              DOI 10.17487/RFC4790, March 2007,
               <http://www.rfc-editor.org/info/rfc4790>.
 
    [RFC5234]  Crocker, D., Ed. and P. Overell, "Augmented BNF for Syntax
-              Specifications: ABNF", STD 68, RFC 5234, DOI 10.17487/
-              RFC5234, January 2008,
+              Specifications: ABNF", STD 68, RFC 5234,
+              DOI 10.17487/RFC5234, January 2008,
               <http://www.rfc-editor.org/info/rfc5234>.
 
    [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
@@ -356,8 +356,9 @@ Internet-Draft               cookie-priority               February 2016
 
    [Wright2013]
               Wright, E. and S. Huang, "A Retention Priority Attribute
-              for HTTP Cookies", n.d., <https://docs.google.com/a/google
-              .com/file/d/0B3o1IlTKoADVRllKWGlyWGxIVTg/edit>.
+              for HTTP Cookies", n.d.,
+              <https://docs.google.com/a/google.com/file/
+              d/0B3o1IlTKoADVRllKWGlyWGxIVTg/edit>.
 
 Appendix A.  Acknowledgements
 
@@ -388,5 +389,4 @@ Authors' Addresses
 
 
 
-
-Wright, et al.           Expires August 25, 2016                [Page 7]
+Wright, et al.          Expires September 4, 2016               [Page 7]
