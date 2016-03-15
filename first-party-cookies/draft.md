@@ -1,7 +1,7 @@
 ---
 title: Same-site Cookies
 abbrev: first-party-cookies
-docname: draft-west-first-party-cookies-06
+docname: draft-west-first-party-cookies-07
 date: 2016
 category: std
 updates: 6265
@@ -190,7 +190,7 @@ Same-site cookies are set via the `SameSite` attribute in the `Set-Cookie`
 header field. That is, given a server's response to a user agent which contains
 the following header field:
 
-    Set-Cookie: SID=31d4d96e407aad42; SameSite
+    Set-Cookie: SID=31d4d96e407aad42; SameSite=Strict
 
 Subsequent requests from that user agent can be expected to contain the
 following header field if and only if both the requested resource and the
@@ -237,7 +237,7 @@ and "target browsing context", are defined in {{FETCH}}.
 
 ## "Same-site" and "cross-site" Requests  {#same-site-requests}
 
-A request is "same-site" if it's target's URI's origin's registrable domain
+A request is "same-site" if its target's URI's origin's registrable domain
 is an exact match for the request's initiator's "site for cookies", and
 "cross-site" otherwise. To be more precise, for a given request ("request"), the
 following algorithm returns `same-site` or `cross-site`:
