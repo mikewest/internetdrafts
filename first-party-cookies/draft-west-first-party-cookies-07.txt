@@ -6,7 +6,7 @@ HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
 Updates: 6265 (if approved)                                   M. Goodwin
 Intended status: Standards Track                                 Mozilla
-Expires: September 16, 2016                               March 15, 2016
+Expires: September 23, 2016                               March 22, 2016
 
 
                            Same-site Cookies
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 16, 2016.
+   This Internet-Draft will expire on September 23, 2016.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-West & Goodwin         Expires September 16, 2016               [Page 1]
+West & Goodwin         Expires September 23, 2016               [Page 1]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -83,11 +83,13 @@ Table of Contents
      5.2.  Top-level Navigations . . . . . . . . . . . . . . . . . .  11
      5.3.  Mashups and Widgets . . . . . . . . . . . . . . . . . . .  11
    6.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  11
+     6.1.  Server-controlled . . . . . . . . . . . . . . . . . . . .  11
+     6.2.  Pervasive Monitoring  . . . . . . . . . . . . . . . . . .  12
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  12
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .  12
      7.2.  Informative References  . . . . . . . . . . . . . . . . .  13
-   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  13
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  13
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  14
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
 
 1.  Introduction
 
@@ -103,17 +105,18 @@ Table of Contents
    they should not be attached to "cross-site" requests (as defined in
    section 2.1).
 
-   Note that the mechanism outlined here is backwards compatible with
-   the existing cookie syntax.  Servers may serve these cookies to all
-   user agents; those that do not support the "SameSite" attribute will
 
 
 
-West & Goodwin         Expires September 16, 2016               [Page 2]
+
+West & Goodwin         Expires September 23, 2016               [Page 2]
 
 Internet-Draft             first-party-cookies                March 2016
 
 
+   Note that the mechanism outlined here is backwards compatible with
+   the existing cookie syntax.  Servers may serve these cookies to all
+   user agents; those that do not support the "SameSite" attribute will
    simply store a cookie which is attached to all relevant requests,
    just as they do today.
 
@@ -162,10 +165,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-
-
-
-West & Goodwin         Expires September 16, 2016               [Page 3]
+West & Goodwin         Expires September 23, 2016               [Page 3]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -221,7 +221,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 16, 2016               [Page 4]
+West & Goodwin         Expires September 23, 2016               [Page 4]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -277,7 +277,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 16, 2016               [Page 5]
+West & Goodwin         Expires September 23, 2016               [Page 5]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -333,7 +333,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 16, 2016               [Page 6]
+West & Goodwin         Expires September 23, 2016               [Page 6]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -389,7 +389,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 16, 2016               [Page 7]
+West & Goodwin         Expires September 23, 2016               [Page 7]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -445,7 +445,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 16, 2016               [Page 8]
+West & Goodwin         Expires September 23, 2016               [Page 8]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -501,7 +501,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 16, 2016               [Page 9]
+West & Goodwin         Expires September 23, 2016               [Page 9]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -557,7 +557,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 16, 2016              [Page 10]
+West & Goodwin         Expires September 23, 2016              [Page 10]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -603,23 +603,38 @@ Internet-Draft             first-party-cookies                March 2016
 
 6.  Privacy Considerations
 
+6.1.  Server-controlled
+
    Same-site cookies in and of themselves don't do anything to address
    the general privacy concerns outlined in Section 7.1 of [RFC6265].
    The attribute is set by the server, and serves to mitigate the risk
    of certain kinds of attacks that the server is worried about.  The
    user is not involved in this decision.  Moreover, a number of side-
-   channels exist which could allow a server to link distinct requests
-   even in the absence of cookies.  Connection and/or socket pooling,
 
 
 
-West & Goodwin         Expires September 16, 2016              [Page 11]
+West & Goodwin         Expires September 23, 2016              [Page 11]
 
 Internet-Draft             first-party-cookies                March 2016
 
 
+   channels exist which could allow a server to link distinct requests
+   even in the absence of cookies.  Connection and/or socket pooling,
    Token Binding, and Channel ID all offer explicit methods of
    identification that servers could take advantage of.
+
+6.2.  Pervasive Monitoring
+
+   As outlined in [RFC7258], pervasive monitoring is an attack.  Cookies
+   play a large part in enabling such monitoring, as they are
+   responsible for maintaining state in HTTP connections.  We considered
+   restricting same-site cookies to secure contexts [secure-contexts] as
+   a mitigation but decided against doing so, as this feature should
+   result in a strict reduction in the number of cookies floating around
+   in cross-site contexts.  That is, even if "http://not-example.com"
+   embeds a resource from "http://example.com/", that resource will not
+   be "same-site", and "http://example.com"'s cookies simply cannot be
+   used to correlate user behavior across distinct origins.
 
 7.  References
 
@@ -650,6 +665,15 @@ Internet-Draft             first-party-cookies                March 2016
               DOI 10.17487/RFC5234, January 2008,
               <http://www.rfc-editor.org/info/rfc5234>.
 
+
+
+
+
+West & Goodwin         Expires September 23, 2016              [Page 12]
+
+Internet-Draft             first-party-cookies                March 2016
+
+
    [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
               DOI 10.17487/RFC6265, April 2011,
               <http://www.rfc-editor.org/info/rfc6265>.
@@ -663,16 +687,13 @@ Internet-Draft             first-party-cookies                March 2016
               DOI 10.17487/RFC7231, June 2014,
               <http://www.rfc-editor.org/info/rfc7231>.
 
+   [RFC7258]  Farrell, S. and H. Tschofenig, "Pervasive Monitoring Is an
+              Attack", BCP 188, RFC 7258, DOI 10.17487/RFC7258, May
+              2014, <http://www.rfc-editor.org/info/rfc7258>.
+
    [SERVICE-WORKERS]
               Russell, A., Song, J., and J. Archibald, "Service
               Workers", n.d., <http://www.w3.org/TR/service-workers/>.
-
-
-
-West & Goodwin         Expires September 16, 2016              [Page 12]
-
-Internet-Draft             first-party-cookies                March 2016
-
 
 7.2.  Informative References
 
@@ -702,6 +723,17 @@ Internet-Draft             first-party-cookies                March 2016
               <http://people.mozilla.org/~mgoodwin/SameDomain/
               samedomain-latest.txt>.
 
+
+
+West & Goodwin         Expires September 23, 2016              [Page 13]
+
+Internet-Draft             first-party-cookies                March 2016
+
+
+   [secure-contexts]
+              West, M., "Secure Contexts", n.d., <https://w3c.github.io/
+              webappsec-secure-contexts/>.
+
 Appendix A.  Acknowledgements
 
    The same-site cookie concept documented here is indebited to Mark
@@ -716,18 +748,6 @@ Authors' Addresses
 
    Email: mkwst@google.com
    URI:   https://mikewest.org/
-
-
-
-
-
-
-
-
-
-West & Goodwin         Expires September 16, 2016              [Page 13]
-
-Internet-Draft             first-party-cookies                March 2016
 
 
    Mark Goodwin
@@ -761,24 +781,4 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-West & Goodwin         Expires September 16, 2016              [Page 14]
+West & Goodwin         Expires September 23, 2016              [Page 14]

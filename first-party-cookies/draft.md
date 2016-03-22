@@ -82,6 +82,7 @@ normative:
   RFC6265:
   RFC6454:
   RFC7231:
+  RFC7258:
 
 informative:
   RFC7034:
@@ -129,6 +130,13 @@ informative:
     -
       ins: C. Bentzel
       name: Chris Bentzel
+  secure-contexts:
+    target: https://w3c.github.io/webappsec-secure-contexts/
+    title: Secure Contexts
+    author:
+    -
+      ins: M. West
+      name: Mike West
 
 --- abstract
 
@@ -537,6 +545,8 @@ same-site cookies.
 
 # Privacy Considerations
 
+## Server-controlled
+
 Same-site cookies in and of themselves don't do anything to address the
 general privacy concerns outlined in Section 7.1 of {{RFC6265}}. The attribute
 is set by the server, and serves to mitigate the risk of certain kinds of
@@ -545,6 +555,18 @@ decision. Moreover, a number of side-channels exist which could allow a server
 to link distinct requests even in the absence of cookies. Connection and/or
 socket pooling, Token Binding, and Channel ID all offer explicit methods of
 identification that servers could take advantage of.
+
+## Pervasive Monitoring
+
+As outlined in {{RFC7258}}, pervasive monitoring is an attack. Cookies play a
+large part in enabling such monitoring, as they are responsible for maintaining
+state in HTTP connections. We considered restricting same-site cookies to
+secure contexts {{secure-contexts}} as a mitigation but decided against doing
+so, as this feature should result in a strict reduction in the number of cookies
+floating around in cross-site contexts. That is, even if
+`http://not-example.com` embeds a resource from `http://example.com/`, that
+resource will not be "same-site", and `http://example.com`'s cookies simply
+cannot be used to correlate user behavior across distinct origins.
 
 --- back
 

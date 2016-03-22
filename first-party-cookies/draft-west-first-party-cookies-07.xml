@@ -9,6 +9,7 @@
 <!ENTITY RFC6265 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6265.xml">
 <!ENTITY RFC6454 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6454.xml">
 <!ENTITY RFC7231 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7231.xml">
+<!ENTITY RFC7258 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7258.xml">
 <!ENTITY RFC7034 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7034.xml">
 ]>
 
@@ -484,6 +485,8 @@ same-site cookies.</t>
 </section>
 <section anchor="privacy-considerations" title="Privacy Considerations">
 
+<section anchor="server-controlled" title="Server-controlled">
+
 <t>Same-site cookies in and of themselves don’t do anything to address the
 general privacy concerns outlined in Section 7.1 of <xref target="RFC6265"/>. The attribute
 is set by the server, and serves to mitigate the risk of certain kinds of
@@ -493,6 +496,20 @@ to link distinct requests even in the absence of cookies. Connection and/or
 socket pooling, Token Binding, and Channel ID all offer explicit methods of
 identification that servers could take advantage of.</t>
 
+</section>
+<section anchor="pervasive-monitoring" title="Pervasive Monitoring">
+
+<t>As outlined in <xref target="RFC7258"/>, pervasive monitoring is an attack. Cookies play a
+large part in enabling such monitoring, as they are responsible for maintaining
+state in HTTP connections. We considered restricting same-site cookies to
+secure contexts <xref target="secure-contexts"/> as a mitigation but decided against doing
+so, as this feature should result in a strict reduction in the number of cookies
+floating around in cross-site contexts. That is, even if
+<spanx style="verb">http://not-example.com</spanx> embeds a resource from <spanx style="verb">http://example.com/</spanx>, that
+resource will not be “same-site”, and <spanx style="verb">http://example.com</spanx>’s cookies simply
+cannot be used to correlate user behavior across distinct origins.</t>
+
+</section>
 </section>
 
 
@@ -562,6 +579,7 @@ identification that servers could take advantage of.</t>
 &RFC6265;
 &RFC6454;
 &RFC7231;
+&RFC7258;
 
 
     </references>
@@ -615,6 +633,15 @@ identification that servers could take advantage of.</t>
   <front>
     <title>Chrome Prerendering</title>
     <author initials="C." surname="Bentzel" fullname="Chris Bentzel">
+      <organization></organization>
+    </author>
+    <date year="n.d."/>
+  </front>
+</reference>
+<reference anchor="secure-contexts" target="https://w3c.github.io/webappsec-secure-contexts/">
+  <front>
+    <title>Secure Contexts</title>
+    <author initials="M." surname="West" fullname="Mike West">
       <organization></organization>
     </author>
     <date year="n.d."/>

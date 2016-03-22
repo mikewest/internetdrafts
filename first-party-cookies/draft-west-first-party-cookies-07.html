@@ -394,6 +394,8 @@
 <link href="#rfc.section.5.2" rel="Chapter" title="5.2 Top-level Navigations"/>
 <link href="#rfc.section.5.3" rel="Chapter" title="5.3 Mashups and Widgets"/>
 <link href="#rfc.section.6" rel="Chapter" title="6 Privacy Considerations"/>
+<link href="#rfc.section.6.1" rel="Chapter" title="6.1 Server-controlled"/>
+<link href="#rfc.section.6.2" rel="Chapter" title="6.2 Pervasive Monitoring"/>
 <link href="#rfc.references" rel="Chapter" title="7 References"/>
 <link href="#rfc.references.1" rel="Chapter" title="7.1 Normative References"/>
 <link href="#rfc.references.2" rel="Chapter" title="7.2 Informative References"/>
@@ -406,7 +408,7 @@
 
   <meta name="dct.creator" content="West, M. and M. Goodwin" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-west-first-party-cookies-07" />
-  <meta name="dct.issued" scheme="ISO8601" content="2016-3-15" />
+  <meta name="dct.issued" scheme="ISO8601" content="2016-3-22" />
   <meta name="dct.abstract" content="This document updates RFC6265 by defining a " />
   <meta name="description" content="This document updates RFC6265 by defining a " />
 
@@ -434,8 +436,8 @@
   <td class="right">Mozilla</td>
 </tr>
 <tr>
-  <td class="left">Expires: September 16, 2016</td>
-  <td class="right">March 15, 2016</td>
+  <td class="left">Expires: September 23, 2016</td>
+  <td class="right">March 22, 2016</td>
 </tr>
 
     	
@@ -455,7 +457,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on September 16, 2016.</p>
+<p>This Internet-Draft will expire on September 23, 2016.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -487,7 +489,9 @@
 <li>5.2.   <a href="#rfc.section.5.2">Top-level Navigations</a></li>
 <li>5.3.   <a href="#rfc.section.5.3">Mashups and Widgets</a></li>
 </ul><li>6.   <a href="#rfc.section.6">Privacy Considerations</a></li>
-<li>7.   <a href="#rfc.references">References</a></li>
+<ul><li>6.1.   <a href="#rfc.section.6.1">Server-controlled</a></li>
+<li>6.2.   <a href="#rfc.section.6.2">Pervasive Monitoring</a></li>
+</ul><li>7.   <a href="#rfc.references">References</a></li>
 <ul><li>7.1.   <a href="#rfc.references.1">Normative References</a></li>
 <li>7.2.   <a href="#rfc.references.2">Informative References</a></li>
 </ul><li>Appendix A.   <a href="#rfc.appendix.A">Acknowledgements</a></li>
@@ -644,7 +648,10 @@ samesite-value = "Strict" / "Lax"
 <p id="rfc.section.5.3.p.1">The <samp>SameSite</samp> attribute is inappropriate for some important use-cases. In particular, note that content intended for embedding in a cross-site contexts (social networking widgets or commenting services, for instance) will not have access to such cookies. Cross-site cookies may be required in order to provide seamless functionality that relies on a user&#8217;s state.</p>
 <p id="rfc.section.5.3.p.2">Likewise, some forms of Single-Sign-On might require authentication in a cross-site context; these mechanisms will not function as intended with same-site cookies.</p>
 <h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#privacy-considerations" id="privacy-considerations">Privacy Considerations</a></h1>
-<p id="rfc.section.6.p.1">Same-site cookies in and of themselves don&#8217;t do anything to address the general privacy concerns outlined in Section 7.1 of <a href="#RFC6265">[RFC6265]</a>. The attribute is set by the server, and serves to mitigate the risk of certain kinds of attacks that the server is worried about. The user is not involved in this decision. Moreover, a number of side-channels exist which could allow a server to link distinct requests even in the absence of cookies. Connection and/or socket pooling, Token Binding, and Channel ID all offer explicit methods of identification that servers could take advantage of.</p>
+<h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#server-controlled" id="server-controlled">Server-controlled</a></h1>
+<p id="rfc.section.6.1.p.1">Same-site cookies in and of themselves don&#8217;t do anything to address the general privacy concerns outlined in Section 7.1 of <a href="#RFC6265">[RFC6265]</a>. The attribute is set by the server, and serves to mitigate the risk of certain kinds of attacks that the server is worried about. The user is not involved in this decision. Moreover, a number of side-channels exist which could allow a server to link distinct requests even in the absence of cookies. Connection and/or socket pooling, Token Binding, and Channel ID all offer explicit methods of identification that servers could take advantage of.</p>
+<h1 id="rfc.section.6.2"><a href="#rfc.section.6.2">6.2.</a> <a href="#pervasive-monitoring" id="pervasive-monitoring">Pervasive Monitoring</a></h1>
+<p id="rfc.section.6.2.p.1">As outlined in <a href="#RFC7258">[RFC7258]</a>, pervasive monitoring is an attack. Cookies play a large part in enabling such monitoring, as they are responsible for maintaining state in HTTP connections. We considered restricting same-site cookies to secure contexts <a href="#secure-contexts">[secure-contexts]</a> as a mitigation but decided against doing so, as this feature should result in a strict reduction in the number of cookies floating around in cross-site contexts. That is, even if <samp>http://not-example.com</samp> embeds a resource from <samp>http://example.com/</samp>, that resource will not be &#8220;same-site&#8221;, and <samp>http://example.com</samp>&#8217;s cookies simply cannot be used to correlate user behavior across distinct origins.</p>
 <h1 id="rfc.references"><a href="#rfc.references">7.</a> References</h1>
 <h1 id="rfc.references.1"><a href="#rfc.references.1">7.1.</a> Normative References</h1>
 <table>
@@ -700,6 +707,12 @@ samesite-value = "Strict" / "Lax"
     </tr>
     <tr>
       <td class="reference">
+        <b id="RFC7258">[RFC7258]</b>
+      </td>
+      <td class="top"><a>Farrell, S.</a> and <a>H. Tschofenig</a>, "<a href="http://tools.ietf.org/html/rfc7258">Pervasive Monitoring Is an Attack</a>", BCP 188, RFC 7258, DOI 10.17487/RFC7258, May 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
         <b id="SERVICE-WORKERS">[SERVICE-WORKERS]</b>
       </td>
       <td class="top"><a>Russell, A.</a>, <a>Song, J.</a> and <a>J. Archibald</a>, <a href="http://www.w3.org/TR/service-workers/">Service Workers</a>", n.d..</td>
@@ -738,6 +751,12 @@ samesite-value = "Strict" / "Lax"
         <b id="samedomain-cookies">[samedomain-cookies]</b>
       </td>
       <td class="top"><a>Goodwin, M.</a> and <a>J. Walker</a>, "<a href="http://people.mozilla.org/~mgoodwin/SameDomain/samedomain-latest.txt">SameDomain Cookie Flag</a>", 2011.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="secure-contexts">[secure-contexts]</b>
+      </td>
+      <td class="top"><a>West, M.</a>, "<a href="https://w3c.github.io/webappsec-secure-contexts/">Secure Contexts</a>", n.d..</td>
     </tr>
   </tbody>
 </table>
