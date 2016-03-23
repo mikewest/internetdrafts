@@ -211,8 +211,8 @@ top-level browsing context.</t>
   <t>Let <spanx style="verb">top-origin</spanx> be the origin of <spanx style="verb">top-document</spanx>’s URI if <spanx style="verb">top-document</spanx>’s
 sandboxed origin browsing context flag is set, and <spanx style="verb">top-document</spanx>’s origin
 otherwise.</t>
-  <t>Let <spanx style="verb">documents</spanx> be an empty list be a list containing <spanx style="verb">document</spanx> and each of
-<spanx style="verb">document</spanx>’s ancestor browsing contexts’ active documents.</t>
+  <t>Let <spanx style="verb">documents</spanx> be a list containing <spanx style="verb">document</spanx> and each of <spanx style="verb">document</spanx>’s
+ancestor browsing contexts’ active documents.</t>
   <t>For each <spanx style="verb">item</spanx> in <spanx style="verb">documents</spanx>:  <list style="numbers">
       <t>Let <spanx style="verb">origin</spanx> be the origin of <spanx style="verb">item</spanx>’s URI if <spanx style="verb">item</spanx>’s sandboxed origin
 browsing context flag is set, and <spanx style="verb">item</spanx>’s origin otherwise.</t>
@@ -655,8 +655,8 @@ cannot be used to correlate user behavior across distinct origins.</t>
 <section anchor="acknowledgements" title="Acknowledgements">
 
 <t>The same-site cookie concept documented here is indebited to Mark Goodwin’s
-and Joe Walker’s <xref target="samedomain-cookies"/>. Michal Zalewski, Artur Janc, and Ryan
-Sleevi provided particularly valuable feedback on this document.</t>
+and Joe Walker’s <xref target="samedomain-cookies"/>. Michal Zalewski, Artur Janc, Ryan
+Sleevi, and Adam Barth provided particularly valuable feedback on this document.</t>
 
 </section>
 

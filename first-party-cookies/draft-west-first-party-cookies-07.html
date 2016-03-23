@@ -408,7 +408,7 @@
 
   <meta name="dct.creator" content="West, M. and M. Goodwin" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-west-first-party-cookies-07" />
-  <meta name="dct.issued" scheme="ISO8601" content="2016-3-22" />
+  <meta name="dct.issued" scheme="ISO8601" content="2016-3-23" />
   <meta name="dct.abstract" content="This document updates RFC6265 by defining a " />
   <meta name="description" content="This document updates RFC6265 by defining a " />
 
@@ -436,8 +436,8 @@
   <td class="right">Mozilla</td>
 </tr>
 <tr>
-  <td class="left">Expires: September 23, 2016</td>
-  <td class="right">March 22, 2016</td>
+  <td class="left">Expires: September 24, 2016</td>
+  <td class="right">March 23, 2016</td>
 </tr>
 
     	
@@ -457,7 +457,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on September 23, 2016.</p>
+<p>This Internet-Draft will expire on September 24, 2016.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -552,7 +552,7 @@ Set-Cookie: SID=31d4d96e407aad42; SameSite=Strict
 <ol>
   <li>Let <samp>top-document</samp> be the active document in <samp>document</samp>&#8217;s browsing context&#8217;s top-level browsing context.</li>
   <li>Let <samp>top-origin</samp> be the origin of <samp>top-document</samp>&#8217;s URI if <samp>top-document</samp>&#8217;s sandboxed origin browsing context flag is set, and <samp>top-document</samp>&#8217;s origin otherwise.</li>
-  <li>Let <samp>documents</samp> be an empty list be a list containing <samp>document</samp> and each of <samp>document</samp>&#8217;s ancestor browsing contexts&#8217; active documents.</li>
+  <li>Let <samp>documents</samp> be a list containing <samp>document</samp> and each of <samp>document</samp>&#8217;s ancestor browsing contexts&#8217; active documents.</li>
   <li>For each <samp>item</samp> in <samp>documents</samp>:  <ol><li>Let <samp>origin</samp> be the origin of <samp>item</samp>&#8217;s URI if <samp>item</samp>&#8217;s sandboxed origin browsing context flag is set, and <samp>item</samp>&#8217;s origin otherwise.</li><li>If <samp>origin</samp>&#8217;s host&#8217;s registrable domain is not an exact match for <samp>top-origin</samp>&#8217;s host&#8217;s registrable domain, return the empty string.</li></ol></li>
   <li>Return <samp>top-site</samp>.</li>
 </ol>
@@ -761,7 +761,7 @@ samesite-value = "Strict" / "Lax"
   </tbody>
 </table>
 <h1 id="rfc.appendix.A"><a href="#rfc.appendix.A">Appendix A.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
-<p id="rfc.section.A.p.1">The same-site cookie concept documented here is indebited to Mark Goodwin&#8217;s and Joe Walker&#8217;s <a href="#samedomain-cookies">[samedomain-cookies]</a>. Michal Zalewski, Artur Janc, and Ryan Sleevi provided particularly valuable feedback on this document.</p>
+<p id="rfc.section.A.p.1">The same-site cookie concept documented here is indebited to Mark Goodwin&#8217;s and Joe Walker&#8217;s <a href="#samedomain-cookies">[samedomain-cookies]</a>. Michal Zalewski, Artur Janc, Ryan Sleevi, and Adam Barth provided particularly valuable feedback on this document.</p>
 <h1 id="rfc.authors">
   <a href="#rfc.authors">Authors' Addresses</a>
 </h1>

@@ -573,5 +573,5 @@ cannot be used to correlate user behavior across distinct origins.
 # Acknowledgements
 
 The same-site cookie concept documented here is indebited to Mark Goodwin's
-and Joe Walker's {{samedomain-cookies}}. Michal Zalewski, Artur Janc, and Ryan
-Sleevi provided particularly valuable feedback on this document.
+and Joe Walker's {{samedomain-cookies}}. Michal Zalewski, Artur Janc, Ryan
+Sleevi, and Adam Barth provided particularly valuable feedback on this document.

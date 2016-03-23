@@ -6,7 +6,7 @@ HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
 Updates: 6265 (if approved)                                   M. Goodwin
 Intended status: Standards Track                                 Mozilla
-Expires: September 23, 2016                               March 22, 2016
+Expires: September 24, 2016                               March 23, 2016
 
 
                            Same-site Cookies
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 23, 2016.
+   This Internet-Draft will expire on September 24, 2016.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-West & Goodwin         Expires September 23, 2016               [Page 1]
+West & Goodwin         Expires September 24, 2016               [Page 1]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-West & Goodwin         Expires September 23, 2016               [Page 2]
+West & Goodwin         Expires September 24, 2016               [Page 2]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -165,7 +165,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016               [Page 3]
+West & Goodwin         Expires September 24, 2016               [Page 3]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -221,7 +221,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016               [Page 4]
+West & Goodwin         Expires September 24, 2016               [Page 4]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -277,14 +277,13 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016               [Page 5]
+West & Goodwin         Expires September 24, 2016               [Page 5]
 
 Internet-Draft             first-party-cookies                March 2016
 
 
-   3.  Let "documents" be an empty list be a list containing "document"
-       and each of "document"'s ancestor browsing contexts' active
-       documents.
+   3.  Let "documents" be a list containing "document" and each of
+       "document"'s ancestor browsing contexts' active documents.
 
    4.  For each "item" in "documents":
 
@@ -330,15 +329,14 @@ Internet-Draft             first-party-cookies                March 2016
 
    1.  Let "site" be "worker"'s origin's host's registrable domain.
 
+   2.  For each "document" in "worker"'s Documents:
 
 
 
-West & Goodwin         Expires September 23, 2016               [Page 6]
+West & Goodwin         Expires September 24, 2016               [Page 6]
 
 Internet-Draft             first-party-cookies                March 2016
 
-
-   2.  For each "document" in "worker"'s Documents:
 
        1.  Let "document-site" be "document"'s "site for cookies" (as
            defined in Section 2.1.1).
@@ -389,7 +387,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016               [Page 7]
+
+
+West & Goodwin         Expires September 24, 2016               [Page 7]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -445,7 +445,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016               [Page 8]
+West & Goodwin         Expires September 24, 2016               [Page 8]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -501,7 +501,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016               [Page 9]
+West & Goodwin         Expires September 24, 2016               [Page 9]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -557,7 +557,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016              [Page 10]
+West & Goodwin         Expires September 24, 2016              [Page 10]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -613,7 +613,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016              [Page 11]
+West & Goodwin         Expires September 24, 2016              [Page 11]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -669,7 +669,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016              [Page 12]
+West & Goodwin         Expires September 24, 2016              [Page 12]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -725,7 +725,7 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 23, 2016              [Page 13]
+West & Goodwin         Expires September 24, 2016              [Page 13]
 
 Internet-Draft             first-party-cookies                March 2016
 
@@ -738,8 +738,8 @@ Appendix A.  Acknowledgements
 
    The same-site cookie concept documented here is indebited to Mark
    Goodwin's and Joe Walker's [samedomain-cookies].  Michal Zalewski,
-   Artur Janc, and Ryan Sleevi provided particularly valuable feedback
-   on this document.
+   Artur Janc, Ryan Sleevi, and Adam Barth provided particularly
+   valuable feedback on this document.
 
 Authors' Addresses
 
@@ -781,4 +781,4 @@ Authors' Addresses
 
 
 
-West & Goodwin         Expires September 23, 2016              [Page 14]
+West & Goodwin         Expires September 24, 2016              [Page 14]
