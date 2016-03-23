@@ -291,8 +291,8 @@ cookies" (either a registrable domain, or the empty string):
     sandboxed origin browsing context flag is set, and `top-document`'s origin
     otherwise.
 
-3.  Let `documents` be an empty list be a list containing `document` and each of
-    `document`'s ancestor browsing contexts' active documents.
+3.  Let `documents` be a list containing `document` and each of `document`'s
+    ancestor browsing contexts' active documents.
 
 4.  For each `item` in `documents`:
 
