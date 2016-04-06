@@ -1,7 +1,7 @@
 ---
 title: Same-site Cookies
 abbrev: first-party-cookies
-docname: draft-west-first-party-cookies-07
+docname: draft-west-first-party-cookies-08
 date: 2016
 category: std
 updates: 6265
@@ -409,7 +409,7 @@ The following attribute definition should be considered part of the the
 If the `attribute-name` case-insensitively matches the string "SameSite", the
 user agent MUST process the `cookie-av` as follows:
 
-1.  If `cookie-av`'s `attribute-value` is not a case-sensitive match for
+1.  If `cookie-av`'s `attribute-value` is not a case-insensitive match for
     "Strict" or "Lax", ignore the `cookie-av`.
 
 2.  Let `enforcement` be "Lax" if `cookie-av`'s `attribute-value` is a
