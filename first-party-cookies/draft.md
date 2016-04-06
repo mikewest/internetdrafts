@@ -388,10 +388,10 @@ algorithm in {{same-site-requests}}. For example, requests for
 `https://example.com/sekrit-image` will attach same-site cookies if and only if
 initiated from a context whose "site for cookies" is "example.com".
 
-If the "SameSite" attribute has no value, if the value is "Strict", or if the
-value is invalid, the cookie will only be sent along with "same-site" requests.
-If the value is "Lax", the cookie will be sent with "same-site" requests, and
-with "cross-site" top-level navigations, as described in {{strict-lax}}.
+If the "SameSite" attribute's value is "Strict", or if the value is invalid, the
+cookie will only be sent along with "same-site" requests. If the value is "Lax",
+the cookie will be sent with "same-site" requests, and with "cross-site"
+top-level navigations, as described in {{strict-lax}}.
 
 The changes to the `Cookie` header field suggested in {{cookie-header}} provide
 additional detail.
@@ -409,10 +409,11 @@ The following attribute definition should be considered part of the the
 If the `attribute-name` case-insensitively matches the string "SameSite", the
 user agent MUST process the `cookie-av` as follows:
 
-1.  Let `enforcement` be "Strict".
+1.  If `cookie-av`'s `attribute-value` is not a case-sensitive match for
+    "Strict" or "Lax", ignore the `cookie-av`.
 
-2.  If `cookie-av`'s `attribute-value` is a case-insensitive match for either
-    "Strict" or "Lax", set `enforcement` to `cookie-av`'s `attribute-value`.
+2.  Let `enforcement` be "Lax" if `cookie-av`'s `attribute-value` is a
+    case-insensitive match for "Lax", and "Strict" otherwise.
 
 3.  Append an attribute to the `cookie-attribute-list` with an `attribute-name`
     of "SameSite" and an `attribute-value` of `enforcement`.
