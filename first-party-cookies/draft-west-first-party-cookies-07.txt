@@ -6,7 +6,7 @@ HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
 Updates: 6265 (if approved)                                   M. Goodwin
 Intended status: Standards Track                                 Mozilla
-Expires: September 24, 2016                               March 23, 2016
+Expires: October 8, 2016                                   April 6, 2016
 
 
                            Same-site Cookies
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 24, 2016.
+   This Internet-Draft will expire on October 8, 2016.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-West & Goodwin         Expires September 24, 2016               [Page 1]
+West & Goodwin           Expires October 8, 2016                [Page 1]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
    the Trust Legal Provisions and are provided without warranty as
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-West & Goodwin         Expires September 24, 2016               [Page 2]
+West & Goodwin           Expires October 8, 2016                [Page 2]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
    Note that the mechanism outlined here is backwards compatible with
@@ -165,9 +165,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016               [Page 3]
+West & Goodwin           Expires October 8, 2016                [Page 3]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
 2.  Terminology and notation
@@ -221,9 +221,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016               [Page 4]
+West & Goodwin           Expires October 8, 2016                [Page 4]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
    given request ("request"), the following algorithm returns "same-
@@ -277,9 +277,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016               [Page 5]
+West & Goodwin           Expires October 8, 2016                [Page 5]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
    3.  Let "documents" be a list containing "document" and each of
@@ -333,9 +333,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016               [Page 6]
+West & Goodwin           Expires October 8, 2016                [Page 6]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
        1.  Let "document-site" be "document"'s "site for cookies" (as
@@ -389,9 +389,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016               [Page 7]
+West & Goodwin           Expires October 8, 2016                [Page 7]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
 3.2.  Semantics of the "SameSite" Attribute (Non-Normative)
@@ -403,11 +403,11 @@ Internet-Draft             first-party-cookies                March 2016
    if and only if initiated from a context whose "site for cookies" is
    "example.com".
 
-   If the "SameSite" attribute has no value, if the value is "Strict",
-   or if the value is invalid, the cookie will only be sent along with
-   "same-site" requests.  If the value is "Lax", the cookie will be sent
-   with "same-site" requests, and with "cross-site" top-level
-   navigations, as described in Section 4.1.1.
+   If the "SameSite" attribute's value is "Strict", or if the value is
+   invalid, the cookie will only be sent along with "same-site"
+   requests.  If the value is "Lax", the cookie will be sent with "same-
+   site" requests, and with "cross-site" top-level navigations, as
+   described in Section 4.1.1.
 
    The changes to the "Cookie" header field suggested in Section 4.3
    provide additional detail.
@@ -425,11 +425,11 @@ Internet-Draft             first-party-cookies                March 2016
    If the "attribute-name" case-insensitively matches the string
    "SameSite", the user agent MUST process the "cookie-av" as follows:
 
-   1.  Let "enforcement" be "Strict".
+   1.  If "cookie-av"'s "attribute-value" is not a case-sensitive match
+       for "Strict" or "Lax", ignore the "cookie-av".
 
-   2.  If "cookie-av"'s "attribute-value" is a case-insensitive match
-       for either "Strict" or "Lax", set "enforcement" to "cookie-av"'s
-       "attribute-value".
+   2.  Let "enforcement" be "Lax" if "cookie-av"'s "attribute-value" is
+       a case-insensitive match for "Lax", and "Strict" otherwise.
 
    3.  Append an attribute to the "cookie-attribute-list" with an
        "attribute-name" of "SameSite" and an "attribute-value" of
@@ -445,9 +445,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016               [Page 8]
+West & Goodwin           Expires October 8, 2016                [Page 8]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
    enforcement mode that carves out an exception which sends same-site
@@ -501,9 +501,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016               [Page 9]
+West & Goodwin           Expires October 8, 2016                [Page 9]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
 4.3.  Monkey-patching the "Cookie" header
@@ -557,9 +557,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016              [Page 10]
+West & Goodwin           Expires October 8, 2016               [Page 10]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
 5.2.  Top-level Navigations
@@ -613,9 +613,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016              [Page 11]
+West & Goodwin           Expires October 8, 2016               [Page 11]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
    channels exist which could allow a server to link distinct requests
@@ -669,9 +669,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016              [Page 12]
+West & Goodwin           Expires October 8, 2016               [Page 12]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
    [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
@@ -725,9 +725,9 @@ Internet-Draft             first-party-cookies                March 2016
 
 
 
-West & Goodwin         Expires September 24, 2016              [Page 13]
+West & Goodwin           Expires October 8, 2016               [Page 13]
 
-Internet-Draft             first-party-cookies                March 2016
+Internet-Draft             first-party-cookies                April 2016
 
 
    [secure-contexts]
@@ -781,4 +781,4 @@ Authors' Addresses
 
 
 
-West & Goodwin         Expires September 24, 2016              [Page 14]
+West & Goodwin           Expires October 8, 2016               [Page 14]

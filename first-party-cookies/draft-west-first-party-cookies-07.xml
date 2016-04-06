@@ -316,10 +316,10 @@ algorithm in <xref target="same-site-requests"/>. For example, requests for
 <spanx style="verb">https://example.com/sekrit-image</spanx> will attach same-site cookies if and only if
 initiated from a context whose “site for cookies” is “example.com”.</t>
 
-<t>If the “SameSite” attribute has no value, if the value is “Strict”, or if the
-value is invalid, the cookie will only be sent along with “same-site” requests.
-If the value is “Lax”, the cookie will be sent with “same-site” requests, and
-with “cross-site” top-level navigations, as described in <xref target="strict-lax"/>.</t>
+<t>If the “SameSite” attribute’s value is “Strict”, or if the value is invalid, the
+cookie will only be sent along with “same-site” requests. If the value is “Lax”,
+the cookie will be sent with “same-site” requests, and with “cross-site”
+top-level navigations, as described in <xref target="strict-lax"/>.</t>
 
 <t>The changes to the <spanx style="verb">Cookie</spanx> header field suggested in <xref target="cookie-header"/> provide
 additional detail.</t>
@@ -340,9 +340,10 @@ the client-side requirements of the <spanx style="verb">SameSite</spanx> attribu
 user agent MUST process the <spanx style="verb">cookie-av</spanx> as follows:</t>
 
 <t><list style="numbers">
-  <t>Let <spanx style="verb">enforcement</spanx> be “Strict”.</t>
-  <t>If <spanx style="verb">cookie-av</spanx>’s <spanx style="verb">attribute-value</spanx> is a case-insensitive match for either
-“Strict” or “Lax”, set <spanx style="verb">enforcement</spanx> to <spanx style="verb">cookie-av</spanx>’s <spanx style="verb">attribute-value</spanx>.</t>
+  <t>If <spanx style="verb">cookie-av</spanx>’s <spanx style="verb">attribute-value</spanx> is not a case-sensitive match for
+“Strict” or “Lax”, ignore the <spanx style="verb">cookie-av</spanx>.</t>
+  <t>Let <spanx style="verb">enforcement</spanx> be “Lax” if <spanx style="verb">cookie-av</spanx>’s <spanx style="verb">attribute-value</spanx> is a
+case-insensitive match for “Lax”, and “Strict” otherwise.</t>
   <t>Append an attribute to the <spanx style="verb">cookie-attribute-list</spanx> with an <spanx style="verb">attribute-name</spanx>
 of “SameSite” and an <spanx style="verb">attribute-value</spanx> of <spanx style="verb">enforcement</spanx>.</t>
 </list></t>

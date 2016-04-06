@@ -408,7 +408,7 @@
 
   <meta name="dct.creator" content="West, M. and M. Goodwin" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-west-first-party-cookies-07" />
-  <meta name="dct.issued" scheme="ISO8601" content="2016-3-23" />
+  <meta name="dct.issued" scheme="ISO8601" content="2016-4-6" />
   <meta name="dct.abstract" content="This document updates RFC6265 by defining a " />
   <meta name="description" content="This document updates RFC6265 by defining a " />
 
@@ -436,8 +436,8 @@
   <td class="right">Mozilla</td>
 </tr>
 <tr>
-  <td class="left">Expires: September 24, 2016</td>
-  <td class="right">March 23, 2016</td>
+  <td class="left">Expires: October 8, 2016</td>
+  <td class="right">April 6, 2016</td>
 </tr>
 
     	
@@ -457,7 +457,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on September 24, 2016.</p>
+<p>This Internet-Draft will expire on October 8, 2016.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -593,7 +593,7 @@ samesite-value = "Strict" / "Lax"
 </pre>
 <h1 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2.</a> <a href="#semantics-of-the-samesite-attribute-non-normative" id="semantics-of-the-samesite-attribute-non-normative">Semantics of the &#8220;SameSite&#8221; Attribute (Non-Normative)</a></h1>
 <p id="rfc.section.3.2.p.1">The &#8220;SameSite&#8221; attribute limits the scope of the cookie such that it will only be attached to requests if those requests are &#8220;same-site&#8221;, as defined by the algorithm in <a href="#same-site-requests">Section 2.1</a>. For example, requests for <samp>https://example.com/sekrit-image</samp> will attach same-site cookies if and only if initiated from a context whose &#8220;site for cookies&#8221; is &#8220;example.com&#8221;.</p>
-<p id="rfc.section.3.2.p.2">If the &#8220;SameSite&#8221; attribute has no value, if the value is &#8220;Strict&#8221;, or if the value is invalid, the cookie will only be sent along with &#8220;same-site&#8221; requests.  If the value is &#8220;Lax&#8221;, the cookie will be sent with &#8220;same-site&#8221; requests, and with &#8220;cross-site&#8221; top-level navigations, as described in <a href="#strict-lax">Section 4.1.1</a>.</p>
+<p id="rfc.section.3.2.p.2">If the &#8220;SameSite&#8221; attribute&#8217;s value is &#8220;Strict&#8221;, or if the value is invalid, the cookie will only be sent along with &#8220;same-site&#8221; requests. If the value is &#8220;Lax&#8221;, the cookie will be sent with &#8220;same-site&#8221; requests, and with &#8220;cross-site&#8221; top-level navigations, as described in <a href="#strict-lax">Section 4.1.1</a>.</p>
 <p id="rfc.section.3.2.p.3">The changes to the <samp>Cookie</samp> header field suggested in <a href="#cookie-header">Section 4.3</a> provide additional detail.</p>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#user-agent-requirements" id="user-agent-requirements">User Agent Requirements</a></h1>
 <p id="rfc.section.4.p.1">This section describes extensions to <a href="#RFC6265">[RFC6265]</a> necessary in order to implement the client-side requirements of the <samp>SameSite</samp> attribute.</p>
@@ -603,8 +603,8 @@ samesite-value = "Strict" / "Lax"
 <p/>
 
 <ol>
-  <li>Let <samp>enforcement</samp> be &#8220;Strict&#8221;.</li>
-  <li>If <samp>cookie-av</samp>&#8217;s <samp>attribute-value</samp> is a case-insensitive match for either &#8220;Strict&#8221; or &#8220;Lax&#8221;, set <samp>enforcement</samp> to <samp>cookie-av</samp>&#8217;s <samp>attribute-value</samp>.</li>
+  <li>If <samp>cookie-av</samp>&#8217;s <samp>attribute-value</samp> is not a case-sensitive match for &#8220;Strict&#8221; or &#8220;Lax&#8221;, ignore the <samp>cookie-av</samp>.</li>
+  <li>Let <samp>enforcement</samp> be &#8220;Lax&#8221; if <samp>cookie-av</samp>&#8217;s <samp>attribute-value</samp> is a case-insensitive match for &#8220;Lax&#8221;, and &#8220;Strict&#8221; otherwise.</li>
   <li>Append an attribute to the <samp>cookie-attribute-list</samp> with an <samp>attribute-name</samp> of &#8220;SameSite&#8221; and an <samp>attribute-value</samp> of <samp>enforcement</samp>.</li>
 </ol>
 <h1 id="rfc.section.4.1.1"><a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#strict-lax" id="strict-lax">&#8220;Strict&#8221; and &#8220;Lax&#8221; enforcement</a></h1>
