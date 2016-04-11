@@ -32,6 +32,34 @@ informative:
       ins: V. Marti
       name: Vicent Marti
 
+  SameSite:
+    target: https://tools.ietf.org/html/draft-west-first-party-cookies
+    title: "Same-site Cookies"
+    author:
+    -
+      ins: M. West
+      name: Mike West
+      organization: Google, Inc
+      email: mkwst@google.com
+  Priority:
+    target: https://tools.ietf.org/html/draft-west-cookie-priority
+    title: "Cookie Priorities"
+    author:
+    -
+      ins: E. Wright
+      name: Erik Wright
+      organization: Shopify
+    -
+      ins: S. Huang
+      name: Samuel Huang
+      organization: Google, Inc
+      email: huangs@google.com
+    -
+      ins: M. West
+      name: Mike West
+      organization: Google, Inc
+      email: mkwst@google.com
+
 --- abstract
 
 This document updates RFC6265 by redefining the expected order in which
@@ -122,6 +150,9 @@ be equal under the following rules.
         `B`'s `domain` attribute.
 
         Otherwise, return "lesser".
+
+ISSUE: Include `samesite-flag` [SameSite], and `priority-flag` [Priority] if
+those are adopted by the WG.
 
 # Authoring Considerations
 

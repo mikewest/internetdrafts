@@ -493,6 +493,7 @@
 <ol>
   <li>If <samp>A</samp>&#8217;s <samp>domain</samp> attribute is equal in length to <samp>B</samp>&#8217;s <samp>domain</samp> attribute:  <ol><li>If <samp>A</samp>&#8217;s <samp>host-only-flag</samp> is set, and <samp>B</samp>&#8217;s <samp>host-only-flag</samp> is not set, return &#8220;greater&#8221; (as these cookies could not be set by a subdomain, and are therefore more authoritative for the <samp>request-host</samp>).</li><li>If <samp>A</samp>&#8217;s <samp>http-only-flag</samp> is set, and <samp>B</samp>&#8217;s <samp>http-only-flag</samp> is not set, return &#8220;greater&#8221; (as these cookies can only be set by the server, not by XSS, and are therefore more authoritative for the <samp>request-host</samp>).</li><li>If <samp>A</samp>&#8217;s <samp>path</samp> attribute is equal in length to <samp>B</samp>&#8217;s <samp>path</samp> attribute:      <ol><li>If <samp>A</samp>&#8217;s <samp>secure-only-flag</samp> is set, and <samp>B</samp>&#8217;s <samp>secure-only-flag</samp> is not set, return &#8220;greater&#8221; (as secure cookies are unlikely to be the result of meddling middleboxes).</li><li>If <samp>A</samp>&#8217;s <samp>creation-date</samp> is prior to <samp>B</samp>&#8217;s <samp>creation-date</samp>, return &#8220;greater&#8221;.</li><li>Return &#8220;lesser&#8221;.</li></ol><p> Otherwise:      </p><ol><li>Return &#8220;greater&#8221; if <samp>A</samp>&#8217;s <samp>path</samp> attribute is longer than <samp>B</samp>&#8217;s <samp>domain</samp> attribute.          <br/><br/> Otherwise return &#8220;lesser&#8221;.</li></ol></li></ol><p> Otherwise:  </p><ol><li>Return &#8220;greater&#8221; if <samp>A</samp>&#8217;s <samp>domain</samp> attribute is longer than <samp>B</samp>&#8217;s <samp>domain</samp> attribute.      <br/><br/> Otherwise, return &#8220;lesser&#8221;.</li></ol></li>
 </ol>
+<p id="rfc.section.3.1.p.4">ISSUE: Include <samp>samesite-flag</samp> <a href="#SameSite">[SameSite]</a>, and <samp>priority-flag</samp> <a href="#Priority">[Priority]</a> if those are adopted by the WG.</p>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#authoring-considerations" id="authoring-considerations">Authoring Considerations</a></h1>
 <p id="rfc.section.4.p.1">It is entirely possible that this ordering is incompatible with the web.  In particular, applications may depend on existing ordering which privileges both the most recently set cookies, and the cookies which have the most specific path. Experimentation is required to determine whether or not a change is at all possible.</p>
 <h1 id="rfc.references"><a href="#rfc.references">5.</a> References</h1>
@@ -521,6 +522,18 @@
         <b id="GitHub2013">[GitHub2013]</b>
       </td>
       <td class="top"><a>Marti, V.</a>, "<a href="https://github.com/blog/1466-yummy-cookies-across-domains">Yummy cookies across domains</a>", n.d..</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="Priority">[Priority]</b>
+      </td>
+      <td class="top"><a title="Shopify">Wright, E.</a>, <a title="Google, Inc">Huang, S.</a> and <a title="Google, Inc">M. West</a>, "<a href="https://tools.ietf.org/html/draft-west-cookie-priority">Cookie Priorities</a>", n.d..</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="SameSite">[SameSite]</b>
+      </td>
+      <td class="top"><a title="Google, Inc">West, M.</a>, "<a href="https://tools.ietf.org/html/draft-west-first-party-cookies">Same-site Cookies</a>", n.d..</td>
     </tr>
   </tbody>
 </table>

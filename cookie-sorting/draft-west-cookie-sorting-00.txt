@@ -71,8 +71,8 @@ Table of Contents
    5.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
      5.1.  Normative References  . . . . . . . . . . . . . . . . . .   4
      5.2.  Informative References  . . . . . . . . . . . . . . . . .   4
-   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   4
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   4
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   5
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   5
 
 1.  Introduction
 
@@ -177,6 +177,9 @@ Internet-Draft               cookie-sorting                   April 2016
 
            Otherwise, return "lesser".
 
+   ISSUE: Include "samesite-flag" [SameSite], and "priority-flag"
+   [Priority] if those are adopted by the WG.
+
 4.  Authoring Considerations
 
    It is entirely possible that this ordering is incompatible with the
@@ -202,6 +205,27 @@ Internet-Draft               cookie-sorting                   April 2016
               <https://github.com/blog/1466-yummy-cookies-across-
               domains>.
 
+   [Priority]
+              Wright, E., Huang, S., and M. West, "Cookie Priorities",
+              n.d., <https://tools.ietf.org/html/draft-west-cookie-
+              priority>.
+
+   [SameSite]
+              West, M., "Same-site Cookies", n.d.,
+              <https://tools.ietf.org/html/draft-west-first-party-
+              cookies>.
+
+
+
+
+
+
+
+West                    Expires October 13, 2016                [Page 4]
+
+Internet-Draft               cookie-sorting                   April 2016
+
+
 Appendix A.  Acknowledgements
 
    A conversation with Mark Goodwin initially inspired this draft.
@@ -221,4 +245,36 @@ Author's Address
 
 
 
-West                    Expires October 13, 2016                [Page 4]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+West                    Expires October 13, 2016                [Page 5]
