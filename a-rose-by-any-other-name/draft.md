@@ -1,7 +1,7 @@
 ---
 title: Let 'localhost' be localhost.
 abbrev: let-localhost-be-localhost
-docname: draft-west-let-localhost-be-localhost-00
+docname: draft-west-let-localhost-be-localhost-02
 date: 2016
 category: std
 updates: 6761
@@ -23,6 +23,8 @@ author:
 
 normative:
   RFC2119:
+  RFC5156:
+  RFC5735:
   RFC6761:
 
 informative:
@@ -61,13 +63,19 @@ surprised some developers.
 
 This document suggests that we should resolve the confusion by requiring that
 DNS resolution work the way that users expect: `localhost` is `localhost`, and
-not something other than loopback.
+not something other than loopback. Resolver APIs will resolve `.localhost.` to
+loopback addresses {{RFC5735}}
 
 # Terminology and notation
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in {{RFC2119}}.
+
+IPv4 loopback addresses are defined in Section 2.1 of {{RFC5735}} as
+`127.0.0.0/8`.
+
+IPv6 loopback addresses are defined in Section 3 of {{RFC5156}} as `::1/128`.
 
 # Recommendations
 
@@ -86,7 +94,7 @@ This document updates Section 6.3 of {{RFC6761}} in the following ways:
     Caching DNS servers MUST recognize localhost names as special, and MUST NOT
     attempt to look up NS records for them, or otherwise query authoritative DNS
     servers in an attempt to resolve localhost names. Instead, caching DNS
-    servers
+    servers MUST generate an immediate negative response.
 
 3.  Item #5 is changed to replace "SHOULD" with "MUST":
 
