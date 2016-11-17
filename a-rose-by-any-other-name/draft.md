@@ -154,9 +154,9 @@ This document updates Section 6.3 of {{RFC6761}} in the following ways:
 
 ## Non-DNS usage of localhost names
 
-Some application software like MySQL differentiate between the hostname
-`localhost` and the IP address `127.0.0.1`, using a unix domain socket for the
-former, and a TCP connection to the loopback address for the latter. The
+Some application software differentiates between the hostname `localhost` and
+the IP address `127.0.0.1`. MySQL, for example, uses a unix domain socket for
+the former, and a TCP connection to the loopback address for the latter. The
 constraints on name resolution APIs above do not preclude this kind of
 differentiation.
 
