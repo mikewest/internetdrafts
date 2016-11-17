@@ -1,14 +1,14 @@
 ---
 title: Let 'localhost' be localhost.
 abbrev: let-localhost-be-localhost
-docname: draft-west-let-localhost-be-localhost-02
+docname: draft-west-let-localhost-be-localhost-03
 date: 2016
 category: std
 updates: 6761
 
 ipr: trust200902
 area: General
-workgroup: HTTPbis
+workgroup: DNSOP
 keyword: Internet-Draft
 
 pi: [toc, tocindent, sortrefs, symrefs, strict, compact, comments, inline]
@@ -28,6 +28,27 @@ normative:
   RFC6761:
 
 informative:
+  RFC3397:
+  draft-ietf-sunset4-gapanalysis:
+    target: http://tools.ietf.org/html/draft-ietf-sunset4-gapanalysis
+    title: "Gap Analysis for IPv4 Sunset"
+    author:
+    -
+      ins: S. Perreault
+      name: Simon Perreault
+      organization: Jive Communications
+    -
+      ins: T. Tsou
+      name: Tina Tsou
+      organization: Huawei Technologies (USA)
+    -
+      ins: C. Zhou
+      name: Cathy Zhou
+      organization: Huawei Technologies
+    -
+      ins: P. Fan
+      name: Peng Fan
+      organization: China Mobile
   SECURE-CONTEXTS:
     target: http://w3c.github.io/webappsec-secure-contexts/
     title: "Secure Contexts"
@@ -61,10 +82,18 @@ to treat `localhost` as "secure enough", as it might not actually be the
 `localhost` that developers are expecting. This exclusion has (rightly)
 surprised some developers.
 
+Following on from that, the lack of confidence that `localhost` actually
+resolves to the loopback interface may encourage application developers to
+hard-code IP addresses, which causes problems in the transition from IPv4
+to IPv6 (see problem 8 in {{draft-ietf-sunset4-gapanalysis}}).
+{{SECURE-CONTEXTS}} excluding `localhost` would exacerbate this risk, giving
+developers positive encouragement to use the loopback address rather than a
+localhost name.
+
 This document suggests that we should resolve the confusion by requiring that
-DNS resolution work the way that users expect: `localhost` is `localhost`, and
-not something other than loopback. Resolver APIs will resolve `.localhost.` to
-loopback addresses {{RFC5735}}
+DNS resolution work the way that users expect: `localhost` is the loopback
+interface on the local host. Resolver APIs will resolve `localhost.` and any
+names falling within `.localhost.` to loopback addresses {{RFC5735}}
 
 # Terminology and notation
 
@@ -89,6 +118,9 @@ This document updates Section 6.3 of {{RFC6761}} in the following ways:
     NOT send queries for localhost names to their configured caching DNS
     server(s).
 
+    Note that any loopback address is acceptable: `subdomain.localhost` could
+    resolve to `127.0.0.1`, `127.0.0.2`, `127.127.127.127`, etc.
+
 2.  Item #4 is changed to read as follows:
 
     Caching DNS servers MUST recognize localhost names as special, and MUST NOT
@@ -106,20 +138,33 @@ This document updates Section 6.3 of {{RFC6761}} in the following ways:
     DNS Registries/Registrars MUST NOT grant requests to register localhost
     names in the normal way to any person or entity. Localhost names are
     defined by protocol specification and fall outside the set of names
-    available for allocation by registries/registrars.  Attempting to allocate a
+    available for allocation by registries/registrars. Attempting to allocate a
     localhost name as if it were a normal DNS domain name will not work as
     desired, for reasons 2, 3, 4, and 5 above.
 
+5.  Item #8 is added to the list, reading as follows:
+
+    Name resolution APIs, libraries, and application software MUST NOT use a
+    searchlist to resolve the name `localhost`. That is, even if DHCP's domain
+    search option {{RFC3397}} is used to specify a searchlist of `example.com`
+    for a given network, the name `localhost` will not be resolved as
+    `localhost.example.com`.
+
 # Implementation Considerations
 
-This change would make developers sad if they map domain names like
-'server1.localhost' to something other than a loopback address. There are
-likely other situations in which it might create unexpected behaviors.
+## Non-DNS usage of localhost names
+
+Some application software like MySQL differentiate between the hostname
+`localhost` and the IP address `127.0.0.1`, using a unix domain socket for the
+former, and a TCP connection to the loopback address for the latter. The
+constraints on name resolution APIs above do not preclude this kind of
+differentiation.
 
 --- back
 
 # Acknowledgements
 
-Ryan Sleevi and Emily Stark informed me about the strange state of 'localhost'
-resolution. Erik Nygren poked me to take another look at the set of decisions
-we made in {{SECURE-CONTEXTS}} around `localhost.`; this document is the result.
+Ryan Sleevi and Emily Stark informed me about the strange state of localhost
+name resolution. Erik Nygren poked me to take another look at the set of
+decisions we made in {{SECURE-CONTEXTS}} around `localhost.`; this document is
+the result, and his feedback has been very helpful.

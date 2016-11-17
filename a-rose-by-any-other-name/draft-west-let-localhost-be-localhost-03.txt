@@ -1,0 +1,280 @@
+
+
+
+
+DNSOP                                                            M. West
+Internet-Draft                                               Google, Inc
+Updates: 6761 (if approved)                            November 17, 2016
+Intended status: Standards Track
+Expires: May 21, 2017
+
+
+                     Let 'localhost' be localhost.
+                draft-west-let-localhost-be-localhost-03
+
+Abstract
+
+   This document updates RFC6761 by requiring that the domain
+   "localhost." and any names falling within ".localhost." resolve to
+   loopback addresses.  This would allow other specifications to join
+   regular users in drawing the common-sense conclusions that
+   "localhost" means "localhost", and doesn't resolve to somewhere else
+   on the network.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on May 21, 2017.
+
+Copyright Notice
+
+   Copyright (c) 2016 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+
+
+
+West                      Expires May 21, 2017                  [Page 1]
+
+Internet-Draft         let-localhost-be-localhost          November 2016
+
+
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   3
+   3.  Recommendations . . . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Implementation Considerations . . . . . . . . . . . . . . . .   4
+     4.1.  Non-DNS usage of localhost names  . . . . . . . . . . . .   4
+   5.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     5.1.  Normative References  . . . . . . . . . . . . . . . . . .   4
+     5.2.  Informative References  . . . . . . . . . . . . . . . . .   4
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   5
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   5
+
+1.  Introduction
+
+   Section 6.3 of [RFC6761] invites developers to "assume that IPv4 and
+   IPv6 address queries for localhost names will always resolve to the
+   respective IP loopback address".  That suggestion, unfortunately,
+   doesn't match reality.  Client software is empowered to send
+   localhost names to DNS resolvers, and resolvers are empowered to
+   return unexpected results in various cases.  This has several
+   impacts.
+
+   One of the clearest is that the [SECURE-CONTEXTS] specification
+   declines to treat "localhost" as "secure enough", as it might not
+   actually be the "localhost" that developers are expecting.  This
+   exclusion has (rightly) surprised some developers.
+
+   Following on from that, the lack of confidence that "localhost"
+   actually resolves to the loopback interface may encourage application
+   developers to hard-code IP addresses, which causes problems in the
+   transition from IPv4 to IPv6 (see problem 8 in
+   [draft-ietf-sunset4-gapanalysis]).  [SECURE-CONTEXTS] excluding
+   "localhost" would exacerbate this risk, giving developers positive
+   encouragement to use the loopback address rather than a localhost
+   name.
+
+   This document suggests that we should resolve the confusion by
+   requiring that DNS resolution work the way that users expect:
+   "localhost" is the loopback interface on the local host.  Resolver
+   APIs will resolve "localhost." and any names falling within
+   ".localhost." to loopback addresses [RFC5735]
+
+
+
+
+
+
+West                      Expires May 21, 2017                  [Page 2]
+
+Internet-Draft         let-localhost-be-localhost          November 2016
+
+
+2.  Terminology and notation
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
+   IPv4 loopback addresses are defined in Section 2.1 of [RFC5735] as
+   "127.0.0.0/8".
+
+   IPv6 loopback addresses are defined in Section 3 of [RFC5156] as
+   "::1/128".
+
+3.  Recommendations
+
+   This document updates Section 6.3 of [RFC6761] in the following ways:
+
+   1.  Item #3 is changed to read as follows:
+
+       Name resolution APIs and libraries MUST recognize localhost names
+       as special, and MUST always return an IP loopback address for
+       address queries and negative responses for all other query types.
+       Name resolution APIs MUST NOT send queries for localhost names to
+       their configured caching DNS server(s).
+
+       Note that any loopback address is acceptable:
+       "subdomain.localhost" could resolve to "127.0.0.1", "127.0.0.2",
+       "127.127.127.127", etc.
+
+   2.  Item #4 is changed to read as follows:
+
+       Caching DNS servers MUST recognize localhost names as special,
+       and MUST NOT attempt to look up NS records for them, or otherwise
+       query authoritative DNS servers in an attempt to resolve
+       localhost names.  Instead, caching DNS servers MUST generate an
+       immediate negative response.
+
+   3.  Item #5 is changed to replace "SHOULD" with "MUST":
+
+       Authoritative DNS servers MUST recognize localhost names as
+       special and handle them as described above for caching DNS
+       servers.
+
+   4.  Item #7 is changed to remove "probably" from the last sentence:
+
+       DNS Registries/Registrars MUST NOT grant requests to register
+       localhost names in the normal way to any person or entity.
+       Localhost names are defined by protocol specification and fall
+       outside the set of names available for allocation by registries/
+
+
+
+West                      Expires May 21, 2017                  [Page 3]
+
+Internet-Draft         let-localhost-be-localhost          November 2016
+
+
+       registrars.  Attempting to allocate a localhost name as if it
+       were a normal DNS domain name will not work as desired, for
+       reasons 2, 3, 4, and 5 above.
+
+   5.  Item #8 is added to the list, reading as follows:
+
+       Name resolution APIs, libraries, and application software MUST
+       NOT use a searchlist to resolve the name "localhost".  That is,
+       even if DHCP's domain search option [RFC3397] is used to specify
+       a searchlist of "example.com" for a given network, the name
+       "localhost" will not be resolved as "localhost.example.com".
+
+4.  Implementation Considerations
+
+4.1.  Non-DNS usage of localhost names
+
+   Some application software like MySQL differentiate between the
+   hostname "localhost" and the IP address "127.0.0.1", using a unix
+   domain socket for the former, and a TCP connection to the loopback
+   address for the latter.  The constraints on name resolution APIs
+   above do not preclude this kind of differentiation.
+
+5.  References
+
+5.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <http://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC5156]  Blanchet, M., "Special-Use IPv6 Addresses", RFC 5156,
+              DOI 10.17487/RFC5156, April 2008,
+              <http://www.rfc-editor.org/info/rfc5156>.
+
+   [RFC5735]  Cotton, M. and L. Vegoda, "Special Use IPv4 Addresses",
+              RFC 5735, DOI 10.17487/RFC5735, January 2010,
+              <http://www.rfc-editor.org/info/rfc5735>.
+
+   [RFC6761]  Cheshire, S. and M. Krochmal, "Special-Use Domain Names",
+              RFC 6761, DOI 10.17487/RFC6761, February 2013,
+              <http://www.rfc-editor.org/info/rfc6761>.
+
+5.2.  Informative References
+
+
+
+
+
+
+
+West                      Expires May 21, 2017                  [Page 4]
+
+Internet-Draft         let-localhost-be-localhost          November 2016
+
+
+   [draft-ietf-sunset4-gapanalysis]
+              Perreault, S., Tsou, T., Zhou, C., and P. Fan, "Gap
+              Analysis for IPv4 Sunset", n.d.,
+              <http://tools.ietf.org/html/
+              draft-ietf-sunset4-gapanalysis>.
+
+   [RFC3397]  Aboba, B. and S. Cheshire, "Dynamic Host Configuration
+              Protocol (DHCP) Domain Search Option", RFC 3397,
+              DOI 10.17487/RFC3397, November 2002,
+              <http://www.rfc-editor.org/info/rfc3397>.
+
+   [SECURE-CONTEXTS]
+              West, M., "Secure Contexts", n.d.,
+              <http://w3c.github.io/webappsec-secure-contexts/>.
+
+Appendix A.  Acknowledgements
+
+   Ryan Sleevi and Emily Stark informed me about the strange state of
+   localhost name resolution.  Erik Nygren poked me to take another look
+   at the set of decisions we made in [SECURE-CONTEXTS] around
+   "localhost."; this document is the result, and his feedback has been
+   very helpful.
+
+Author's Address
+
+   Mike West
+   Google, Inc
+
+   Email: mkwst@google.com
+   URI:   https://mikewest.org/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+West                      Expires May 21, 2017                  [Page 5]
