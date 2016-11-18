@@ -1,7 +1,7 @@
 ---
 title: Let 'localhost' be localhost.
 abbrev: let-localhost-be-localhost
-docname: draft-west-let-localhost-be-localhost-03
+docname: draft-west-let-localhost-be-localhost-04
 date: 2016
 category: std
 updates: 6761
@@ -145,10 +145,11 @@ This document updates Section 6.3 of {{RFC6761}} in the following ways:
 5.  Item #8 is added to the list, reading as follows:
 
     Name resolution APIs, libraries, and application software MUST NOT use a
-    searchlist to resolve the name `localhost`. That is, even if DHCP's domain
+    searchlist to resolve a localhost name. That is, even if DHCP's domain
     search option {{RFC3397}} is used to specify a searchlist of `example.com`
     for a given network, the name `localhost` will not be resolved as
-    `localhost.example.com`.
+    `localhost.example.com`, and `subdomain.localhost` will not be resolved as
+    `subdomain.localhost.example.com`.
 
 # Implementation Considerations
 
