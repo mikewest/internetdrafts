@@ -1,0 +1,280 @@
+
+
+
+
+HTTPbis                                                          M. West
+Internet-Draft                                               Google, Inc
+Updates: 6265 (if approved)                                 June 3, 2017
+Intended status: Standards Track
+Expires: December 5, 2017
+
+
+                            Non-HTTP Cookies
+                     draft-west-nonhttp-cookies-00
+
+Abstract
+
+   This document updates RFC6265 by defining a "NonHttp" attribute which
+   ensures that a given cookie is available only to "non-HTTP" APIs.
+   Yes, it is a little strange for "HTTP State Management" to support
+   exclusively non-HTTP use cases, but the internet is a strange place.
+   So it goes.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on December 5, 2017.
+
+Copyright Notice
+
+   Copyright (c) 2017 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+
+
+
+
+West                    Expires December 5, 2017                [Page 1]
+
+Internet-Draft              Non-HTTP Cookies                   June 2017
+
+
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.1.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .   3
+   2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   3
+   3.  Recommendations . . . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Security and Privacy Considerations . . . . . . . . . . . . .   4
+     4.1.  Fewer Cookies on the Wire . . . . . . . . . . . . . . . .   5
+   5.  Normative References  . . . . . . . . . . . . . . . . . . . .   5
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   5
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   5
+
+1.  Introduction
+
+   Cookies violate the same-origin policy in well-understood ways,
+   outlined in Sections 8.5 and 8.6 of [RFC6265].  For better or worse,
+   developers rely on this behavior in a number of ways.  In particular,
+   it is quite common for developers to use cookies as a cross-origin
+   storage mechanism, allowing state to be shared across all origins in
+   a given registrable domain.  A user who signs into
+   "https://m.example.com/" might expect to also be signed into
+   "https://www.example.com/", and vice-versa.  Servers can support this
+   expectation by setting a cookie at the apex domain:
+   "uid=1234567;Secure;Domain=example.com".  The cookie will be sent
+   along with HTTP requests to both origins, and the user's state can be
+   maintained.
+
+   Often, though, the fact that a cookie is sent over the wire is an
+   unindended side-effect.  Developers may simply desire the ability to
+   easily share client-side state between related origins, and have
+   pressed cookies into this service.
+
+   For example, web analytics packages might use a user agent's
+   "document.cookie" API to set first-party cookies on a client's site
+   that retain a user's state.  This gives them the information they
+   need to do analytics work, but has the very unfortunate side-effect
+   of sending those cookies along with first-party HTTP requests to the
+   client's server.  This has a substantially negative impact on request
+   size (and therefore performance), but also has privacy implications,
+   as these cookies are often sent in plaintext over the network.
+
+   This document aims to reduce both impacts by allowing developers to
+   specify specific cookies as "NonHttp".  These cookies cannot be
+   modified via "Set-Cookie" HTTP response headers, nor will they be
+
+
+
+
+West                    Expires December 5, 2017                [Page 2]
+
+Internet-Draft              Non-HTTP Cookies                   June 2017
+
+
+   included in "Cookie" HTTP request headers.  They are only accessible
+   via "non-HTTP" APIs.
+
+1.1.  Examples
+
+   Non-HTTP cookies are only accessible via "non-HTTP" APIs.  For
+   example, a developer might use HTML's "document.cookie" to set a non-
+   HTTP cookie as follows:
+
+   document.cookie = "name=value; Secure; NonHttp";
+
+   That cookie would be available via subsequent calls to
+   "document.cookie", but will not be included in HTTP requests to the
+   developer's server.
+
+2.  Terminology and notation
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
+3.  Recommendations
+
+   This section describes extensions to [RFC6265] necessary to implement
+   the "NonHttp" attribute.
+
+   1.  Extend the "cookie-av" grammar in Section 4.1.1 of [RFC6265] as
+       follows:
+
+
+
+   cookie-av      = expires-av / max-age-av / domain-av /
+                    path-av / secure-av / httponly-av /
+                    nohttp-av / extension-av
+   nohttp-av      = "NoHttp"
+
+   2.  Add a section to Section 4.1.2 of [RFC6265] describing the
+       semantics of the "NonHttp" attribute as follows:
+
+       The "NonHttp" attribute limits the scope of the cookie to "non-
+       HTTP" APIs.  That is, the attribute instructs the user agent to
+       omit the cookie when constructing a "Cookie" header for an HTTP
+       request.
+
+       If both the "NonHttp" and "HttpOnly" attributes are present when
+       setting a cookie, the cookie will be ignored, regardless of its
+       delivery mechanism.
+
+
+
+
+West                    Expires December 5, 2017                [Page 3]
+
+Internet-Draft              Non-HTTP Cookies                   June 2017
+
+
+   3.  Alter the storage model defined in Section 5.3 of [RFC6265] as
+       follows:
+
+       1.  Add "no-http-flag" as a field to be stored on each cookie.
+
+       2.  Insert the following two steps after the current step 10:
+
+           1.  If the "cookie-attribute-list" contains an attribute with
+               an "attribute-name" of "NoHttp", set the cookie's "no-
+               http-flag" to "true".  Otherwise, set the cookie's "no-
+               http-flag" to "false".
+
+           2.  If the cookie was not received from a "non-HTTP" API, and
+               the cookie's "no-http-flag" is "true", abort these steps
+               and ignore the cookie entirely.
+
+       3.  Insert the following step after the current step 11.2:
+
+           1.  If the newly created cookie was not received from a "non-
+               HTTP" API, and the "old-cookie"'s "no-http-flag" is
+               "true", abort these steps and ignore the newly created
+               cookie entirely.
+
+   4.  Add a section to Section 5.2 of [RFC6265] describing the
+       processing requirements for the "NonHttp" attribute as follows:
+
+       If the "attribute-name" case-insensitively matches the string
+       "NonHttp", the user agent MUST append an attribute to the
+       "cookie-attribute-list" with an "attribute-name" of "NonHttp" and
+       an empty "attribute-value".
+
+   5.  Alter the "Cookie" header generation in Section 5.4 of [RFC6265]
+       as follows:
+
+       1.  Add the following requirement to the list of requirements in
+           the current step 1:
+
+           +  If the cookie's "no-http-flag" is "true", then exclude the
+              cookie if the "cookie-string" is not being generated for a
+              "non-HTTP" API (as defined by the user agent).
+
+4.  Security and Privacy Considerations
+
+   There's a risk that allowing developers to suppress cookies from HTTP
+   requests might lead to increased usage of cookies as a cross-origin
+   storage mechanism.  Given existing usage, however, the worst case
+   seems to be an increase from a high number to a marginally higher
+   number.
+
+
+
+West                    Expires December 5, 2017                [Page 4]
+
+Internet-Draft              Non-HTTP Cookies                   June 2017
+
+
+4.1.  Fewer Cookies on the Wire
+
+   Non-HTTP cookies are never sent directly by the user agent over the
+   network, which reduces their exposure to both active and passive
+   network attackers.  It seems reasonable to expect that adoption of
+   the "NonHttp" attribute by popular analytics packages could result in
+   a substantial reduction in the usefulness of those packages' cookies
+   when attempting to correlate a given user's activities over time and
+   across networks.
+
+5.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <http://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC6265]  Barth, A., "HTTP State Management Mechanism", RFC 6265,
+              DOI 10.17487/RFC6265, April 2011,
+              <http://www.rfc-editor.org/info/rfc6265>.
+
+Appendix A.  Acknowledgements
+
+   Michael Nordman suggested this approach during a conversation about
+   cross-origin storage mechanisms.  Brad Townsend helped me understand
+   the potential positive impact on traffic levels for analytics
+   customers.
+
+Author's Address
+
+   Mike West
+   Google, Inc
+
+   Email: mkwst@google.com
+   URI:   https://mikewest.org/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+West                    Expires December 5, 2017                [Page 5]
