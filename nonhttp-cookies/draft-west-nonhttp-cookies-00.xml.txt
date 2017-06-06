@@ -4,9 +4,9 @@
 
 HTTPbis                                                          M. West
 Internet-Draft                                               Google, Inc
-Updates: 6265 (if approved)                                 June 3, 2017
+Updates: 6265 (if approved)                                 June 6, 2017
 Intended status: Standards Track
-Expires: December 5, 2017
+Expires: December 8, 2017
 
 
                             Non-HTTP Cookies
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on December 5, 2017.
+   This Internet-Draft will expire on December 8, 2017.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-West                    Expires December 5, 2017                [Page 1]
+West                    Expires December 8, 2017                [Page 1]
 
 Internet-Draft              Non-HTTP Cookies                   June 2017
 
@@ -67,11 +67,16 @@ Table of Contents
      1.1.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .   3
    2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   3
    3.  Recommendations . . . . . . . . . . . . . . . . . . . . . . .   3
-   4.  Security and Privacy Considerations . . . . . . . . . . . . .   4
-     4.1.  Fewer Cookies on the Wire . . . . . . . . . . . . . . . .   5
-   5.  Normative References  . . . . . . . . . . . . . . . . . . . .   5
-   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   5
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   5
+   4.  Security and Privacy Considerations . . . . . . . . . . . . .   5
+     4.1.  Cross-origin storage capabilities . . . . . . . . . . . .   5
+     4.2.  Fewer Cookies on the Wire . . . . . . . . . . . . . . . .   5
+     4.3.  Legacy Clients  . . . . . . . . . . . . . . . . . . . . .   5
+   5.  Aesthetic Considerations  . . . . . . . . . . . . . . . . . .   5
+     5.1.  Isn't 'DOMOnly' a better name? Or 'NoHttp'? Or 'Insert
+           Bikeshed Here'? . . . . . . . . . . . . . . . . . . . . .   6
+   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   6
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   6
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
 
 1.  Introduction
 
@@ -102,18 +107,16 @@ Table of Contents
    size (and therefore performance), but also has privacy implications,
    as these cookies are often sent in plaintext over the network.
 
-   This document aims to reduce both impacts by allowing developers to
-   specify specific cookies as "NonHttp".  These cookies cannot be
-   modified via "Set-Cookie" HTTP response headers, nor will they be
 
 
-
-
-West                    Expires December 5, 2017                [Page 2]
+West                    Expires December 8, 2017                [Page 2]
 
 Internet-Draft              Non-HTTP Cookies                   June 2017
 
 
+   This document aims to reduce both impacts by allowing developers to
+   specify specific cookies as "NonHttp".  These cookies cannot be
+   modified via "Set-Cookie" HTTP response headers, nor will they be
    included in "Cookie" HTTP request headers.  They are only accessible
    via "non-HTTP" APIs.
 
@@ -158,17 +161,18 @@ Internet-Draft              Non-HTTP Cookies                   June 2017
        omit the cookie when constructing a "Cookie" header for an HTTP
        request.
 
-       If both the "NonHttp" and "HttpOnly" attributes are present when
-       setting a cookie, the cookie will be ignored, regardless of its
-       delivery mechanism.
 
 
 
 
-West                    Expires December 5, 2017                [Page 3]
+West                    Expires December 8, 2017                [Page 3]
 
 Internet-Draft              Non-HTTP Cookies                   June 2017
 
+
+       If both the "NonHttp" and "HttpOnly" attributes are present when
+       setting a cookie, the cookie will be ignored, regardless of its
+       delivery mechanism.
 
    3.  Alter the storage model defined in Section 5.3 of [RFC6265] as
        follows:
@@ -211,7 +215,20 @@ Internet-Draft              Non-HTTP Cookies                   June 2017
               cookie if the "cookie-string" is not being generated for a
               "non-HTTP" API (as defined by the user agent).
 
+
+
+
+
+
+
+West                    Expires December 8, 2017                [Page 4]
+
+Internet-Draft              Non-HTTP Cookies                   June 2017
+
+
 4.  Security and Privacy Considerations
+
+4.1.  Cross-origin storage capabilities
 
    There's a risk that allowing developers to suppress cookies from HTTP
    requests might lead to increased usage of cookies as a cross-origin
@@ -219,14 +236,16 @@ Internet-Draft              Non-HTTP Cookies                   June 2017
    seems to be an increase from a high number to a marginally higher
    number.
 
+   Note, though, that the capabilities provided here can already be
+   obtained through clever use of the "path" attribute to scope cookies
+   down to paths that aren't frequently requested.  These cookies can be
+   accessed through clever use of "<iframe>" elements and the
+   "history.pushState" API.
 
+   The flag introduced here makes that mechanism significantly simpler,
+   but does not introduce fundamentally new capabilities.
 
-West                    Expires December 5, 2017                [Page 4]
-
-Internet-Draft              Non-HTTP Cookies                   June 2017
-
-
-4.1.  Fewer Cookies on the Wire
+4.2.  Fewer Cookies on the Wire
 
    Non-HTTP cookies are never sent directly by the user agent over the
    network, which reduces their exposure to both active and passive
@@ -236,7 +255,44 @@ Internet-Draft              Non-HTTP Cookies                   June 2017
    when attempting to correlate a given user's activities over time and
    across networks.
 
-5.  Normative References
+4.3.  Legacy Clients
+
+   Clients that do not support the "NonHttp" flag will fall back to the
+   existing behavior: cookies with the flag will be accepted via any
+   delivery mechanism, and will continue to be sent out with matching
+   HTTP requests.
+
+   Developers can use this behavior to feature-detect support for the
+   flag: sending "Set-Cookie: nonhttp-support=0; NonHttp" will allow
+   server-side detection by parsing the "Cookie" header sent with
+   requests, and client-side detection via code like
+   "document.cookie.match('nonhttp-support=0')".
+
+5.  Aesthetic Considerations
+
+
+
+
+
+
+
+
+West                    Expires December 8, 2017                [Page 5]
+
+Internet-Draft              Non-HTTP Cookies                   June 2017
+
+
+5.1.  Isn't 'DOMOnly' a better name?  Or 'NoHttp'?  Or 'Insert Bikeshed
+      Here'?
+
+   "DOMOnly" is probably a better fit for the practical implications of
+   this API.  "DocumentCookieOnly" is even more clear.  This document
+   runs with "NonHttp" to match RFC 6265's existing language around
+   "non-HTTP" APIs, and to avoid arguments about software that handles
+   cookies, but doesn't work with a DOM or any particular JavaScript
+   interface.  Bikeshedding is, of course, welcome.
+
+6.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -277,4 +333,4 @@ Author's Address
 
 
 
-West                    Expires December 5, 2017                [Page 5]
+West                    Expires December 8, 2017                [Page 6]

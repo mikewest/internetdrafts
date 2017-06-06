@@ -379,18 +379,22 @@
 <link href="#rfc.section.2" rel="Chapter" title="2 Terminology and notation"/>
 <link href="#rfc.section.3" rel="Chapter" title="3 Recommendations"/>
 <link href="#rfc.section.4" rel="Chapter" title="4 Security and Privacy Considerations"/>
-<link href="#rfc.section.4.1" rel="Chapter" title="4.1 Fewer Cookies on the Wire"/>
-<link href="#rfc.references" rel="Chapter" title="5 Normative References"/>
+<link href="#rfc.section.4.1" rel="Chapter" title="4.1 Cross-origin storage capabilities"/>
+<link href="#rfc.section.4.2" rel="Chapter" title="4.2 Fewer Cookies on the Wire"/>
+<link href="#rfc.section.4.3" rel="Chapter" title="4.3 Legacy Clients"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Aesthetic Considerations"/>
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Isn&#x2019;t &#x2018;DOMOnly&#x2019; a better name? Or &#x2018;NoHttp&#x2019;? Or &#x2018;Insert Bikeshed Here&#x2019;?"/>
+<link href="#rfc.references" rel="Chapter" title="6 Normative References"/>
 <link href="#rfc.appendix.A" rel="Chapter" title="A Acknowledgements"/>
 <link href="#rfc.authors" rel="Chapter"/>
 
 
-  <meta name="generator" content="xml2rfc version 2.5.2 - http://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.5.1 - http://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="West, M." />
   <meta name="dct.identifier" content="urn:ietf:id:draft-west-nonhttp-cookies-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2017-6-3" />
+  <meta name="dct.issued" scheme="ISO8601" content="2017-6-6" />
   <meta name="dct.abstract" content="This document updates RFC6265 by defining a " />
   <meta name="description" content="This document updates RFC6265 by defining a " />
 
@@ -411,14 +415,14 @@
 </tr>
 <tr>
   <td class="left">Updates: 6265 (if approved)</td>
-  <td class="right">June 3, 2017</td>
+  <td class="right">June 6, 2017</td>
 </tr>
 <tr>
   <td class="left">Intended status: Standards Track</td>
   <td class="right"></td>
 </tr>
 <tr>
-  <td class="left">Expires: December 5, 2017</td>
+  <td class="left">Expires: December 8, 2017</td>
   <td class="right"></td>
 </tr>
 
@@ -439,7 +443,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on December 5, 2017.</p>
+<p>This Internet-Draft will expire on December 8, 2017.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -456,8 +460,12 @@
 </ul><li>2.   <a href="#rfc.section.2">Terminology and notation</a></li>
 <li>3.   <a href="#rfc.section.3">Recommendations</a></li>
 <li>4.   <a href="#rfc.section.4">Security and Privacy Considerations</a></li>
-<ul><li>4.1.   <a href="#rfc.section.4.1">Fewer Cookies on the Wire</a></li>
-</ul><li>5.   <a href="#rfc.references">Normative References</a></li>
+<ul><li>4.1.   <a href="#rfc.section.4.1">Cross-origin storage capabilities</a></li>
+<li>4.2.   <a href="#rfc.section.4.2">Fewer Cookies on the Wire</a></li>
+<li>4.3.   <a href="#rfc.section.4.3">Legacy Clients</a></li>
+</ul><li>5.   <a href="#rfc.section.5">Aesthetic Considerations</a></li>
+<ul><li>5.1.   <a href="#rfc.section.5.1">Isn&#8217;t &#8216;DOMOnly&#8217; a better name? Or &#8216;NoHttp&#8217;? Or &#8216;Insert Bikeshed Here&#8217;?</a></li>
+</ul><li>6.   <a href="#rfc.references">Normative References</a></li>
 <li>Appendix A.   <a href="#rfc.appendix.A">Acknowledgements</a></li>
 <li><a href="#rfc.authors">Author's Address</a></li>
 
@@ -495,10 +503,19 @@ nohttp-av      = "NoHttp"
   <li>Alter the <samp>Cookie</samp> header generation in Section 5.4 of <a href="#RFC6265">[RFC6265]</a> as follows:  <ol><li>Add the following requirement to the list of requirements in the current step 1:      <ul><li>If the cookie&#8217;s <samp>no-http-flag</samp> is <samp>true</samp>, then exclude the cookie if the <samp>cookie-string</samp> is not being generated for a &#8220;non-HTTP&#8221; API (as defined by the user agent).</li></ul></li></ol></li>
 </ol>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#security-and-privacy-considerations" id="security-and-privacy-considerations">Security and Privacy Considerations</a></h1>
-<p id="rfc.section.4.p.1">There&#8217;s a risk that allowing developers to suppress cookies from HTTP requests might lead to increased usage of cookies as a cross-origin storage mechanism.  Given existing usage, however, the worst case seems to be an increase from a high number to a marginally higher number.</p>
-<h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#fewer-cookies-on-the-wire" id="fewer-cookies-on-the-wire">Fewer Cookies on the Wire</a></h1>
-<p id="rfc.section.4.1.p.1">Non-HTTP cookies are never sent directly by the user agent over the network, which reduces their exposure to both active and passive network attackers. It seems reasonable to expect that adoption of the <samp>NonHttp</samp> attribute by popular analytics packages could result in a substantial reduction in the usefulness of those packages&#8217; cookies when attempting to correlate a given user&#8217;s activities over time and across networks.</p>
-<h1 id="rfc.references"><a href="#rfc.references">5.</a> Normative References</h1>
+<h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#cross-origin-storage-capabilities" id="cross-origin-storage-capabilities">Cross-origin storage capabilities</a></h1>
+<p id="rfc.section.4.1.p.1">There&#8217;s a risk that allowing developers to suppress cookies from HTTP requests might lead to increased usage of cookies as a cross-origin storage mechanism.  Given existing usage, however, the worst case seems to be an increase from a high number to a marginally higher number.</p>
+<p id="rfc.section.4.1.p.2">Note, though, that the capabilities provided here can already be obtained through clever use of the <samp>path</samp> attribute to scope cookies down to paths that aren&#8217;t frequently requested. These cookies can be accessed through clever use of <samp>&lt;iframe&gt;</samp> elements and the <samp>history.pushState</samp> API.</p>
+<p id="rfc.section.4.1.p.3">The flag introduced here makes that mechanism significantly simpler, but does not introduce fundamentally new capabilities.</p>
+<h1 id="rfc.section.4.2"><a href="#rfc.section.4.2">4.2.</a> <a href="#fewer-cookies-on-the-wire" id="fewer-cookies-on-the-wire">Fewer Cookies on the Wire</a></h1>
+<p id="rfc.section.4.2.p.1">Non-HTTP cookies are never sent directly by the user agent over the network, which reduces their exposure to both active and passive network attackers. It seems reasonable to expect that adoption of the <samp>NonHttp</samp> attribute by popular analytics packages could result in a substantial reduction in the usefulness of those packages&#8217; cookies when attempting to correlate a given user&#8217;s activities over time and across networks.</p>
+<h1 id="rfc.section.4.3"><a href="#rfc.section.4.3">4.3.</a> <a href="#legacy-clients" id="legacy-clients">Legacy Clients</a></h1>
+<p id="rfc.section.4.3.p.1">Clients that do not support the <samp>NonHttp</samp> flag will fall back to the existing behavior: cookies with the flag will be accepted via any delivery mechanism, and will continue to be sent out with matching HTTP requests.</p>
+<p id="rfc.section.4.3.p.2">Developers can use this behavior to feature-detect support for the flag: sending <samp>Set-Cookie: nonhttp-support=0; NonHttp</samp> will allow server-side detection by parsing the <samp>Cookie</samp> header sent with requests, and client-side detection via code like <samp>document.cookie.match('nonhttp-support=0')</samp>.</p>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#aesthetic-considerations" id="aesthetic-considerations">Aesthetic Considerations</a></h1>
+<h1 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1.</a> <a href="#isnt-domonly-a-better-name-or-nohttp-or-insert-bikeshed-here" id="isnt-domonly-a-better-name-or-nohttp-or-insert-bikeshed-here">Isn&#8217;t &#8216;DOMOnly&#8217; a better name? Or &#8216;NoHttp&#8217;? Or &#8216;Insert Bikeshed Here&#8217;?</a></h1>
+<p><samp>DOMOnly</samp> is probably a better fit for the practical implications of this API.  <samp>DocumentCookieOnly</samp> is even more clear. This document runs with <samp>NonHttp</samp> to match RFC 6265&#8217;s existing language around &#8220;non-HTTP&#8221; APIs, and to avoid arguments about software that handles cookies, but doesn&#8217;t work with a DOM or any particular JavaScript interface. Bikeshedding is, of course, welcome.</p>
+<h1 id="rfc.references"><a href="#rfc.references">6.</a> Normative References</h1>
 <table>
   <tbody>
     <tr>

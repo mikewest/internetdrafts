@@ -10,7 +10,7 @@ area: General
 workgroup: HTTPbis
 keyword: Internet-Draft
 
-stand_alone: yes
+stand_alone: yes #_
 pi: [toc, tocindent, sortrefs, symrefs, strict, comments, inline]
 
 author:
@@ -146,10 +146,20 @@ This section describes extensions to {{RFC6265}} necessary to implement the
 
 # Security and Privacy Considerations
 
+## Cross-origin storage capabilities
+
 There's a risk that allowing developers to suppress cookies from HTTP requests
 might lead to increased usage of cookies as a cross-origin storage mechanism.
 Given existing usage, however, the worst case seems to be an increase from a
 high number to a marginally higher number.
+
+Note, though, that the capabilities provided here can already be obtained
+through clever use of the `path` attribute to scope cookies down to paths that
+aren't frequently requested. These cookies can be accessed through clever use
+of `<iframe>` elements and the `history.pushState` API.
+
+The flag introduced here makes that mechanism significantly simpler, but does
+not introduce fundamentally new capabilities.
 
 ## Fewer Cookies on the Wire
 
@@ -159,6 +169,27 @@ seems reasonable to expect that adoption of the `NonHttp` attribute by popular
 analytics packages could result in a substantial reduction in the usefulness of
 those packages' cookies when attempting to correlate a given user's activities
 over time and across networks.
+
+## Legacy Clients
+
+Clients that do not support the `NonHttp` flag will fall back to the existing
+behavior: cookies with the flag will be accepted via any delivery mechanism,
+and will continue to be sent out with matching HTTP requests.
+
+Developers can use this behavior to feature-detect support for the flag: sending
+`Set-Cookie: nonhttp-support=0; NonHttp` will allow server-side detection by
+parsing the `Cookie` header sent with requests, and client-side detection via
+code like `document.cookie.match('nonhttp-support=0')`.
+
+# Aesthetic Considerations
+
+## Isn't 'DOMOnly' a better name? Or 'NoHttp'? Or 'Insert Bikeshed Here'?
+
+`DOMOnly` is probably a better fit for the practical implications of this API.
+`DocumentCookieOnly` is even more clear. This document runs with `NonHttp` to
+match RFC 6265's existing language around "non-HTTP" APIs, and to avoid
+arguments about software that handles cookies, but doesn't work with a DOM or
+any particular JavaScript interface. Bikeshedding is, of course, welcome.
 
 --- back
 
