@@ -1,7 +1,7 @@
 ---
 title: Let 'localhost' be localhost.
 abbrev: let-localhost-be-localhost
-docname: draft-west-let-localhost-be-localhost-04
+docname: draft-west-let-localhost-be-localhost-05
 date: 2017
 category: std
 updates: 6761
