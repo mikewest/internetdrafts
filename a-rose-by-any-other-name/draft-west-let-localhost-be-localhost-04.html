@@ -482,8 +482,8 @@
   <h1 id="rfc.section.1">
 <a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a>
 </h1>
-<p id="rfc.section.1.p.1">The <samp>127.0.0.0/8</samp> IPv4 address block and <samp>::1/128</samp> IPv6 address block are reserved as loopback addresses; communication within this block is assured to remain inside a single host, and can not legitimately appear on any network anywhere. This turns out to be a very useful property in a number of circumstances; useful enough to label explicitly and interoperably as <samp>localhost</samp>. <a href="#RFC1537" class="xref">[RFC1537]</a> suggests that this special-use top-level domain name has been mapped to loopback addresses for quite some time, and that <a href="#RFC6761" class="xref">[RFC6761]</a>&#8217;s assertion that developers may &#8220;assume that IPv4 and IPv6 address queries for localhost names will always resolve to the respective IP loopback address&#8221; is well-founded.</p>
-<p id="rfc.section.1.p.2">Unfortunately, the rest of that latter document&#8217;s requirements undercut the assumption it suggests. Client software is empowered to send localhost names to DNS resolvers, and resolvers are empowered to return unexpected results in various cases. This divide between theory and practice has a few impacts.</p>
+<p id="rfc.section.1.p.1">The <samp>127.0.0.0/8</samp> IPv4 address block and <samp>::1/128</samp> IPv6 address block are reserved as loopback addresses. Traffic to this block is assured to remain within a single host, and can not legitimately appear on any network anywhere. This turns out to be a very useful property in a number of circumstances; useful enough to label explicitly and interoperably as <samp>localhost</samp>. <a href="#RFC1537" class="xref">[RFC1537]</a> suggests that this special-use top-level domain name has been implicitly mapped to loopback addresses for decades at this point, and that <a href="#RFC6761" class="xref">[RFC6761]</a>&#8217;s assertion that developers may &#8220;assume that IPv4 and IPv6 address queries for localhost names will always resolve to the respective IP loopback address&#8221; is well-founded.</p>
+<p id="rfc.section.1.p.2">Unfortunately, the rest of that latter document&#8217;s requirements undercut the assumption it suggests. Client software is empowered to send localhost names to DNS servers, and resolvers are empowered to return unexpectedly non-loopback results. This divide between theory and practice has a few impacts:</p>
 <p id="rfc.section.1.p.3">First, the lack of confidence that <samp>localhost</samp> actually resolves to the loopback interface encourages application developers to hard-code IP addresses like <samp>127.0.0.1</samp> in order to obtain certainty regarding routing. This causes problems in the transition from IPv4 to IPv6 (see problem 8 in <a href="#draft-ietf-sunset4-gapanalysis" class="xref">[draft-ietf-sunset4-gapanalysis]</a>).</p>
 <p id="rfc.section.1.p.4">Second, HTTP user agents sometimes distinguish certain contexts as &#8220;secure&#8221;-enough to make certain features available. Given the certainty that <samp>127.0.0.1</samp> cannot be maliciously manipulated or monitored, <a href="#SECURE-CONTEXTS" class="xref">[SECURE-CONTEXTS]</a> treats it as such a context. Since <samp>localhost</samp> might not actually map to the loopback address, that document declines to give it the same treatment. This exclusion has (rightly) surprised some developers, and exacerbates the risks of hard-coded IP addresses by giving developers positive encouragement to use an explicit loopback address rather than a localhost name.</p>
 <p id="rfc.section.1.p.5">This document hardens <a href="#RFC6761" class="xref">[RFC6761]</a>&#8217;s recommendations regarding <samp>localhost</samp> by requiring that DNS resolution work the way that users assume: <samp>localhost</samp> is the loopback interface on the local host. Resolver APIs will resolve <samp>localhost.</samp> and any names falling within <samp>.localhost.</samp> to loopback addresses, and traffic to those hosts will never traverse a remote network.</p>
@@ -496,7 +496,7 @@
 <h1 id="rfc.section.3">
 <a href="#rfc.section.3">3.</a> <a href="#the-localhost-special-use-domain-name" id="the-localhost-special-use-domain-name">The &#8220;localhost.&#8221; Special-Use Domain Name</a>
 </h1>
-<p id="rfc.section.3.p.1">The domain <samp>localhost.</samp>, and any names falling within <samp>.localhost.</samp>, are known as &#8220;localhost names&#8221;, and are special in the following ways:</p>
+<p id="rfc.section.3.p.1">The domain <samp>localhost.</samp>, and any names falling within <samp>.localhost.</samp>, are known as &#8220;localhost names&#8221;. Localhost names are special in the following ways:</p>
 <p></p>
 
 <ol>
@@ -511,7 +511,7 @@
 <h1 id="rfc.section.4">
 <a href="#rfc.section.4">4.</a> <a href="#iana-considerations" id="iana-considerations">IANA Considerations</a>
 </h1>
-<p id="rfc.section.4.p.1">The <samp>localhost.</samp> registration in the registry of Special-Use Domain Names <a href="#RFC6761" class="xref">[RFC6761]</a> is updated to reference this document.</p>
+<p id="rfc.section.4.p.1">IANA is requested to update the <samp>localhost.</samp> registration in the registry of Special-Use Domain Names <a href="#RFC6761" class="xref">[RFC6761]</a> to reference this document.</p>
 <h1 id="rfc.section.5">
 <a href="#rfc.section.5">5.</a> <a href="#implementation-considerations" id="implementation-considerations">Implementation Considerations</a>
 </h1>
@@ -580,9 +580,9 @@
 <p></p>
 
 <ol>
-<li>Item #2 now restricts application software&#8217;s usage of searchlists for localhost names.</li>
-<li>Item #3 now requires name resolution APIs and libraries to resolve localhost names to loopback addresses, and prohibits them from using searchlists during such requests.</li>
-<li>Item #4 and #5 now require caching and authoritative DNS servers, respectively, to respond to resolution requests for localhost names with NXDOMAIN.</li>
+<li>Application software and name resolution APIs and libraries are prohibited from using searchlists when resolving localhost names.</li>
+<li>Name resolution APIs and libraries are required to resolve localhost names to loopback addresses, without sending the query on to caching DNS servers.</li>
+<li>Caching and authoritative DNS servers are required to respond to resolution requests for localhost names with NXDOMAIN.</li>
 </ol>
 <h1 id="rfc.appendix.B">
 <a href="#rfc.appendix.B">Appendix B.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a>

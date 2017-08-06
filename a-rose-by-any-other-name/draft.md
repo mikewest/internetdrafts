@@ -72,20 +72,20 @@ else on the network.
 # Introduction
 
 The `127.0.0.0/8` IPv4 address block and `::1/128` IPv6 address block are
-reserved as loopback addresses; communication within this block is assured to
-remain inside a single host, and can not legitimately appear on any network
+reserved as loopback addresses. Traffic to this block is assured to remain
+within a single host, and can not legitimately appear on any network
 anywhere. This turns out to be a very useful property in a number of
 circumstances; useful enough to label explicitly and interoperably as
 `localhost`. {{RFC1537}} suggests that this special-use top-level domain name
-has been mapped to loopback addresses for quite some time, and that
-{{RFC6761}}'s assertion that developers may "assume that IPv4 and IPv6
+has been implicitly mapped to loopback addresses for decades at this point, and
+that {{RFC6761}}'s assertion that developers may "assume that IPv4 and IPv6
 address queries for localhost names will always resolve to the respective
 IP loopback address" is well-founded.
 
 Unfortunately, the rest of that latter document's requirements undercut the
 assumption it suggests. Client software is empowered to send localhost names to
-DNS resolvers, and resolvers are empowered to return unexpected results in
-various cases. This divide between theory and practice has a few impacts.
+DNS servers, and resolvers are empowered to return unexpectedly non-loopback
+results. This divide between theory and practice has a few impacts:
 
 First, the lack of confidence that `localhost` actually resolves to the loopback
 interface encourages application developers to hard-code IP addresses like
@@ -122,7 +122,7 @@ IPv6 loopback addresses are defined in Section 3 of {{RFC5156}} as `::1/128`.
 # The "localhost." Special-Use Domain Name
 
 The domain `localhost.`, and any names falling within `.localhost.`, are known
-as "localhost names", and are special in the following ways:
+as "localhost names". Localhost names are special in the following ways:
 
 1.  Users are free to use localhost names as they would any other domain names.
     Users may assume that IPv4 and IPv6 address queries for localhost names will
@@ -165,8 +165,8 @@ as "localhost names", and are special in the following ways:
 
 # IANA Considerations
 
-The `localhost.` registration in the registry of Special-Use Domain Names
-{{RFC6761}} is updated to reference this document.
+IANA is requested to update the `localhost.` registration in the registry of
+Special-Use Domain Names {{RFC6761}} to reference this document.
 
 # Implementation Considerations
 
@@ -195,16 +195,14 @@ differentiation.
 Section 3 of this document updates the requirements in section 6.3 of
 {{RFC6761}} in a few substantive ways:
 
-1.  Item #2 now restricts application software's usage of searchlists for
-    localhost names.
+1.  Application software and name resolution APIs and libraries are prohibited
+    from using searchlists when resolving localhost names.
 
-2.  Item #3 now requires name resolution APIs and libraries to resolve localhost
-    names to loopback addresses, and prohibits them from using searchlists
-    during such requests.
+2.  Name resolution APIs and libraries are required to resolve localhost names
+    to loopback addresses, without sending the query on to caching DNS servers.
 
-3.  Item #4 and #5 now require caching and authoritative DNS servers,
-    respectively, to respond to resolution requests for localhost names with
-    NXDOMAIN.
+3.  Caching and authoritative DNS servers are required to respond to resolution
+    requests for localhost names with NXDOMAIN.
 
 # Acknowledgements
 
