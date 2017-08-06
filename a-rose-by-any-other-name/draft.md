@@ -2,7 +2,7 @@
 title: Let 'localhost' be localhost.
 abbrev: let-localhost-be-localhost
 docname: draft-west-let-localhost-be-localhost-04
-date: 2016
+date: 2017
 category: std
 updates: 6761
 
@@ -28,6 +28,7 @@ normative:
   RFC6761:
 
 informative:
+  RFC1537:
   RFC3397:
   draft-ietf-sunset4-gapanalysis:
     target: http://tools.ietf.org/html/draft-ietf-sunset4-gapanalysis
@@ -70,30 +71,42 @@ else on the network.
 
 # Introduction
 
-Section 6.3 of {{RFC6761}} invites developers to "assume that IPv4 and IPv6
+The `127.0.0.0/8` IPv4 address block and `::1/128` IPv6 address block are
+reserved as loopback addresses; communication within this block is assured to
+remain inside a single host, and can not legitimately appear on any network
+anywhere. This turns out to be a very useful property in a number of
+circumstances; useful enough to label explicitly and interoperably as
+`localhost`. {{RFC1537}} suggests that this special-use top-level domain name
+has been mapped to loopback addresses for quite some time, and that
+{{RFC6761}}'s assertion that developers may "assume that IPv4 and IPv6
 address queries for localhost names will always resolve to the respective
-IP loopback address". That suggestion, unfortunately, doesn't match reality.
-Client software is empowered to send localhost names to DNS resolvers, and
-resolvers are empowered to return unexpected results in various cases. This
-has several impacts.
+IP loopback address" is well-founded.
 
-One of the clearest is that the {{SECURE-CONTEXTS}} specification declines
-to treat `localhost` as "secure enough", as it might not actually be the
-`localhost` that developers are expecting. This exclusion has (rightly)
-surprised some developers.
+Unfortunately, the rest of that latter document's requirements undercut the
+assumption it suggests. Client software is empowered to send localhost names to
+DNS resolvers, and resolvers are empowered to return unexpected results in
+various cases. This divide between theory and practice has a few impacts.
 
-Following on from that, the lack of confidence that `localhost` actually
-resolves to the loopback interface may encourage application developers to
-hard-code IP addresses, which causes problems in the transition from IPv4
-to IPv6 (see problem 8 in {{draft-ietf-sunset4-gapanalysis}}).
-{{SECURE-CONTEXTS}} excluding `localhost` would exacerbate this risk, giving
-developers positive encouragement to use the loopback address rather than a
-localhost name.
+First, the lack of confidence that `localhost` actually resolves to the loopback
+interface encourages application developers to hard-code IP addresses like
+`127.0.0.1` in order to obtain certainty regarding routing. This causes problems
+in the transition from IPv4 to IPv6 (see problem 8 in
+{{draft-ietf-sunset4-gapanalysis}}).
 
-This document suggests that we should resolve the confusion by requiring that
-DNS resolution work the way that users expect: `localhost` is the loopback
-interface on the local host. Resolver APIs will resolve `localhost.` and any
-names falling within `.localhost.` to loopback addresses {{RFC5735}}
+Second, HTTP user agents sometimes distinguish certain contexts as
+"secure"-enough to make certain features available. Given the certainty that
+`127.0.0.1` cannot be maliciously manipulated or monitored, {{SECURE-CONTEXTS}}
+treats it as such a context. Since `localhost` might not actually map to the
+loopback address, that document declines to give it the same treatment. This
+exclusion has (rightly) surprised some developers, and exacerbates the risks
+of hard-coded IP addresses by giving developers positive encouragement to use
+an explicit loopback address rather than a localhost name.
+
+This document hardens {{RFC6761}}'s recommendations regarding `localhost` by
+requiring that DNS resolution work the way that users assume: `localhost` is the
+loopback interface on the local host. Resolver APIs will resolve `localhost.` and
+any names falling within `.localhost.` to loopback addresses, and traffic to
+those hosts will never traverse a remote network.
 
 # Terminology and notation
 
@@ -106,52 +119,66 @@ IPv4 loopback addresses are defined in Section 2.1 of {{RFC5735}} as
 
 IPv6 loopback addresses are defined in Section 3 of {{RFC5156}} as `::1/128`.
 
-# Recommendations
+# The "localhost." Special-Use Domain Name
 
-This document updates Section 6.3 of {{RFC6761}} in the following ways:
+The domain `localhost.`, and any names falling within `.localhost.`, are known
+as "localhost names", and are special in the following ways:
 
-1.  Item #3 is changed to read as follows:
+1.  Users are free to use localhost names as they would any other domain names.
+    Users may assume that IPv4 and IPv6 address queries for localhost names will
+    always resolve to the respective IP loopback address.
 
-    Name resolution APIs and libraries MUST recognize localhost names as
-    special, and MUST always return an IP loopback address for address queries
-    and negative responses for all other query types. Name resolution APIs MUST
-    NOT send queries for localhost names to their configured caching DNS
-    server(s).
+2.  Application software MAY recognize localhost names as special, or MAY pass
+    them to name resolution APIs as they would for other domain names.
 
-    Note that any loopback address is acceptable: `subdomain.localhost` could
-    resolve to `127.0.0.1`, `127.0.0.2`, `127.127.127.127`, etc.
+    Application software MUST NOT use a searchlist to resolve a localhost name.
+    That is, even if DHCP's domain search option {{RFC3397}} is used to specify
+    a searchlist of `example.com` for a given network, the name `localhost` will
+    not be resolved as `localhost.example.com`, and `subdomain.localhost` will
+    not be resolved as `subdomain.localhost.example.com`.
 
-2.  Item #4 is changed to read as follows:
+3.  Name resolution APIs and libraries MUST recognize localhost names as
+    special, and MUST always return an appropriate IP loopback address for
+    IPv4 and IPv6 address queries and negative responses for all other query
+    types. Name resolution APIs MUST NOT send queries for localhost names to
+    their configured caching DNS server(s).
+    
+    Name resolution APIs and libraries MUST NOT use a searchlist to resolve a
+    localhost name.
 
-    Caching DNS servers MUST recognize localhost names as special, and MUST NOT
-    attempt to look up NS records for them, or otherwise query authoritative DNS
-    servers in an attempt to resolve localhost names. Instead, caching DNS
-    servers MUST generate an immediate negative response.
+4.  Caching DNS servers MUST respond to queries for localhost names with
+    NXDOMAIN.
 
-3.  Item #5 is changed to replace "SHOULD" with "MUST":
+5.  Authoritative DNS servers MUST respond to queries for localhost names with
+    NXDOMAIN.
 
-    Authoritative DNS servers MUST recognize localhost names as special and
-    handle them as described above for caching DNS servers.
+6.  DNS server operators SHOULD be aware that the effective RDATA for localhost
+    names is defined by protocol specification and cannot be modified by local
+    configuration.
 
-4.  Item #7 is changed to remove "probably" from the last sentence:
-
-    DNS Registries/Registrars MUST NOT grant requests to register localhost
+7.  DNS Registries/Registrars MUST NOT grant requests to register localhost
     names in the normal way to any person or entity. Localhost names are
     defined by protocol specification and fall outside the set of names
     available for allocation by registries/registrars. Attempting to allocate a
     localhost name as if it were a normal DNS domain name will not work as
     desired, for reasons 2, 3, 4, and 5 above.
 
-5.  Item #8 is added to the list, reading as follows:
+# IANA Considerations
 
-    Name resolution APIs, libraries, and application software MUST NOT use a
-    searchlist to resolve a localhost name. That is, even if DHCP's domain
-    search option {{RFC3397}} is used to specify a searchlist of `example.com`
-    for a given network, the name `localhost` will not be resolved as
-    `localhost.example.com`, and `subdomain.localhost` will not be resolved as
-    `subdomain.localhost.example.com`.
+The `localhost.` registration in the registry of Special-Use Domain Names
+{{RFC6761}} is updated to reference this document.
 
 # Implementation Considerations
+
+## Security Decisions
+
+If application software wishes to make security decisions based upon the fact
+that localhost names resolve to loopback addresses (e.g. if it wishes to ensure
+that a context meets the requirements laid out in {{SECURE-CONTEXTS}}), then it
+SHOULD avoid relying upon name resolution APIs, instead performing the
+resolution itself. If it chooses to rely on name resolution APIs, it MUST verify
+that the resulting IP address is a loopback address before making a decision
+about its security properties.
 
 ## Non-DNS usage of localhost names
 

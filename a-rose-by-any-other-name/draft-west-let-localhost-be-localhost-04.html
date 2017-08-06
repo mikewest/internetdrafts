@@ -373,25 +373,27 @@
   /*]]>*/
   </style>
 
-  <link href="#rfc.toc" rel="Contents"/>
-<link href="#rfc.section.1" rel="Chapter" title="1 Introduction"/>
-<link href="#rfc.section.2" rel="Chapter" title="2 Terminology and notation"/>
-<link href="#rfc.section.3" rel="Chapter" title="3 Recommendations"/>
-<link href="#rfc.section.4" rel="Chapter" title="4 Implementation Considerations"/>
-<link href="#rfc.section.4.1" rel="Chapter" title="4.1 Non-DNS usage of localhost names"/>
-<link href="#rfc.references" rel="Chapter" title="5 References"/>
-<link href="#rfc.references.1" rel="Chapter" title="5.1 Normative References"/>
-<link href="#rfc.references.2" rel="Chapter" title="5.2 Informative References"/>
-<link href="#rfc.appendix.A" rel="Chapter" title="A Acknowledgements"/>
-<link href="#rfc.authors" rel="Chapter"/>
+  <link href="#rfc.toc" rel="Contents">
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction">
+<link href="#rfc.section.2" rel="Chapter" title="2 Terminology and notation">
+<link href="#rfc.section.3" rel="Chapter" title="3 The &#8220;localhost.&#8221; Special-Use Domain Name">
+<link href="#rfc.section.4" rel="Chapter" title="4 IANA Considerations">
+<link href="#rfc.section.5" rel="Chapter" title="5 Implementation Considerations">
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Security Decisions">
+<link href="#rfc.section.5.2" rel="Chapter" title="5.2 Non-DNS usage of localhost names">
+<link href="#rfc.references" rel="Chapter" title="6 References">
+<link href="#rfc.references.1" rel="Chapter" title="6.1 Normative References">
+<link href="#rfc.references.2" rel="Chapter" title="6.2 Informative References">
+<link href="#rfc.appendix.A" rel="Chapter" title="A Acknowledgements">
+<link href="#rfc.authors" rel="Chapter">
 
 
-  <meta name="generator" content="xml2rfc version 2.5.1 - http://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.7.0 - http://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="West, M." />
   <meta name="dct.identifier" content="urn:ietf:id:draft-west-let-localhost-be-localhost-04" />
-  <meta name="dct.issued" scheme="ISO8601" content="2016-11-18" />
+  <meta name="dct.issued" scheme="ISO8601" content="2017-8-6" />
   <meta name="dct.abstract" content="This document updates RFC6761 by requiring that the domain &#8220;localhost.&#8221; and any names falling within &#8220;.localhost.&#8221; resolve to loopback addresses. This would allow other specifications to join regular users in drawing the common-sense conclusions that &#8220;localhost&#8221; means &#8220;localhost&#8221;, and doesn&#8217;t resolve to somewhere else on the network." />
   <meta name="description" content="This document updates RFC6761 by requiring that the domain &#8220;localhost.&#8221; and any names falling within &#8220;.localhost.&#8221; resolve to loopback addresses. This would allow other specifications to join regular users in drawing the common-sense conclusions that &#8220;localhost&#8221; means &#8220;localhost&#8221;, and doesn&#8217;t resolve to somewhere else on the network." />
 
@@ -403,24 +405,24 @@
     <tbody>
     
     	<tr>
-  <td class="left">DNSOP</td>
-  <td class="right">M. West</td>
+<td class="left">DNSOP</td>
+<td class="right">M. West</td>
 </tr>
 <tr>
-  <td class="left">Internet-Draft</td>
-  <td class="right">Google, Inc</td>
+<td class="left">Internet-Draft</td>
+<td class="right">Google, Inc</td>
 </tr>
 <tr>
-  <td class="left">Updates: 6761 (if approved)</td>
-  <td class="right">November 18, 2016</td>
+<td class="left">Updates: 6761 (if approved)</td>
+<td class="right">August 6, 2017</td>
 </tr>
 <tr>
-  <td class="left">Intended status: Standards Track</td>
-  <td class="right"></td>
+<td class="left">Intended status: Standards Track</td>
+<td class="right"></td>
 </tr>
 <tr>
-  <td class="left">Expires: May 22, 2017</td>
-  <td class="right"></td>
+<td class="left">Expires: February 7, 2018</td>
+<td class="right"></td>
 </tr>
 
     	
@@ -430,21 +432,15 @@
   <p class="title">Let 'localhost' be localhost.<br />
   <span class="filename">draft-west-let-localhost-be-localhost-04</span></p>
   
-  <h1 id="rfc.abstract">
-  <a href="#rfc.abstract">Abstract</a>
-</h1>
+  <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
 <p>This document updates RFC6761 by requiring that the domain &#8220;localhost.&#8221; and any names falling within &#8220;.localhost.&#8221; resolve to loopback addresses. This would allow other specifications to join regular users in drawing the common-sense conclusions that &#8220;localhost&#8221; means &#8220;localhost&#8221;, and doesn&#8217;t resolve to somewhere else on the network.</p>
-<h1 id="rfc.status">
-  <a href="#rfc.status">Status of This Memo</a>
-</h1>
+<h1 id="rfc.status"><a href="#rfc.status">Status of This Memo</a></h1>
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on May 22, 2017.</p>
-<h1 id="rfc.copyrightnotice">
-  <a href="#rfc.copyrightnotice">Copyright Notice</a>
-</h1>
-<p>Copyright (c) 2016 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This Internet-Draft will expire on February 7, 2018.</p>
+<h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
+<p>Copyright (c) 2017 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
 <p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
 
   
@@ -452,101 +448,133 @@
   <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
   <ul class="toc">
 
-  	<li>1.   <a href="#rfc.section.1">Introduction</a></li>
-<li>2.   <a href="#rfc.section.2">Terminology and notation</a></li>
-<li>3.   <a href="#rfc.section.3">Recommendations</a></li>
-<li>4.   <a href="#rfc.section.4">Implementation Considerations</a></li>
-<ul><li>4.1.   <a href="#rfc.section.4.1">Non-DNS usage of localhost names</a></li>
-</ul><li>5.   <a href="#rfc.references">References</a></li>
-<ul><li>5.1.   <a href="#rfc.references.1">Normative References</a></li>
-<li>5.2.   <a href="#rfc.references.2">Informative References</a></li>
-</ul><li>Appendix A.   <a href="#rfc.appendix.A">Acknowledgements</a></li>
-<li><a href="#rfc.authors">Author's Address</a></li>
+  	<li>1.   <a href="#rfc.section.1">Introduction</a>
+</li>
+<li>2.   <a href="#rfc.section.2">Terminology and notation</a>
+</li>
+<li>3.   <a href="#rfc.section.3">The &#8220;localhost.&#8221; Special-Use Domain Name</a>
+</li>
+<li>4.   <a href="#rfc.section.4">IANA Considerations</a>
+</li>
+<li>5.   <a href="#rfc.section.5">Implementation Considerations</a>
+</li>
+<ul><li>5.1.   <a href="#rfc.section.5.1">Security Decisions</a>
+</li>
+<li>5.2.   <a href="#rfc.section.5.2">Non-DNS usage of localhost names</a>
+</li>
+</ul><li>6.   <a href="#rfc.references">References</a>
+</li>
+<ul><li>6.1.   <a href="#rfc.references.1">Normative References</a>
+</li>
+<li>6.2.   <a href="#rfc.references.2">Informative References</a>
+</li>
+</ul><li>Appendix A.   <a href="#rfc.appendix.A">Acknowledgements</a>
+</li>
+<li><a href="#rfc.authors">Author's Address</a>
+</li>
 
 
   </ul>
 
-  <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a></h1>
-<p id="rfc.section.1.p.1">Section 6.3 of <a href="#RFC6761">[RFC6761]</a> invites developers to &#8220;assume that IPv4 and IPv6 address queries for localhost names will always resolve to the respective IP loopback address&#8221;. That suggestion, unfortunately, doesn&#8217;t match reality.  Client software is empowered to send localhost names to DNS resolvers, and resolvers are empowered to return unexpected results in various cases. This has several impacts.</p>
-<p id="rfc.section.1.p.2">One of the clearest is that the <a href="#SECURE-CONTEXTS">[SECURE-CONTEXTS]</a> specification declines to treat <samp>localhost</samp> as &#8220;secure enough&#8221;, as it might not actually be the <samp>localhost</samp> that developers are expecting. This exclusion has (rightly) surprised some developers.</p>
-<p id="rfc.section.1.p.3">Following on from that, the lack of confidence that <samp>localhost</samp> actually resolves to the loopback interface may encourage application developers to hard-code IP addresses, which causes problems in the transition from IPv4 to IPv6 (see problem 8 in <a href="#draft-ietf-sunset4-gapanalysis">[draft-ietf-sunset4-gapanalysis]</a>).  <a href="#SECURE-CONTEXTS">[SECURE-CONTEXTS]</a> excluding <samp>localhost</samp> would exacerbate this risk, giving developers positive encouragement to use the loopback address rather than a localhost name.</p>
-<p id="rfc.section.1.p.4">This document suggests that we should resolve the confusion by requiring that DNS resolution work the way that users expect: <samp>localhost</samp> is the loopback interface on the local host. Resolver APIs will resolve <samp>localhost.</samp> and any names falling within <samp>.localhost.</samp> to loopback addresses <a href="#RFC5735">[RFC5735]</a></p>
-<h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#terminology-and-notation" id="terminology-and-notation">Terminology and notation</a></h1>
-<p id="rfc.section.2.p.1">The key words &#8220;MUST&#8221;, &#8220;MUST NOT&#8221;, &#8220;REQUIRED&#8221;, &#8220;SHALL&#8221;, &#8220;SHALL NOT&#8221;, &#8220;SHOULD&#8221;, &#8220;SHOULD NOT&#8221;, &#8220;RECOMMENDED&#8221;, &#8220;MAY&#8221;, and &#8220;OPTIONAL&#8221; in this document are to be interpreted as described in <a href="#RFC2119">[RFC2119]</a>.</p>
-<p id="rfc.section.2.p.2">IPv4 loopback addresses are defined in Section 2.1 of <a href="#RFC5735">[RFC5735]</a> as <samp>127.0.0.0/8</samp>.</p>
-<p id="rfc.section.2.p.3">IPv6 loopback addresses are defined in Section 3 of <a href="#RFC5156">[RFC5156]</a> as <samp>::1/128</samp>.</p>
-<h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#recommendations" id="recommendations">Recommendations</a></h1>
-<p id="rfc.section.3.p.1">This document updates Section 6.3 of <a href="#RFC6761">[RFC6761]</a> in the following ways:</p>
-<p/>
+  <h1 id="rfc.section.1">
+<a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a>
+</h1>
+<p id="rfc.section.1.p.1">The <samp>127.0.0.0/8</samp> IPv4 address block and <samp>::1/128</samp> IPv6 address block are reserved as loopback addresses; communication within this block is assured to remain inside a single host, and can not legitimately appear on any network anywhere. This turns out to be a very useful property in a number of circumstances; useful enough to label explicitly and interoperably as <samp>localhost</samp>. <a href="#RFC1537" class="xref">[RFC1537]</a> suggests that this special-use top-level domain name has been mapped to loopback addresses for quite some time, and that <a href="#RFC6761" class="xref">[RFC6761]</a>&#8217;s assertion that developers may &#8220;assume that IPv4 and IPv6 address queries for localhost names will always resolve to the respective IP loopback address&#8221; is well-founded.</p>
+<p id="rfc.section.1.p.2">Unfortunately, the rest of that latter document&#8217;s requirements undercut the assumption it suggests. Client software is empowered to send localhost names to DNS resolvers, and resolvers are empowered to return unexpected results in various cases. This divide between theory and practice has a few impacts.</p>
+<p id="rfc.section.1.p.3">First, the lack of confidence that <samp>localhost</samp> actually resolves to the loopback interface encourages application developers to hard-code IP addresses like <samp>127.0.0.1</samp> in order to obtain certainty regarding routing. This causes problems in the transition from IPv4 to IPv6 (see problem 8 in <a href="#draft-ietf-sunset4-gapanalysis" class="xref">[draft-ietf-sunset4-gapanalysis]</a>).</p>
+<p id="rfc.section.1.p.4">Second, HTTP user agents sometimes distinguish certain contexts as &#8220;secure&#8221;-enough to make certain features available. Given the certainty that <samp>127.0.0.1</samp> cannot be maliciously manipulated or monitored, <a href="#SECURE-CONTEXTS" class="xref">[SECURE-CONTEXTS]</a> treats it as such a context. Since <samp>localhost</samp> might not actually map to the loopback address, that document declines to give it the same treatment. This exclusion has (rightly) surprised some developers, and exacerbates the risks of hard-coded IP addresses by giving developers positive encouragement to use an explicit loopback address rather than a localhost name.</p>
+<p id="rfc.section.1.p.5">This document hardens <a href="#RFC6761" class="xref">[RFC6761]</a>&#8217;s recommendations regarding <samp>localhost</samp> by requiring that DNS resolution work the way that users assume: <samp>localhost</samp> is the loopback interface on the local host. Resolver APIs will resolve <samp>localhost.</samp> and any names falling within <samp>.localhost.</samp> to loopback addresses, and traffic to those hosts will never traverse a remote network.</p>
+<h1 id="rfc.section.2">
+<a href="#rfc.section.2">2.</a> <a href="#terminology-and-notation" id="terminology-and-notation">Terminology and notation</a>
+</h1>
+<p id="rfc.section.2.p.1">The key words &#8220;MUST&#8221;, &#8220;MUST NOT&#8221;, &#8220;REQUIRED&#8221;, &#8220;SHALL&#8221;, &#8220;SHALL NOT&#8221;, &#8220;SHOULD&#8221;, &#8220;SHOULD NOT&#8221;, &#8220;RECOMMENDED&#8221;, &#8220;MAY&#8221;, and &#8220;OPTIONAL&#8221; in this document are to be interpreted as described in <a href="#RFC2119" class="xref">[RFC2119]</a>.</p>
+<p id="rfc.section.2.p.2">IPv4 loopback addresses are defined in Section 2.1 of <a href="#RFC5735" class="xref">[RFC5735]</a> as <samp>127.0.0.0/8</samp>.</p>
+<p id="rfc.section.2.p.3">IPv6 loopback addresses are defined in Section 3 of <a href="#RFC5156" class="xref">[RFC5156]</a> as <samp>::1/128</samp>.</p>
+<h1 id="rfc.section.3">
+<a href="#rfc.section.3">3.</a> <a href="#the-localhost-special-use-domain-name" id="the-localhost-special-use-domain-name">The &#8220;localhost.&#8221; Special-Use Domain Name</a>
+</h1>
+<p id="rfc.section.3.p.1">The domain <samp>localhost.</samp>, and any names falling within <samp>.localhost.</samp>, are known as &#8220;localhost names&#8221;, and are special in the following ways:</p>
+<p></p>
 
 <ol>
-  <li>Item #3 is changed to read as follows:  <br/><br/> Name resolution APIs and libraries MUST recognize localhost names as special, and MUST always return an IP loopback address for address queries and negative responses for all other query types. Name resolution APIs MUST NOT send queries for localhost names to their configured caching DNS server(s).  <br/><br/> Note that any loopback address is acceptable: <samp>subdomain.localhost</samp> could resolve to <samp>127.0.0.1</samp>, <samp>127.0.0.2</samp>, <samp>127.127.127.127</samp>, etc.</li>
-  <li>Item #4 is changed to read as follows:  <br/><br/> Caching DNS servers MUST recognize localhost names as special, and MUST NOT attempt to look up NS records for them, or otherwise query authoritative DNS servers in an attempt to resolve localhost names. Instead, caching DNS servers MUST generate an immediate negative response.</li>
-  <li>Item #5 is changed to replace &#8220;SHOULD&#8221; with &#8220;MUST&#8221;:  <br/><br/> Authoritative DNS servers MUST recognize localhost names as special and handle them as described above for caching DNS servers.</li>
-  <li>Item #7 is changed to remove &#8220;probably&#8221; from the last sentence:  <br/><br/> DNS Registries/Registrars MUST NOT grant requests to register localhost names in the normal way to any person or entity. Localhost names are defined by protocol specification and fall outside the set of names available for allocation by registries/registrars. Attempting to allocate a localhost name as if it were a normal DNS domain name will not work as desired, for reasons 2, 3, 4, and 5 above.</li>
-  <li>Item #8 is added to the list, reading as follows:  <br/><br/> Name resolution APIs, libraries, and application software MUST NOT use a searchlist to resolve a localhost name. That is, even if DHCP&#8217;s domain search option <a href="#RFC3397">[RFC3397]</a> is used to specify a searchlist of <samp>example.com</samp> for a given network, the name <samp>localhost</samp> will not be resolved as <samp>localhost.example.com</samp>, and <samp>subdomain.localhost</samp> will not be resolved as <samp>subdomain.localhost.example.com</samp>.</li>
+<li>Users are free to use localhost names as they would any other domain names.  Users may assume that IPv4 and IPv6 address queries for localhost names will always resolve to the respective IP loopback address.</li>
+<li>Application software MAY recognize localhost names as special, or MAY pass them to name resolution APIs as they would for other domain names.  <br><br> Application software MUST NOT use a searchlist to resolve a localhost name.  That is, even if DHCP&#8217;s domain search option <a href="#RFC3397" class="xref">[RFC3397]</a> is used to specify a searchlist of <samp>example.com</samp> for a given network, the name <samp>localhost</samp> will not be resolved as <samp>localhost.example.com</samp>, and <samp>subdomain.localhost</samp> will not be resolved as <samp>subdomain.localhost.example.com</samp>.</li>
+<li>Name resolution APIs and libraries MUST recognize localhost names as special, and MUST always return an appropriate IP loopback address for IPv4 and IPv6 address queries and negative responses for all other query types. Name resolution APIs MUST NOT send queries for localhost names to their configured caching DNS server(s).  <br><br> Name resolution APIs and libraries MUST NOT use a searchlist to resolve a localhost name.</li>
+<li>Caching DNS servers MUST respond to queries for localhost names with NXDOMAIN.</li>
+<li>Authoritative DNS servers MUST respond to queries for localhost names with NXDOMAIN.</li>
+<li>DNS server operators SHOULD be aware that the effective RDATA for localhost names is defined by protocol specification and cannot be modified by local configuration.</li>
+<li>DNS Registries/Registrars MUST NOT grant requests to register localhost names in the normal way to any person or entity. Localhost names are defined by protocol specification and fall outside the set of names available for allocation by registries/registrars. Attempting to allocate a localhost name as if it were a normal DNS domain name will not work as desired, for reasons 2, 3, 4, and 5 above.</li>
 </ol>
-<h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#implementation-considerations" id="implementation-considerations">Implementation Considerations</a></h1>
-<h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#non-dns-usage-of-localhost-names" id="non-dns-usage-of-localhost-names">Non-DNS usage of localhost names</a></h1>
-<p id="rfc.section.4.1.p.1">Some application software differentiates between the hostname <samp>localhost</samp> and the IP address <samp>127.0.0.1</samp>. MySQL, for example, uses a unix domain socket for the former, and a TCP connection to the loopback address for the latter. The constraints on name resolution APIs above do not preclude this kind of differentiation.</p>
-<h1 id="rfc.references"><a href="#rfc.references">5.</a> References</h1>
-<h1 id="rfc.references.1"><a href="#rfc.references.1">5.1.</a> Normative References</h1>
-<table>
-  <tbody>
-    <tr>
-      <td class="reference">
-        <b id="RFC2119">[RFC2119]</b>
-      </td>
-      <td class="top"><a>Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC5156">[RFC5156]</b>
-      </td>
-      <td class="top"><a>Blanchet, M.</a>, "<a href="http://tools.ietf.org/html/rfc5156">Special-Use IPv6 Addresses</a>", RFC 5156, DOI 10.17487/RFC5156, April 2008.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC5735">[RFC5735]</b>
-      </td>
-      <td class="top"><a>Cotton, M.</a> and <a>L. Vegoda</a>, "<a href="http://tools.ietf.org/html/rfc5735">Special Use IPv4 Addresses</a>", RFC 5735, DOI 10.17487/RFC5735, January 2010.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC6761">[RFC6761]</b>
-      </td>
-      <td class="top"><a>Cheshire, S.</a> and <a>M. Krochmal</a>, "<a href="http://tools.ietf.org/html/rfc6761">Special-Use Domain Names</a>", RFC 6761, DOI 10.17487/RFC6761, February 2013.</td>
-    </tr>
-  </tbody>
-</table>
-<h1 id="rfc.references.2"><a href="#rfc.references.2">5.2.</a> Informative References</h1>
-<table>
-  <tbody>
-    <tr>
-      <td class="reference">
-        <b id="draft-ietf-sunset4-gapanalysis">[draft-ietf-sunset4-gapanalysis]</b>
-      </td>
-      <td class="top"><a title="Jive Communications">Perreault, S.</a>, <a title="Huawei Technologies (USA)">Tsou, T.</a>, <a title="Huawei Technologies">Zhou, C.</a> and <a title="China Mobile">P. Fan</a>, "<a href="http://tools.ietf.org/html/draft-ietf-sunset4-gapanalysis">Gap Analysis for IPv4 Sunset</a>", n.d..</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC3397">[RFC3397]</b>
-      </td>
-      <td class="top"><a>Aboba, B.</a> and <a>S. Cheshire</a>, "<a href="http://tools.ietf.org/html/rfc3397">Dynamic Host Configuration Protocol (DHCP) Domain Search Option</a>", RFC 3397, DOI 10.17487/RFC3397, November 2002.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="SECURE-CONTEXTS">[SECURE-CONTEXTS]</b>
-      </td>
-      <td class="top"><a title="Google, Inc">West, M.</a>, "<a href="http://w3c.github.io/webappsec-secure-contexts/">Secure Contexts</a>", n.d..</td>
-    </tr>
-  </tbody>
-</table>
-<h1 id="rfc.appendix.A"><a href="#rfc.appendix.A">Appendix A.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
-<p id="rfc.section.A.p.1">Ryan Sleevi and Emily Stark informed me about the strange state of localhost name resolution. Erik Nygren poked me to take another look at the set of decisions we made in <a href="#SECURE-CONTEXTS">[SECURE-CONTEXTS]</a> around <samp>localhost.</samp>; this document is the result, and his feedback has been very helpful.</p>
-<h1 id="rfc.authors">
-  <a href="#rfc.authors">Author's Address</a>
+<h1 id="rfc.section.4">
+<a href="#rfc.section.4">4.</a> <a href="#iana-considerations" id="iana-considerations">IANA Considerations</a>
 </h1>
+<p id="rfc.section.4.p.1">The <samp>localhost.</samp> registration in the registry of Special-Use Domain Names <a href="#RFC6761" class="xref">[RFC6761]</a> is updated to reference this document.</p>
+<h1 id="rfc.section.5">
+<a href="#rfc.section.5">5.</a> <a href="#implementation-considerations" id="implementation-considerations">Implementation Considerations</a>
+</h1>
+<h1 id="rfc.section.5.1">
+<a href="#rfc.section.5.1">5.1.</a> <a href="#security-decisions" id="security-decisions">Security Decisions</a>
+</h1>
+<p id="rfc.section.5.1.p.1">If application software wishes to make security decisions based upon the fact that localhost names resolve to loopback addresses (e.g. if it wishes to ensure that a context meets the requirements laid out in <a href="#SECURE-CONTEXTS" class="xref">[SECURE-CONTEXTS]</a>), then it SHOULD avoid relying upon name resolution APIs, instead performing the resolution itself. If it chooses to rely on name resolution APIs, it MUST verify that the resulting IP address is a loopback address before making a decision about its security properties.</p>
+<h1 id="rfc.section.5.2">
+<a href="#rfc.section.5.2">5.2.</a> <a href="#non-dns-usage-of-localhost-names" id="non-dns-usage-of-localhost-names">Non-DNS usage of localhost names</a>
+</h1>
+<p id="rfc.section.5.2.p.1">Some application software differentiates between the hostname <samp>localhost</samp> and the IP address <samp>127.0.0.1</samp>. MySQL, for example, uses a unix domain socket for the former, and a TCP connection to the loopback address for the latter. The constraints on name resolution APIs above do not preclude this kind of differentiation.</p>
+<h1 id="rfc.references">
+<a href="#rfc.references">6.</a> References</h1>
+<h1 id="rfc.references.1">
+<a href="#rfc.references.1">6.1.</a> Normative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="RFC2119">[RFC2119]</b></td>
+<td class="top">
+<a>Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC5156">[RFC5156]</b></td>
+<td class="top">
+<a>Blanchet, M.</a>, "<a href="http://tools.ietf.org/html/rfc5156">Special-Use IPv6 Addresses</a>", RFC 5156, DOI 10.17487/RFC5156, April 2008.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC5735">[RFC5735]</b></td>
+<td class="top">
+<a>Cotton, M.</a> and <a>L. Vegoda</a>, "<a href="http://tools.ietf.org/html/rfc5735">Special Use IPv4 Addresses</a>", RFC 5735, DOI 10.17487/RFC5735, January 2010.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6761">[RFC6761]</b></td>
+<td class="top">
+<a>Cheshire, S.</a> and <a>M. Krochmal</a>, "<a href="http://tools.ietf.org/html/rfc6761">Special-Use Domain Names</a>", RFC 6761, DOI 10.17487/RFC6761, February 2013.</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.references.2">
+<a href="#rfc.references.2">6.2.</a> Informative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="draft-ietf-sunset4-gapanalysis">[draft-ietf-sunset4-gapanalysis]</b></td>
+<td class="top">
+<a title="Jive Communications">Perreault, S.</a>, <a title="Huawei Technologies (USA)">Tsou, T.</a>, <a title="Huawei Technologies">Zhou, C.</a> and <a title="China Mobile">P. Fan</a>, "<a href="http://tools.ietf.org/html/draft-ietf-sunset4-gapanalysis">Gap Analysis for IPv4 Sunset</a>", n.d..</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC1537">[RFC1537]</b></td>
+<td class="top">
+<a>Beertema, P.</a>, "<a href="http://tools.ietf.org/html/rfc1537">Common DNS Data File Configuration Errors</a>", RFC 1537, DOI 10.17487/RFC1537, October 1993.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC3397">[RFC3397]</b></td>
+<td class="top">
+<a>Aboba, B.</a> and <a>S. Cheshire</a>, "<a href="http://tools.ietf.org/html/rfc3397">Dynamic Host Configuration Protocol (DHCP) Domain Search Option</a>", RFC 3397, DOI 10.17487/RFC3397, November 2002.</td>
+</tr>
+<tr>
+<td class="reference"><b id="SECURE-CONTEXTS">[SECURE-CONTEXTS]</b></td>
+<td class="top">
+<a title="Google, Inc">West, M.</a>, "<a href="http://w3c.github.io/webappsec-secure-contexts/">Secure Contexts</a>", n.d..</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.appendix.A">
+<a href="#rfc.appendix.A">Appendix A.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a>
+</h1>
+<p id="rfc.section.A.p.1">Ryan Sleevi and Emily Stark informed me about the strange state of localhost name resolution. Erik Nygren poked me to take another look at the set of decisions we made in <a href="#SECURE-CONTEXTS" class="xref">[SECURE-CONTEXTS]</a> around <samp>localhost.</samp>; this document is the result, and his feedback has been very helpful.</p>
+<h1 id="rfc.authors"><a href="#rfc.authors">Author's Address</a></h1>
 <div class="avoidbreak">
   <address class="vcard">
 	<span class="vcardline">
