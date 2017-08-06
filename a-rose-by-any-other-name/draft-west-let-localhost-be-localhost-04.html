@@ -384,7 +384,8 @@
 <link href="#rfc.references" rel="Chapter" title="6 References">
 <link href="#rfc.references.1" rel="Chapter" title="6.1 Normative References">
 <link href="#rfc.references.2" rel="Chapter" title="6.2 Informative References">
-<link href="#rfc.appendix.A" rel="Chapter" title="A Acknowledgements">
+<link href="#rfc.appendix.A" rel="Chapter" title="A Changes from RFC 6761">
+<link href="#rfc.appendix.B" rel="Chapter" title="B Acknowledgements">
 <link href="#rfc.authors" rel="Chapter">
 
 
@@ -468,7 +469,9 @@
 </li>
 <li>6.2.   <a href="#rfc.references.2">Informative References</a>
 </li>
-</ul><li>Appendix A.   <a href="#rfc.appendix.A">Acknowledgements</a>
+</ul><li>Appendix A.   <a href="#rfc.appendix.A">Changes from RFC 6761</a>
+</li>
+<li>Appendix B.   <a href="#rfc.appendix.B">Acknowledgements</a>
 </li>
 <li><a href="#rfc.authors">Author's Address</a>
 </li>
@@ -571,9 +574,20 @@
 </tr>
 </tbody></table>
 <h1 id="rfc.appendix.A">
-<a href="#rfc.appendix.A">Appendix A.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a>
+<a href="#rfc.appendix.A">Appendix A.</a> <a href="#changes-from-rfc-6761" id="changes-from-rfc-6761">Changes from RFC 6761</a>
 </h1>
-<p id="rfc.section.A.p.1">Ryan Sleevi and Emily Stark informed me about the strange state of localhost name resolution. Erik Nygren poked me to take another look at the set of decisions we made in <a href="#SECURE-CONTEXTS" class="xref">[SECURE-CONTEXTS]</a> around <samp>localhost.</samp>; this document is the result, and his feedback has been very helpful.</p>
+<p id="rfc.section.A.p.1">Section 3 of this document updates the requirements in section 6.3 of <a href="#RFC6761" class="xref">[RFC6761]</a> in a few substantive ways:</p>
+<p></p>
+
+<ol>
+<li>Item #2 now restricts application software&#8217;s usage of searchlists for localhost names.</li>
+<li>Item #3 now requires name resolution APIs and libraries to resolve localhost names to loopback addresses, and prohibits them from using searchlists during such requests.</li>
+<li>Item #4 and #5 now require caching and authoritative DNS servers, respectively, to respond to resolution requests for localhost names with NXDOMAIN.</li>
+</ol>
+<h1 id="rfc.appendix.B">
+<a href="#rfc.appendix.B">Appendix B.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a>
+</h1>
+<p id="rfc.section.B.p.1">Ryan Sleevi and Emily Stark informed me about the strange state of localhost name resolution. Erik Nygren poked me to take another look at the set of decisions we made in <a href="#SECURE-CONTEXTS" class="xref">[SECURE-CONTEXTS]</a> around <samp>localhost.</samp>; this document is the result, and his feedback has been very helpful.</p>
 <h1 id="rfc.authors"><a href="#rfc.authors">Author's Address</a></h1>
 <div class="avoidbreak">
   <address class="vcard">

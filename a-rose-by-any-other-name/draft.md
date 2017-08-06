@@ -190,6 +190,22 @@ differentiation.
 
 --- back
 
+# Changes from RFC 6761
+
+Section 3 of this document updates the requirements in section 6.3 of
+{{RFC6761}} in a few substantive ways:
+
+1.  Item #2 now restricts application software's usage of searchlists for
+    localhost names.
+
+2.  Item #3 now requires name resolution APIs and libraries to resolve localhost
+    names to loopback addresses, and prohibits them from using searchlists
+    during such requests.
+
+3.  Item #4 and #5 now require caching and authoritative DNS servers,
+    respectively, to respond to resolution requests for localhost names with
+    NXDOMAIN.
+
 # Acknowledgements
 
 Ryan Sleevi and Emily Stark informed me about the strange state of localhost

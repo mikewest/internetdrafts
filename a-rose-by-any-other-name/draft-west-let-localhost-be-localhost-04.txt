@@ -73,7 +73,8 @@ Table of Contents
    6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
      6.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
      6.2.  Informative References  . . . . . . . . . . . . . . . . .   5
-   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   6
+   Appendix A.  Changes from RFC 6761  . . . . . . . . . . . . . . .   6
+   Appendix B.  Acknowledgements . . . . . . . . . . . . . . . . . .   6
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
 
 1.  Introduction
@@ -105,7 +106,6 @@ Table of Contents
    Second, HTTP user agents sometimes distinguish certain contexts as
    "secure"-enough to make certain features available.  Given the
    certainty that "127.0.0.1" cannot be maliciously manipulated or
-   monitored, [SECURE-CONTEXTS] treats it as such a context.  Since
 
 
 
@@ -114,6 +114,7 @@ West                    Expires February 7, 2018                [Page 2]
 Internet-Draft         let-localhost-be-localhost            August 2017
 
 
+   monitored, [SECURE-CONTEXTS] treats it as such a context.  Since
    "localhost" might not actually map to the loopback address, that
    document declines to give it the same treatment.  This exclusion has
    (rightly) surprised some developers, and exacerbates the risks of
@@ -160,7 +161,6 @@ Internet-Draft         let-localhost-be-localhost            August 2017
        given network, the name "localhost" will not be resolved as
        "localhost.example.com", and "subdomain.localhost" will not be
        resolved as "subdomain.localhost.example.com".
-
 
 
 
@@ -286,7 +286,23 @@ Internet-Draft         let-localhost-be-localhost            August 2017
               West, M., "Secure Contexts", n.d.,
               <http://w3c.github.io/webappsec-secure-contexts/>.
 
-Appendix A.  Acknowledgements
+Appendix A.  Changes from RFC 6761
+
+   Section 3 of this document updates the requirements in section 6.3 of
+   [RFC6761] in a few substantive ways:
+
+   1.  Item #2 now restricts application software's usage of searchlists
+       for localhost names.
+
+   2.  Item #3 now requires name resolution APIs and libraries to
+       resolve localhost names to loopback addresses, and prohibits them
+       from using searchlists during such requests.
+
+   3.  Item #4 and #5 now require caching and authoritative DNS servers,
+       respectively, to respond to resolution requests for localhost
+       names with NXDOMAIN.
+
+Appendix B.  Acknowledgements
 
    Ryan Sleevi and Emily Stark informed me about the strange state of
    localhost name resolution.  Erik Nygren poked me to take another look
@@ -301,22 +317,6 @@ Author's Address
 
    Email: mkwst@google.com
    URI:   https://mikewest.org/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
