@@ -23,33 +23,13 @@ author:
 
 normative:
   RFC2119:
-  RFC5156:
-  RFC5735:
   RFC6761:
+  RFC6890:
 
 informative:
   RFC1537:
   RFC3397:
-  draft-ietf-sunset4-gapanalysis:
-    target: http://tools.ietf.org/html/draft-ietf-sunset4-gapanalysis
-    title: "Gap Analysis for IPv4 Sunset"
-    author:
-    -
-      ins: S. Perreault
-      name: Simon Perreault
-      organization: Jive Communications
-    -
-      ins: T. Tsou
-      name: Tina Tsou
-      organization: Huawei Technologies (USA)
-    -
-      ins: C. Zhou
-      name: Cathy Zhou
-      organization: Huawei Technologies
-    -
-      ins: P. Fan
-      name: Peng Fan
-      organization: China Mobile
+  I-D.ietf-sunset4-gapanalysis:
   SECURE-CONTEXTS:
     target: http://w3c.github.io/webappsec-secure-contexts/
     title: "Secure Contexts"
@@ -91,7 +71,7 @@ First, the lack of confidence that `localhost` actually resolves to the loopback
 interface encourages application developers to hard-code IP addresses like
 `127.0.0.1` in order to obtain certainty regarding routing. This causes problems
 in the transition from IPv4 to IPv6 (see problem 8 in
-{{draft-ietf-sunset4-gapanalysis}}).
+{{I-D.ietf-sunset4-gapanalysis}}).
 
 Second, HTTP user agents sometimes distinguish certain contexts as
 "secure"-enough to make certain features available. Given the certainty that
@@ -114,10 +94,11 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in {{RFC2119}}.
 
-IPv4 loopback addresses are defined in Section 2.1 of {{RFC5735}} as
-`127.0.0.0/8`.
+IPv4 loopback addresses are registered in Table 4 of Section 2.2.2 of
+{{RFC6890}} as `127.0.0.0/8`.
 
-IPv6 loopback addresses are defined in Section 3 of {{RFC5156}} as `::1/128`.
+IPv6 loopback addresses are registered in Table 17 of Section 2.2.3 of
+{{RFC6890}} as `::1/128`.
 
 # The "localhost." Special-Use Domain Name
 
@@ -146,8 +127,8 @@ as "localhost names". Localhost names are special in the following ways:
     Name resolution APIs and libraries MUST NOT use a searchlist to resolve a
     localhost name.
 
-4.  Caching DNS servers MUST respond to queries for localhost names with
-    NXDOMAIN.
+4.  (Caching) recursive DNS servers MUST respond to queries for localhost names
+    with NXDOMAIN.
 
 5.  Authoritative DNS servers MUST respond to queries for localhost names with
     NXDOMAIN.
@@ -203,6 +184,42 @@ Section 3 of this document updates the requirements in section 6.3 of
 
 3.  Caching and authoritative DNS servers are required to respond to resolution
     requests for localhost names with NXDOMAIN.
+
+# Changes in this draft
+
+## draft-west-let-localhost-be-localhost-00
+
+First draft.
+
+## draft-west-let-localhost-be-localhost-01
+
+*   Added a requirement that caching DNS servers MUST generate an immediate
+    negative response.
+
+## draft-west-let-localhost-be-localhost-02
+
+*   Pulled in definitions for IPv4 and IPv6 loopback addresses.
+
+## draft-west-let-localhost-be-localhost-03
+
+*   Explicitly referenced {{I-D.ietf-sunset4-gapanalysis}}.
+
+*   Added a prohibition against using searchlists to resolve localhost names.
+
+*   Noted that MySQL has special behavior differentiating the connection
+    mechanism used for `localhost` and `127.0.0.1`.
+
+## draft-west-let-localhost-be-localhost-04
+
+*   Restructured the draft as a stand-alone document, rather than as set of
+    monkey-patches against {{RFC6761}}.
+
+## draft-west-let-localhost-be-localhost-05
+
+*   Updated obsolete references to RFC 5735 and 5156 in favor of {{RFC6890}}.
+
+*   Clarify that non-caching recursive DNS servers are also addressed by #4 in
+    Section 3.
 
 # Acknowledgements
 
