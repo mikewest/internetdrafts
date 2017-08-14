@@ -1,8 +1,8 @@
 ---
 title: A Retention Priority Attribute for HTTP Cookies
 abbrev: cookie-priority
-docname: draft-west-cookie-priority-00
-date: 2016
+docname: draft-west-cookie-priority-01
+date: 2017
 category: std
 updates: 6265
 
@@ -38,7 +38,6 @@ normative:
 informative:
   Wright2013:
     target: https://docs.google.com/a/google.com/file/d/0B3o1IlTKoADVRllKWGlyWGxIVTg/edit
-    title: "Duct Tape and Baling Wire -- Cookie Prefixes"
     title: "A Retention Priority Attribute for HTTP Cookies"
     author:
     -
@@ -125,7 +124,7 @@ low, medium, or high priority, respectively.
 ~~~
 == Least Recently Accessed -> Most Recently Accessed ==
 
-   M L H H H H M H L L M M M M M M M L L L L L M M M M M H M M L L M
+M L H H H H M H L L M M M M M M M L L L L L M M M M M H M M L L M
 ~~~
 
 Assume that the user agent is configured to evict all but 25 cookies
@@ -210,16 +209,16 @@ treated as if the attribute was present and had the value Medium.
 If the `attribute-name` case-insensitively matches the string
 "Priority", the user agent MUST process the `cookie-av` as follows:
 
-If the `attribute-value` case-insensitively matches the string "Low",
-the cookie is assigned a low retention priority.
+1.  Let `priority-value` be "Medium".
 
-If the `attribute-value` case-insensitively matches the string
-"Medium", the cookie is assigned a medium retention priority.
+2.  If the `attribute-value` case-insensitively matches the string "Low",
+    set `priority-value` to "Low".
 
-If the `attribute-value` case-insensitively matches the string "High",
-the cookie is assigned a high retention priority.
+3.  If the `attribute-value` case-insensitively matches the string "High",
+    set `priority-value` to "High".
 
-Otherwise, the cookie is assigned a medium retention priority.
+4.  Append an attribute to the `cookie-attribute-list` with an `attribute-name`
+    of "Priority", and an `attribute-value` of `priority-value`.
 
 ## Storage Model
 

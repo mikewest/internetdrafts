@@ -28,8 +28,10 @@ normative:
 
 informative:
   RFC1537:
+  RFC2606:
   RFC3397:
   I-D.ietf-sunset4-gapanalysis:
+  I-D.wkumari-dnsop-internal:
   SECURE-CONTEXTS:
     target: http://w3c.github.io/webappsec-secure-contexts/
     title: "Secure Contexts"
@@ -41,11 +43,15 @@ informative:
 
 --- abstract
 
-This document updates RFC6761 by requiring that the domain "localhost." and any
-names falling within ".localhost." resolve to loopback addresses. This would
-allow other specifications to join regular users in drawing the common-sense
-conclusions that "localhost" means "localhost", and doesn't resolve to somewhere
-else on the network.
+This document updates RFC6761 with the goal of ensuring that `localhost` can be
+safely relied upon as a name for the local host's loopback interface. To that
+end, stub resolvers are required to resolve localhost names to loopback
+addresses. Recursive DNS servers are required to return `NXDOMAIN` when
+queried for localhost names, which will cause non-conformant stub resolvers to
+fail safely closed. Together, these requirements would allow applications and
+specifications to join regular users in drawing the common-sense conclusions
+that "localhost" means "localhost", and doesn't resolve to somewhere else on
+the network.
 
 --- middle
 
@@ -83,10 +89,12 @@ of hard-coded IP addresses by giving developers positive encouragement to use
 an explicit loopback address rather than a localhost name.
 
 This document hardens {{RFC6761}}'s recommendations regarding `localhost` by
-requiring that DNS resolution work the way that users assume: `localhost` is the
-loopback interface on the local host. Resolver APIs will resolve `localhost.` and
-any names falling within `.localhost.` to loopback addresses, and traffic to
-those hosts will never traverse a remote network.
+requiring that name resolution APIs and libraries themselves return a loopback
+address when queried for localhost names, bypassing lookup via recursive and
+authoritative DNS servers entirely. Further, recursive and authoritative DNS
+servers are required to return `NXDOMAIN` for such queries, ensuring that
+non-conformant stub resolvers will fail safely.
+
 
 # Terminology and notation
 
@@ -100,10 +108,13 @@ IPv4 loopback addresses are registered in Table 4 of Section 2.2.2 of
 IPv6 loopback addresses are registered in Table 17 of Section 2.2.3 of
 {{RFC6890}} as `::1/128`.
 
-# The "localhost." Special-Use Domain Name
-
 The domain `localhost.`, and any names falling within `.localhost.`, are known
-as "localhost names". Localhost names are special in the following ways:
+as "localhost names".
+
+
+# The "localhost." Special-Use Domain Name {#localhost-names}
+
+Localhost names are special in the following ways:
 
 1.  Users are free to use localhost names as they would any other domain names.
     Users may assume that IPv4 and IPv6 address queries for localhost names will
@@ -112,20 +123,30 @@ as "localhost names". Localhost names are special in the following ways:
 2.  Application software MAY recognize localhost names as special, or MAY pass
     them to name resolution APIs as they would for other domain names.
 
-    Application software MUST NOT use a searchlist to resolve a localhost name.
-    That is, even if DHCP's domain search option {{RFC3397}} is used to specify
-    a searchlist of `example.com` for a given network, the name `localhost` will
-    not be resolved as `localhost.example.com`, and `subdomain.localhost` will
-    not be resolved as `subdomain.localhost.example.com`.
+    If application software wishes to make security decisions based upon the
+    assumption that localhost names resolve to loopback addresses (e.g. if it
+    wishes to ensure that a context meets the requirements laid out in
+    {{SECURE-CONTEXTS}}), then it SHOULD avoid relying upon name resolution
+    APIs, instead performing the resolution itself. If such software chooses to
+    rely on name resolution APIs, it MUST verify that the resulting IP address
+    is a loopback address before making a decision about its security
+    properties.
+
+    In any event, application software MUST NOT use a searchlist to resolve a
+    localhost name. That is, even if DHCP's domain search option {{RFC3397}} is
+    used to specify a searchlist of `example.com` for a given network, the name
+    `localhost` will not be resolved as `localhost.example.com`, and
+    `subdomain.localhost` will not be resolved as
+    `subdomain.localhost.example.com`.
 
 3.  Name resolution APIs and libraries MUST recognize localhost names as
     special, and MUST always return an appropriate IP loopback address for
     IPv4 and IPv6 address queries and negative responses for all other query
     types. Name resolution APIs MUST NOT send queries for localhost names to
-    their configured caching DNS server(s).
+    their configured recursive DNS server(s).
     
-    Name resolution APIs and libraries MUST NOT use a searchlist to resolve a
-    localhost name.
+    As for application software, name resolution APIs and libraries MUST NOT use
+    a searchlist to resolve a localhost name.
 
 4.  (Caching) recursive DNS servers MUST respond to queries for localhost names
     with NXDOMAIN.
@@ -144,22 +165,33 @@ as "localhost names". Localhost names are special in the following ways:
     localhost name as if it were a normal DNS domain name will not work as
     desired, for reasons 2, 3, 4, and 5 above.
 
+
 # IANA Considerations
 
 IANA is requested to update the `localhost.` registration in the registry of
-Special-Use Domain Names {{RFC6761}} to reference this document.
+Special-Use Domain Names {{RFC6761}} to reference the domain name reservations
+considerations section of this document.
+
+## Domain Name Reservation Considerations
+
+This document requests that IANA update the `localhost.` registration in the
+registry of Special-Use Domain Names {{RFC6761}} to reference the domain name
+reservation considerations defined in {{localhost-names}}.
+
+## DNSSEC
+
+The `.localhost` TLD is already assigned to IANA, as per {{RFC2606}}. This
+document requests that a DNSSEC insecure delegation (that is, a delegation with
+no DS records) be inserted into the root-zone, delegated to
+`blackhole-[12].iana.org`.
+
+This request for an insecure delegation relies on the rationale spelled out in
+section 4 of {{I-D.wkumari-dnsop-internal}}, which discusses the DNSSEC
+considerations for the `.internal` TLD. The same considerations apply to this
+document's discussion of localhost names. 
+
 
 # Implementation Considerations
-
-## Security Decisions
-
-If application software wishes to make security decisions based upon the fact
-that localhost names resolve to loopback addresses (e.g. if it wishes to ensure
-that a context meets the requirements laid out in {{SECURE-CONTEXTS}}), then it
-SHOULD avoid relying upon name resolution APIs, instead performing the
-resolution itself. If it chooses to rely on name resolution APIs, it MUST verify
-that the resulting IP address is a loopback address before making a decision
-about its security properties.
 
 ## Non-DNS usage of localhost names
 
@@ -173,11 +205,13 @@ differentiation.
 
 # Changes from RFC 6761
 
-Section 3 of this document updates the requirements in section 6.3 of
-{{RFC6761}} in a few substantive ways:
+{{localhost-names}} updates the requirements in section 6.3 of {{RFC6761}} in a
+few substantive ways:
 
 1.  Application software and name resolution APIs and libraries are prohibited
-    from using searchlists when resolving localhost names.
+    from using searchlists when resolving localhost names, and encouraged to
+    bypass resolution APIs and libraries altogether if they intend to make
+    security decisions based on the `localhost` name.
 
 2.  Name resolution APIs and libraries are required to resolve localhost names
     to loopback addresses, without sending the query on to caching DNS servers.
@@ -185,20 +219,26 @@ Section 3 of this document updates the requirements in section 6.3 of
 3.  Caching and authoritative DNS servers are required to respond to resolution
     requests for localhost names with NXDOMAIN.
 
+
 # Changes in this draft
 
-## draft-west-let-localhost-be-localhost-00
+## draft-west-let-localhost-be-localhost-05
 
-First draft.
+*   Updated obsolete references to RFC 5735 and 5156 in favor of {{RFC6890}}.
 
-## draft-west-let-localhost-be-localhost-01
+*   Clarify that non-caching recursive DNS servers are also addressed by #4 in
+    Section 3.
 
-*   Added a requirement that caching DNS servers MUST generate an immediate
-    negative response.
+*   Reformulating the abstract and introduction based on feedback like Ted
+    Lemon's in <https://www.ietf.org/mail-archive/web/dnsop/current/msg20757.html>
 
-## draft-west-let-localhost-be-localhost-02
+*   Added a request that an insecure delegation for `localhost.` be added to the
+    root-zone.
 
-*   Pulled in definitions for IPv4 and IPv6 loopback addresses.
+## draft-west-let-localhost-be-localhost-04
+
+*   Restructured the draft as a stand-alone document, rather than as set of
+    monkey-patches against {{RFC6761}}.
 
 ## draft-west-let-localhost-be-localhost-03
 
@@ -209,17 +249,19 @@ First draft.
 *   Noted that MySQL has special behavior differentiating the connection
     mechanism used for `localhost` and `127.0.0.1`.
 
-## draft-west-let-localhost-be-localhost-04
+## draft-west-let-localhost-be-localhost-02
 
-*   Restructured the draft as a stand-alone document, rather than as set of
-    monkey-patches against {{RFC6761}}.
+*   Pulled in definitions for IPv4 and IPv6 loopback addresses.
 
-## draft-west-let-localhost-be-localhost-05
+## draft-west-let-localhost-be-localhost-01
 
-*   Updated obsolete references to RFC 5735 and 5156 in favor of {{RFC6890}}.
+*   Added a requirement that caching DNS servers MUST generate an immediate
+    negative response.
 
-*   Clarify that non-caching recursive DNS servers are also addressed by #4 in
-    Section 3.
+## draft-west-let-localhost-be-localhost-00
+
+First draft.
+
 
 # Acknowledgements
 
