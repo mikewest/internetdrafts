@@ -4,13 +4,13 @@
 
 DNSOP                                                            M. West
 Internet-Draft                                               Google, Inc
-Updates: 6761 (if approved)                              August 14, 2017
+Updates: 6761 (if approved)                              August 16, 2017
 Intended status: Standards Track
-Expires: February 15, 2018
+Expires: February 17, 2018
 
 
                      Let 'localhost' be localhost.
-                draft-west-let-localhost-be-localhost-05
+                draft-west-let-localhost-be-localhost-06
 
 Abstract
 
@@ -19,7 +19,9 @@ Abstract
    loopback interface.  To that end, stub resolvers are required to
    resolve localhost names to loopback addresses.  Recursive DNS servers
    are required to return "NXDOMAIN" when queried for localhost names,
-   which will cause non-conformant stub resolvers to fail safely closed.
+   making non-conformant stub resolvers more likely to fail and produce
+   problem reports that result in updates.
+
    Together, these requirements would allow applications and
    specifications to join regular users in drawing the common-sense
    conclusions that "localhost" means "localhost", and doesn't resolve
@@ -40,24 +42,25 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on February 15, 2018.
+   This Internet-Draft will expire on February 17, 2018.
 
 Copyright Notice
 
    Copyright (c) 2017 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
-   This document is subject to BCP 78 and the IETF Trust's Legal
-   Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
 
 
 
-West                    Expires February 15, 2018               [Page 1]
+
+West                    Expires February 17, 2018               [Page 1]
 
 Internet-Draft         let-localhost-be-localhost            August 2017
 
 
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -68,26 +71,30 @@ Internet-Draft         let-localhost-be-localhost            August 2017
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   3
-   3.  The "localhost." Special-Use Domain Name  . . . . . . . . . .   3
+   2.  Terminology and notation  . . . . . . . . . . . . . . . . . .   4
+   3.  The "localhost." Special-Use Domain Name  . . . . . . . . . .   4
    4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
      4.1.  Domain Name Reservation Considerations  . . . . . . . . .   5
      4.2.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-   5.  Implementation Considerations . . . . . . . . . . . . . . . .   5
-     5.1.  Non-DNS usage of localhost names  . . . . . . . . . . . .   5
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .   6
-   Appendix A.  Changes from RFC 6761  . . . . . . . . . . . . . . .   6
-   Appendix B.  Changes in this draft  . . . . . . . . . . . . . . .   7
-     B.1.  draft-west-let-localhost-be-localhost-05  . . . . . . . .   7
-     B.2.  draft-west-let-localhost-be-localhost-04  . . . . . . . .   7
-     B.3.  draft-west-let-localhost-be-localhost-03  . . . . . . . .   7
-     B.4.  draft-west-let-localhost-be-localhost-02  . . . . . . . .   7
-     B.5.  draft-west-let-localhost-be-localhost-01  . . . . . . . .   7
-     B.6.  draft-west-let-localhost-be-localhost-00  . . . . . . . .   8
-   Appendix C.  Acknowledgements . . . . . . . . . . . . . . . . . .   8
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   8
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
+     5.1.  Applications are encouraged to resolve localhost names
+           themselves. . . . . . . . . . . . . . . . . . . . . . . .   6
+   6.  Implementation Considerations . . . . . . . . . . . . . . . .   6
+     6.1.  Non-DNS usage of localhost names  . . . . . . . . . . . .   6
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   7
+   Appendix A.  Changes from RFC 6761  . . . . . . . . . . . . . . .   7
+   Appendix B.  Changes in this draft  . . . . . . . . . . . . . . .   8
+     B.1.  draft-west-let-localhost-be-localhost-06  . . . . . . . .   8
+     B.2.  draft-west-let-localhost-be-localhost-05  . . . . . . . .   8
+     B.3.  draft-west-let-localhost-be-localhost-04  . . . . . . . .   8
+     B.4.  draft-west-let-localhost-be-localhost-03  . . . . . . . .   8
+     B.5.  draft-west-let-localhost-be-localhost-02  . . . . . . . .   8
+     B.6.  draft-west-let-localhost-be-localhost-01  . . . . . . . .   8
+     B.7.  draft-west-let-localhost-be-localhost-00  . . . . . . . .   9
+   Appendix C.  Acknowledgements . . . . . . . . . . . . . . . . . .   9
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   9
 
 1.  Introduction
 
@@ -99,6 +106,14 @@ Table of Contents
    interoperably as "localhost".  [RFC1537] suggests that this special-
    use top-level domain name has been implicitly mapped to loopback
    addresses for decades at this point, and that [RFC6761]'s assertion
+
+
+
+West                    Expires February 17, 2018               [Page 2]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
+
    that developers may "assume that IPv4 and IPv6 address queries for
    localhost names will always resolve to the respective IP loopback
    address" is well-founded.
@@ -106,14 +121,6 @@ Table of Contents
    Unfortunately, the rest of that latter document's requirements
    undercut the assumption it suggests.  Client software is empowered to
    send localhost names to DNS servers, and resolvers are empowered to
-
-
-
-West                    Expires February 15, 2018               [Page 2]
-
-Internet-Draft         let-localhost-be-localhost            August 2017
-
-
    return unexpectedly non-loopback results.  This divide between theory
    and practice has a few impacts:
 
@@ -133,13 +140,35 @@ Internet-Draft         let-localhost-be-localhost            August 2017
    hard-coded IP addresses by giving developers positive encouragement
    to use an explicit loopback address rather than a localhost name.
 
-   This document hardens [RFC6761]'s recommendations regarding
+   This document updates [RFC6761]'s recommendations regarding
    "localhost" by requiring that name resolution APIs and libraries
    themselves return a loopback address when queried for localhost
    names, bypassing lookup via recursive and authoritative DNS servers
-   entirely.  Further, recursive and authoritative DNS servers are
-   required to return "NXDOMAIN" for such queries, ensuring that non-
-   conformant stub resolvers will fail safely.
+   entirely.
+
+   In addition, recursive and authoritative DNS servers are required to
+   return "NXDOMAIN" for such queries.  This increases the likelihood
+   that non-conformant stub resolvers will not go undetected.  Note that
+   this does not have the result that such resolvers will fail safe--it
+   just makes it more likely that they will be detected and fixed, since
+   they will fail in the presence of conforming name servers.
+
+   These changes are not sufficient to ensure that "localhost" can be
+   assumed to actually refer to an address on the local machine.  This
+   document therefore further requires that applications that wish to
+   make that assumption handle the name "localhost" specially.
+
+
+
+
+
+
+
+
+West                    Expires February 17, 2018               [Page 3]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
 
 2.  Terminology and notation
 
@@ -162,14 +191,6 @@ Internet-Draft         let-localhost-be-localhost            August 2017
 
    1.  Users are free to use localhost names as they would any other
        domain names.  Users may assume that IPv4 and IPv6 address
-
-
-
-West                    Expires February 15, 2018               [Page 3]
-
-Internet-Draft         let-localhost-be-localhost            August 2017
-
-
        queries for localhost names will always resolve to the respective
        IP loopback address.
 
@@ -180,17 +201,14 @@ Internet-Draft         let-localhost-be-localhost            August 2017
        If application software wishes to make security decisions based
        upon the assumption that localhost names resolve to loopback
        addresses (e.g. if it wishes to ensure that a context meets the
-       requirements laid out in [SECURE-CONTEXTS]), then it SHOULD avoid
-       relying upon name resolution APIs, instead performing the
-       resolution itself.  If such software chooses to rely on name
-       resolution APIs, it MUST verify that the resulting IP address is
-       a loopback address before making a decision about its security
-       properties.
+       requirements laid out in [SECURE-CONTEXTS]), then it MUST
+       directly translate localhost names to a loopback address, and
+       MUST NOT rely upon name resolution APIs to do so.
 
-       In any event, application software MUST NOT use a searchlist to
-       resolve a localhost name.  That is, even if DHCP's domain search
-       option [RFC3397] is used to specify a searchlist of "example.com"
-       for a given network, the name "localhost" will not be resolved as
+       Application software MUST NOT use a searchlist to resolve a
+       localhost name.  That is, even if DHCP's domain search option
+       [RFC3397] is used to specify a searchlist of "example.com" for a
+       given network, the name "localhost" will not be resolved as
        "localhost.example.com", and "subdomain.localhost" will not be
        resolved as "subdomain.localhost.example.com".
 
@@ -200,6 +218,13 @@ Internet-Draft         let-localhost-be-localhost            August 2017
        for all other query types.  Name resolution APIs MUST NOT send
        queries for localhost names to their configured recursive DNS
        server(s).
+
+
+
+West                    Expires February 17, 2018               [Page 4]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
 
        As for application software, name resolution APIs and libraries
        MUST NOT use a searchlist to resolve a localhost name.
@@ -218,14 +243,6 @@ Internet-Draft         let-localhost-be-localhost            August 2017
        localhost names in the normal way to any person or entity.
        Localhost names are defined by protocol specification and fall
        outside the set of names available for allocation by registries/
-
-
-
-West                    Expires February 15, 2018               [Page 4]
-
-Internet-Draft         let-localhost-be-localhost            August 2017
-
-
        registrars.  Attempting to allocate a localhost name as if it
        were a normal DNS domain name will not work as desired, for
        reasons 2, 3, 4, and 5 above.
@@ -255,9 +272,39 @@ Internet-Draft         let-localhost-be-localhost            August 2017
    same considerations apply to this document's discussion of localhost
    names.
 
-5.  Implementation Considerations
 
-5.1.  Non-DNS usage of localhost names
+
+
+
+
+West                    Expires February 17, 2018               [Page 5]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
+
+5.  Security Considerations
+
+5.1.  Applications are encouraged to resolve localhost names themselves.
+
+   Applications that attempt to use the local resolver to query
+   "localhost" do not fail safely.  If an attacker sets up a malicious
+   DNS server which returns a non-loopback address when queried for
+   localhost names, such applications will connect to that remote server
+   assuming it is local.  This risk drives the requirement that
+   applications resolve localhost names themselves if they intend to
+   make security decisions based on the assumption that localhost names
+   resolve locally.
+
+   There may be cases in which the target runtime environment can be
+   safely assumed to do the right thing with localhost names.  In this
+   case, the requirement that the application resolve localhost names on
+   its own may be safe to ignore, but only if all the requirements under
+   point 2 of Section 3 are known to be followed by the resolver that is
+   known to be present in the target environment.
+
+6.  Implementation Considerations
+
+6.1.  Non-DNS usage of localhost names
 
    Some application software differentiates between the hostname
    "localhost" and the IP address "127.0.0.1".  MySQL, for example, uses
@@ -265,22 +312,14 @@ Internet-Draft         let-localhost-be-localhost            August 2017
    loopback address for the latter.  The constraints on name resolution
    APIs above do not preclude this kind of differentiation.
 
-6.  References
+7.  References
 
-6.1.  Normative References
+7.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
-
-
-
-
-West                    Expires February 15, 2018               [Page 5]
-
-Internet-Draft         let-localhost-be-localhost            August 2017
-
 
    [RFC6761]  Cheshire, S. and M. Krochmal, "Special-Use Domain Names",
               RFC 6761, DOI 10.17487/RFC6761, February 2013,
@@ -291,7 +330,15 @@ Internet-Draft         let-localhost-be-localhost            August 2017
               RFC 6890, DOI 10.17487/RFC6890, April 2013,
               <http://www.rfc-editor.org/info/rfc6890>.
 
-6.2.  Informative References
+
+
+
+West                    Expires February 17, 2018               [Page 6]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
+
+7.2.  Informative References
 
    [I-D.ietf-sunset4-gapanalysis]
               LIU, W., Xu, W., Zhou, C., Tsou, T., Perreault, S., Fan,
@@ -331,13 +378,6 @@ Appendix A.  Changes from RFC 6761
        if they intend to make security decisions based on the
        "localhost" name.
 
-
-
-West                    Expires February 15, 2018               [Page 6]
-
-Internet-Draft         let-localhost-be-localhost            August 2017
-
-
    2.  Name resolution APIs and libraries are required to resolve
        localhost names to loopback addresses, without sending the query
        on to caching DNS servers.
@@ -345,9 +385,23 @@ Internet-Draft         let-localhost-be-localhost            August 2017
    3.  Caching and authoritative DNS servers are required to respond to
        resolution requests for localhost names with NXDOMAIN.
 
+
+
+
+
+West                    Expires February 17, 2018               [Page 7]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
+
 Appendix B.  Changes in this draft
 
-B.1.  draft-west-let-localhost-be-localhost-05
+B.1.  draft-west-let-localhost-be-localhost-06
+
+   o  Incorporated Ted Lemon's further feedback from
+      https://www.ietf.org/mail-archive/web/dnsop/current/msg20769.html
+
+B.2.  draft-west-let-localhost-be-localhost-05
 
    o  Updated obsolete references to RFC 5735 and 5156 in favor of
       [RFC6890].
@@ -362,12 +416,12 @@ B.1.  draft-west-let-localhost-be-localhost-05
    o  Added a request that an insecure delegation for "localhost." be
       added to the root-zone.
 
-B.2.  draft-west-let-localhost-be-localhost-04
+B.3.  draft-west-let-localhost-be-localhost-04
 
    o  Restructured the draft as a stand-alone document, rather than as
       set of monkey-patches against [RFC6761].
 
-B.3.  draft-west-let-localhost-be-localhost-03
+B.4.  draft-west-let-localhost-be-localhost-03
 
    o  Explicitly referenced [I-D.ietf-sunset4-gapanalysis].
 
@@ -377,11 +431,11 @@ B.3.  draft-west-let-localhost-be-localhost-03
    o  Noted that MySQL has special behavior differentiating the
       connection mechanism used for "localhost" and "127.0.0.1".
 
-B.4.  draft-west-let-localhost-be-localhost-02
+B.5.  draft-west-let-localhost-be-localhost-02
 
    o  Pulled in definitions for IPv4 and IPv6 loopback addresses.
 
-B.5.  draft-west-let-localhost-be-localhost-01
+B.6.  draft-west-let-localhost-be-localhost-01
 
    o  Added a requirement that caching DNS servers MUST generate an
       immediate negative response.
@@ -389,12 +443,14 @@ B.5.  draft-west-let-localhost-be-localhost-01
 
 
 
-West                    Expires February 15, 2018               [Page 7]
+
+
+West                    Expires February 17, 2018               [Page 8]
 
 Internet-Draft         let-localhost-be-localhost            August 2017
 
 
-B.6.  draft-west-let-localhost-be-localhost-00
+B.7.  draft-west-let-localhost-be-localhost-00
 
    First draft.
 
@@ -445,4 +501,4 @@ Author's Address
 
 
 
-West                    Expires February 15, 2018               [Page 8]
+West                    Expires February 17, 2018               [Page 9]

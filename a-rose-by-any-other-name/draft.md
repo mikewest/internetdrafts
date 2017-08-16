@@ -46,12 +46,13 @@ informative:
 This document updates RFC6761 with the goal of ensuring that `localhost` can be
 safely relied upon as a name for the local host's loopback interface. To that
 end, stub resolvers are required to resolve localhost names to loopback
-addresses. Recursive DNS servers are required to return `NXDOMAIN` when
-queried for localhost names, which will cause non-conformant stub resolvers to
-fail safely closed. Together, these requirements would allow applications and
-specifications to join regular users in drawing the common-sense conclusions
-that "localhost" means "localhost", and doesn't resolve to somewhere else on
-the network.
+addresses. Recursive DNS servers are required to return `NXDOMAIN` when queried
+for localhost names, making non-conformant stub resolvers more likely to fail
+and produce problem reports that result in updates.
+
+Together, these requirements would allow applications and specifications to
+join regular users in drawing the common-sense conclusions that `localhost`
+means `localhost`, and doesn't resolve to somewhere else on the network.
 
 --- middle
 
@@ -88,12 +89,22 @@ exclusion has (rightly) surprised some developers, and exacerbates the risks
 of hard-coded IP addresses by giving developers positive encouragement to use
 an explicit loopback address rather than a localhost name.
 
-This document hardens {{RFC6761}}'s recommendations regarding `localhost` by
+This document updates {{RFC6761}}'s recommendations regarding `localhost` by
 requiring that name resolution APIs and libraries themselves return a loopback
 address when queried for localhost names, bypassing lookup via recursive and
-authoritative DNS servers entirely. Further, recursive and authoritative DNS
-servers are required to return `NXDOMAIN` for such queries, ensuring that
-non-conformant stub resolvers will fail safely.
+authoritative DNS servers entirely.
+
+In addition, recursive and authoritative DNS servers are required to return
+`NXDOMAIN` for such queries. This increases the likelihood that non-conformant
+stub resolvers will not go undetected. Note that this does not have the result
+that such resolvers will fail safe—it just makes it more likely that they will
+be detected and fixed, since they will fail in the presence of conforming name
+servers.
+
+These changes are not sufficient to ensure that `localhost` can be assumed to
+actually refer to an address on the local machine. This document therefore
+further requires that applications that wish to make that assumption handle the
+name `localhost` specially.
 
 
 # Terminology and notation
@@ -126,18 +137,14 @@ Localhost names are special in the following ways:
     If application software wishes to make security decisions based upon the
     assumption that localhost names resolve to loopback addresses (e.g. if it
     wishes to ensure that a context meets the requirements laid out in
-    {{SECURE-CONTEXTS}}), then it SHOULD avoid relying upon name resolution
-    APIs, instead performing the resolution itself. If such software chooses to
-    rely on name resolution APIs, it MUST verify that the resulting IP address
-    is a loopback address before making a decision about its security
-    properties.
+    {{SECURE-CONTEXTS}}), then it MUST directly translate localhost names to a
+    loopback address, and MUST NOT rely upon name resolution APIs to do so.
 
-    In any event, application software MUST NOT use a searchlist to resolve a
-    localhost name. That is, even if DHCP's domain search option {{RFC3397}} is
-    used to specify a searchlist of `example.com` for a given network, the name
-    `localhost` will not be resolved as `localhost.example.com`, and
-    `subdomain.localhost` will not be resolved as
-    `subdomain.localhost.example.com`.
+    Application software MUST NOT use a searchlist to resolve a localhost name.
+    That is, even if DHCP's domain search option {{RFC3397}} is used to specify
+    a searchlist of `example.com` for a given network, the name `localhost` will
+    not be resolved as `localhost.example.com`, and `subdomain.localhost` will
+    not be resolved as `subdomain.localhost.example.com`.
 
 3.  Name resolution APIs and libraries MUST recognize localhost names as
     special, and MUST always return an appropriate IP loopback address for
@@ -191,6 +198,25 @@ considerations for the `.internal` TLD. The same considerations apply to this
 document's discussion of localhost names. 
 
 
+# Security Considerations
+
+## Applications are encouraged to resolve localhost names themselves.
+
+Applications that attempt to use the local resolver to query `localhost` do not
+fail safely. If an attacker sets up a malicious DNS server which returns a
+non-loopback address when queried for localhost names, such applications will
+connect to that remote server assuming it is local. This risk drives the
+requirement that applications resolve localhost names themselves if they intend
+to make security decisions based on the assumption that localhost names resolve
+locally.
+
+There may be cases in which the target runtime environment can be safely assumed
+to do the right thing with localhost names. In this case, the requirement that
+the application resolve localhost names on its own may be safe to ignore, but
+only if all the requirements under point 2 of {{localhost-names}} are known to
+be followed by the resolver that is known to be present in the target
+environment.
+
 # Implementation Considerations
 
 ## Non-DNS usage of localhost names
@@ -224,7 +250,8 @@ few substantive ways:
 
 ## draft-west-let-localhost-be-localhost-06
 
-None yet.
+*   Incorporated Ted Lemon's further feedback from
+    <https://www.ietf.org/mail-archive/web/dnsop/current/msg20769.html>
 
 ## draft-west-let-localhost-be-localhost-05
 
