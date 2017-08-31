@@ -187,8 +187,9 @@ reservation considerations defined in {{localhost-names}}.
 
 ## DNSSEC
 
-[ Ed note: The following options seem reasonable. I personally prefer the
-  latter, but could be convinced that the former is reasonable. ]
+(Ed note: The following options seem reasonable. I personally prefer the latter,
+but could be convinced that the former is reasonable if that's the way the
+working group's concensus trends.)
 
 ### Option 1: Explicit delegation
 
@@ -206,8 +207,9 @@ document's discussion of localhost names.
 
 The `.localhost` TLD is already assigned to IANA, as per {{RFC2606}}, but does
 not have an entry in the DNSSEC root-zone. This means that the root will return
-NSEC records constituting a secure denial of existence if queried. That's
-consistent with the requirements to return laid out in {{localhost-names}}.
+an NXDOMAIN response along with NSEC records constituting a secure denial of
+existence if queried. That's consistent with the requirements to return NXDOMAIN
+that are laid out in {{localhost-names}}.
 
 
 # Security Considerations

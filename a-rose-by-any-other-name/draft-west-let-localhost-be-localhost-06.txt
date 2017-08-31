@@ -4,9 +4,9 @@
 
 DNSOP                                                            M. West
 Internet-Draft                                               Google, Inc
-Updates: 6761 (if approved)                              August 16, 2017
+Updates: 6761 (if approved)                              August 31, 2017
 Intended status: Standards Track
-Expires: February 17, 2018
+Expires: March 4, 2018
 
 
                      Let 'localhost' be localhost.
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on February 17, 2018.
+   This Internet-Draft will expire on March 4, 2018.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-West                    Expires February 17, 2018               [Page 1]
+West                      Expires March 4, 2018                 [Page 1]
 
 Internet-Draft         let-localhost-be-localhost            August 2017
 
@@ -76,22 +76,24 @@ Table of Contents
    4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
      4.1.  Domain Name Reservation Considerations  . . . . . . . . .   5
      4.2.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+       4.2.1.  Option 1: Explicit delegation . . . . . . . . . . . .   5
+       4.2.2.  Option 2: Implicit failure  . . . . . . . . . . . . .   6
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
      5.1.  Applications are encouraged to resolve localhost names
            themselves. . . . . . . . . . . . . . . . . . . . . . . .   6
    6.  Implementation Considerations . . . . . . . . . . . . . . . .   6
      6.1.  Non-DNS usage of localhost names  . . . . . . . . . . . .   6
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
      7.2.  Informative References  . . . . . . . . . . . . . . . . .   7
-   Appendix A.  Changes from RFC 6761  . . . . . . . . . . . . . . .   7
+   Appendix A.  Changes from RFC 6761  . . . . . . . . . . . . . . .   8
    Appendix B.  Changes in this draft  . . . . . . . . . . . . . . .   8
      B.1.  draft-west-let-localhost-be-localhost-06  . . . . . . . .   8
      B.2.  draft-west-let-localhost-be-localhost-05  . . . . . . . .   8
      B.3.  draft-west-let-localhost-be-localhost-04  . . . . . . . .   8
-     B.4.  draft-west-let-localhost-be-localhost-03  . . . . . . . .   8
-     B.5.  draft-west-let-localhost-be-localhost-02  . . . . . . . .   8
-     B.6.  draft-west-let-localhost-be-localhost-01  . . . . . . . .   8
+     B.4.  draft-west-let-localhost-be-localhost-03  . . . . . . . .   9
+     B.5.  draft-west-let-localhost-be-localhost-02  . . . . . . . .   9
+     B.6.  draft-west-let-localhost-be-localhost-01  . . . . . . . .   9
      B.7.  draft-west-let-localhost-be-localhost-00  . . . . . . . .   9
    Appendix C.  Acknowledgements . . . . . . . . . . . . . . . . . .   9
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   9
@@ -104,16 +106,16 @@ Table of Contents
    any network anywhere.  This turns out to be a very useful property in
    a number of circumstances; useful enough to label explicitly and
    interoperably as "localhost".  [RFC1537] suggests that this special-
-   use top-level domain name has been implicitly mapped to loopback
-   addresses for decades at this point, and that [RFC6761]'s assertion
 
 
 
-West                    Expires February 17, 2018               [Page 2]
+West                      Expires March 4, 2018                 [Page 2]
 
 Internet-Draft         let-localhost-be-localhost            August 2017
 
 
+   use top-level domain name has been implicitly mapped to loopback
+   addresses for decades at this point, and that [RFC6761]'s assertion
    that developers may "assume that IPv4 and IPv6 address queries for
    localhost names will always resolve to the respective IP loopback
    address" is well-founded.
@@ -163,9 +165,7 @@ Internet-Draft         let-localhost-be-localhost            August 2017
 
 
 
-
-
-West                    Expires February 17, 2018               [Page 3]
+West                      Expires March 4, 2018                 [Page 3]
 
 Internet-Draft         let-localhost-be-localhost            August 2017
 
@@ -221,7 +221,7 @@ Internet-Draft         let-localhost-be-localhost            August 2017
 
 
 
-West                    Expires February 17, 2018               [Page 4]
+West                      Expires March 4, 2018                 [Page 4]
 
 Internet-Draft         let-localhost-be-localhost            August 2017
 
@@ -261,6 +261,12 @@ Internet-Draft         let-localhost-be-localhost            August 2017
 
 4.2.  DNSSEC
 
+   (Ed note: The following options seem reasonable.  I personally prefer
+   the latter, but could be convinced that the former is reasonable if
+   that's the way the working group's concensus trends.)
+
+4.2.1.  Option 1: Explicit delegation
+
    The ".localhost" TLD is already assigned to IANA, as per [RFC2606].
    This document requests that a DNSSEC insecure delegation (that is, a
    delegation with no DS records) be inserted into the root-zone,
@@ -268,19 +274,26 @@ Internet-Draft         let-localhost-be-localhost            August 2017
 
    This request for an insecure delegation relies on the rationale
    spelled out in section 4 of [I-D.wkumari-dnsop-internal], which
+
+
+
+West                      Expires March 4, 2018                 [Page 5]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
+
    discusses the DNSSEC considerations for the ".internal" TLD.  The
    same considerations apply to this document's discussion of localhost
    names.
 
+4.2.2.  Option 2: Implicit failure
 
-
-
-
-
-West                    Expires February 17, 2018               [Page 5]
-
-Internet-Draft         let-localhost-be-localhost            August 2017
-
+   The ".localhost" TLD is already assigned to IANA, as per [RFC2606],
+   but does not have an entry in the DNSSEC root-zone.  This means that
+   the root will return an NXDOMAIN response along with NSEC records
+   constituting a secure denial of existence if queried.  That's
+   consistent with the requirements to return NXDOMAIN that are laid out
+   in Section 3.
 
 5.  Security Considerations
 
@@ -314,29 +327,32 @@ Internet-Draft         let-localhost-be-localhost            August 2017
 
 7.  References
 
+
+
+
+
+
+
+West                      Expires March 4, 2018                 [Page 6]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
+
 7.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <http://www.rfc-editor.org/info/rfc2119>.
+              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
+              editor.org/info/rfc2119>.
 
    [RFC6761]  Cheshire, S. and M. Krochmal, "Special-Use Domain Names",
               RFC 6761, DOI 10.17487/RFC6761, February 2013,
-              <http://www.rfc-editor.org/info/rfc6761>.
+              <https://www.rfc-editor.org/info/rfc6761>.
 
    [RFC6890]  Cotton, M., Vegoda, L., Bonica, R., Ed., and B. Haberman,
               "Special-Purpose IP Address Registries", BCP 153,
               RFC 6890, DOI 10.17487/RFC6890, April 2013,
-              <http://www.rfc-editor.org/info/rfc6890>.
-
-
-
-
-West                    Expires February 17, 2018               [Page 6]
-
-Internet-Draft         let-localhost-be-localhost            August 2017
-
+              <https://www.rfc-editor.org/info/rfc6890>.
 
 7.2.  Informative References
 
@@ -352,20 +368,31 @@ Internet-Draft         let-localhost-be-localhost            August 2017
 
    [RFC1537]  Beertema, P., "Common DNS Data File Configuration Errors",
               RFC 1537, DOI 10.17487/RFC1537, October 1993,
-              <http://www.rfc-editor.org/info/rfc1537>.
+              <https://www.rfc-editor.org/info/rfc1537>.
 
    [RFC2606]  Eastlake 3rd, D. and A. Panitz, "Reserved Top Level DNS
               Names", BCP 32, RFC 2606, DOI 10.17487/RFC2606, June 1999,
-              <http://www.rfc-editor.org/info/rfc2606>.
+              <https://www.rfc-editor.org/info/rfc2606>.
 
    [RFC3397]  Aboba, B. and S. Cheshire, "Dynamic Host Configuration
               Protocol (DHCP) Domain Search Option", RFC 3397,
-              DOI 10.17487/RFC3397, November 2002,
-              <http://www.rfc-editor.org/info/rfc3397>.
+              DOI 10.17487/RFC3397, November 2002, <https://www.rfc-
+              editor.org/info/rfc3397>.
 
    [SECURE-CONTEXTS]
               West, M., "Secure Contexts", n.d.,
               <http://w3c.github.io/webappsec-secure-contexts/>.
+
+
+
+
+
+
+
+West                      Expires March 4, 2018                 [Page 7]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
 
 Appendix A.  Changes from RFC 6761
 
@@ -385,21 +412,14 @@ Appendix A.  Changes from RFC 6761
    3.  Caching and authoritative DNS servers are required to respond to
        resolution requests for localhost names with NXDOMAIN.
 
-
-
-
-
-West                    Expires February 17, 2018               [Page 7]
-
-Internet-Draft         let-localhost-be-localhost            August 2017
-
-
 Appendix B.  Changes in this draft
 
 B.1.  draft-west-let-localhost-be-localhost-06
 
    o  Incorporated Ted Lemon's further feedback from
       https://www.ietf.org/mail-archive/web/dnsop/current/msg20769.html
+
+   o  Explicitly waffling on DNSSEC.
 
 B.2.  draft-west-let-localhost-be-localhost-05
 
@@ -421,6 +441,15 @@ B.3.  draft-west-let-localhost-be-localhost-04
    o  Restructured the draft as a stand-alone document, rather than as
       set of monkey-patches against [RFC6761].
 
+
+
+
+
+West                      Expires March 4, 2018                 [Page 8]
+
+Internet-Draft         let-localhost-be-localhost            August 2017
+
+
 B.4.  draft-west-let-localhost-be-localhost-03
 
    o  Explicitly referenced [I-D.ietf-sunset4-gapanalysis].
@@ -440,16 +469,6 @@ B.6.  draft-west-let-localhost-be-localhost-01
    o  Added a requirement that caching DNS servers MUST generate an
       immediate negative response.
 
-
-
-
-
-
-West                    Expires February 17, 2018               [Page 8]
-
-Internet-Draft         let-localhost-be-localhost            August 2017
-
-
 B.7.  draft-west-let-localhost-be-localhost-00
 
    First draft.
@@ -459,8 +478,10 @@ Appendix C.  Acknowledgements
    Ryan Sleevi and Emily Stark informed me about the strange state of
    localhost name resolution.  Erik Nygren poked me to take another look
    at the set of decisions we made in [SECURE-CONTEXTS] around
-   "localhost."; this document is the result, and his feedback has been
-   very helpful.
+   "localhost."; this document is the result.  They, along with Warren
+   Kumari, Ted Lemon, John Levine, Mark Andrews, and many other members
+   of DNSOP offered substantive feedback that markedly improved the
+   quality of this document.
 
 Author's Address
 
@@ -480,25 +501,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-West                    Expires February 17, 2018               [Page 9]
+West                      Expires March 4, 2018                 [Page 9]
