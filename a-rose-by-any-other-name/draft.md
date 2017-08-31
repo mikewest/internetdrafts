@@ -299,4 +299,6 @@ First draft.
 Ryan Sleevi and Emily Stark informed me about the strange state of localhost
 name resolution. Erik Nygren poked me to take another look at the set of
 decisions we made in {{SECURE-CONTEXTS}} around `localhost.`; this document is
-the result, and his feedback has been very helpful.
+the result. They, along with Warren Kumari, Ted Lemon, John Levine, Mark
+Andrews, and many other members of DNSOP offered substantive feedback that
+markedly improved the quality of this document.
