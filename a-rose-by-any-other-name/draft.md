@@ -187,6 +187,11 @@ reservation considerations defined in {{localhost-names}}.
 
 ## DNSSEC
 
+[ Ed note: The following options seem reasonable. I personally prefer the
+  latter, but could be convinced that the former is reasonable. ]
+
+### Option 1: Explicit delegation
+
 The `.localhost` TLD is already assigned to IANA, as per {{RFC2606}}. This
 document requests that a DNSSEC insecure delegation (that is, a delegation with
 no DS records) be inserted into the root-zone, delegated to
@@ -196,6 +201,13 @@ This request for an insecure delegation relies on the rationale spelled out in
 section 4 of {{I-D.wkumari-dnsop-internal}}, which discusses the DNSSEC
 considerations for the `.internal` TLD. The same considerations apply to this
 document's discussion of localhost names. 
+
+### Option 2: Implicit failure
+
+The `.localhost` TLD is already assigned to IANA, as per {{RFC2606}}, but does
+not have an entry in the DNSSEC root-zone. This means that the root will return
+NSEC records constituting a secure denial of existence if queried. That's
+consistent with the requirements to return laid out in {{localhost-names}}.
 
 
 # Security Considerations
@@ -252,6 +264,8 @@ few substantive ways:
 
 *   Incorporated Ted Lemon's further feedback from
     <https://www.ietf.org/mail-archive/web/dnsop/current/msg20769.html>
+
+*   Explicitly waffling on DNSSEC.
 
 ## draft-west-let-localhost-be-localhost-05
 
