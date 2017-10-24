@@ -1,7 +1,7 @@
 ---
 title: Let 'localhost' be localhost.
 abbrev: let-localhost-be-localhost
-docname: draft-west-let-localhost-be-localhost-06
+docname: draft-ietf-dnsop-let-localhost-be-localhost-01
 date: 2017
 category: std
 updates: 6761
@@ -125,7 +125,9 @@ as "localhost names".
 
 # The "localhost." Special-Use Domain Name {#localhost-names}
 
-Localhost names are special in the following ways:
+Localhost names are special insofar as these names do not exist in the DNS, and
+querying the DNS for them is an error. With that principle in mind, the
+considerations outlined in {{RFC6761}} can be answered as follows:
 
 1.  Users are free to use localhost names as they would any other domain names.
     Users may assume that IPv4 and IPv6 address queries for localhost names will
@@ -143,8 +145,9 @@ Localhost names are special in the following ways:
     Application software MUST NOT use a searchlist to resolve a localhost name.
     That is, even if DHCP's domain search option {{RFC3397}} is used to specify
     a searchlist of `example.com` for a given network, the name `localhost` will
-    not be resolved as `localhost.example.com`, and `subdomain.localhost` will
-    not be resolved as `subdomain.localhost.example.com`.
+    not be resolved as `localhost.example.com.` but as `localhost.`, and
+    `subdomain.localhost` will not be resolved as
+    `subdomain.localhost.example.com.` but as `subdomain.localhost.`.
 
 3.  Name resolution APIs and libraries MUST recognize localhost names as
     special, and MUST always return an appropriate IP loopback address for
@@ -187,30 +190,12 @@ reservation considerations defined in {{localhost-names}}.
 
 ## DNSSEC
 
-(Ed note: The following options seem reasonable. I personally prefer the latter,
-but could be convinced that the former is reasonable if that's the way the
-working group's concensus trends.)
-
-### Option 1: Explicit delegation
-
-The `.localhost` TLD is already assigned to IANA, as per {{RFC2606}}. This
-document requests that a DNSSEC insecure delegation (that is, a delegation with
-no DS records) be inserted into the root-zone, delegated to
-`blackhole-[12].iana.org`.
-
-This request for an insecure delegation relies on the rationale spelled out in
-section 4 of {{I-D.wkumari-dnsop-internal}}, which discusses the DNSSEC
-considerations for the `.internal` TLD. The same considerations apply to this
-document's discussion of localhost names. 
-
-### Option 2: Implicit failure
-
 The `.localhost` TLD is already assigned to IANA, as per {{RFC2606}}, but does
 not have an entry in the DNSSEC root-zone. This means that the root will return
 an NXDOMAIN response along with NSEC records constituting a secure denial of
-existence if queried. That's consistent with the requirements to return NXDOMAIN
-that are laid out in {{localhost-names}}.
-
+existence if queried. That's consistent with the general principle that
+localhost names do not exist in the DNS, and the subsequent requirements to
+return NXDOMAIN that are laid out in {{localhost-names}}.
 
 # Security Considerations
 
@@ -230,6 +215,13 @@ the application resolve localhost names on its own may be safe to ignore, but
 only if all the requirements under point 2 of {{localhost-names}} are known to
 be followed by the resolver that is known to be present in the target
 environment.
+
+## Non-TLD `localhost` labels
+
+Hosts like `localhost.example.com` contain a `localhost` label, but are not
+affected one way or another by the recommendations in this document. They are
+not "localhost names", have no resolution guarantees, and should not be given
+special treatment, either in DNS or in client software.
 
 # Implementation Considerations
 
@@ -261,6 +253,24 @@ few substantive ways:
 
 
 # Changes in this draft
+
+## draft-ietf-dnsop-let-localhost-be-localhost-01
+
+*   Explicit adoption of the principle Wes Hardaker proposed in
+    <https://www.ietf.org/mail-archive/web/dnsop/current/msg21039.html>, and
+    that Warren Kumari reiterated in
+    <https://www.ietf.org/mail-archive/web/dnsop/current/msg21129.html>:
+    localhost names do not exist in the DNS, there is no authoritative source
+    for these names, and querying resolvers for them is an error.
+
+*   Slight tightening of the admonition against search lists.
+
+*   Addressed `localhost` labels in non-localhost names.
+
+## draft-ietf-dnsop-let-localhost-be-localhost-01
+
+*   No change since draft-west-let-localhost-be-localhost-06, just renaming the
+    document after DNSOP adopted it.
 
 ## draft-west-let-localhost-be-localhost-06
 

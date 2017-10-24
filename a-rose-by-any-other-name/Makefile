@@ -3,7 +3,7 @@ xml2rfc ?= xml2rfc
 kramdown-rfc2629 ?= kramdown-rfc2629
 idnits ?= idnits
 
-title = west-let-localhost-be-localhost
+title = ietf-dnsop-let-localhost-be-localhost
 latest = $(shell (ls draft-${title}-*.txt || echo "draft-${title}-00.xml") | sort | tail -1)
 version = $(shell basename ${latest} .txt | awk -F- '{print $$NF}')
 
