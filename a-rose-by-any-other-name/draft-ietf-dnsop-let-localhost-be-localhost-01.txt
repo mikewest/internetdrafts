@@ -10,7 +10,7 @@ Expires: April 27, 2018
 
 
                      Let 'localhost' be localhost.
-             draft-ietf-dnsop-let-localhost-be-localhost-00
+             draft-ietf-dnsop-let-localhost-be-localhost-01
 
 Abstract
 
@@ -76,26 +76,26 @@ Table of Contents
    4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
      4.1.  Domain Name Reservation Considerations  . . . . . . . . .   5
      4.2.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-       4.2.1.  Option 1: Explicit delegation . . . . . . . . . . . .   5
-       4.2.2.  Option 2: Implicit failure  . . . . . . . . . . . . .   6
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
      5.1.  Applications are encouraged to resolve localhost names
            themselves. . . . . . . . . . . . . . . . . . . . . . . .   6
+     5.2.  Non-TLD 'localhost' labels  . . . . . . . . . . . . . . .   6
    6.  Implementation Considerations . . . . . . . . . . . . . . . .   6
      6.1.  Non-DNS usage of localhost names  . . . . . . . . . . . .   6
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
      7.2.  Informative References  . . . . . . . . . . . . . . . . .   7
-   Appendix A.  Changes from RFC 6761  . . . . . . . . . . . . . . .   8
+   Appendix A.  Changes from RFC 6761  . . . . . . . . . . . . . . .   7
    Appendix B.  Changes in this draft  . . . . . . . . . . . . . . .   8
-     B.1.  draft-ietf-dnsop-let-localhost-be-localhost-00  . . . . .   8
-     B.2.  draft-west-let-localhost-be-localhost-06  . . . . . . . .   8
-     B.3.  draft-west-let-localhost-be-localhost-05  . . . . . . . .   8
-     B.4.  draft-west-let-localhost-be-localhost-04  . . . . . . . .   9
-     B.5.  draft-west-let-localhost-be-localhost-03  . . . . . . . .   9
-     B.6.  draft-west-let-localhost-be-localhost-02  . . . . . . . .   9
-     B.7.  draft-west-let-localhost-be-localhost-01  . . . . . . . .   9
-     B.8.  draft-west-let-localhost-be-localhost-00  . . . . . . . .   9
+     B.1.  draft-ietf-dnsop-let-localhost-be-localhost-01  . . . . .   8
+     B.2.  draft-ietf-dnsop-let-localhost-be-localhost-01  . . . . .   8
+     B.3.  draft-west-let-localhost-be-localhost-06  . . . . . . . .   8
+     B.4.  draft-west-let-localhost-be-localhost-05  . . . . . . . .   8
+     B.5.  draft-west-let-localhost-be-localhost-04  . . . . . . . .   9
+     B.6.  draft-west-let-localhost-be-localhost-03  . . . . . . . .   9
+     B.7.  draft-west-let-localhost-be-localhost-02  . . . . . . . .   9
+     B.8.  draft-west-let-localhost-be-localhost-01  . . . . . . . .   9
+     B.9.  draft-west-let-localhost-be-localhost-00  . . . . . . . .   9
    Appendix C.  Acknowledgements . . . . . . . . . . . . . . . . . .   9
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   9
 
@@ -187,7 +187,10 @@ Internet-Draft         let-localhost-be-localhost           October 2017
 
 3.  The "localhost."  Special-Use Domain Name
 
-   Localhost names are special in the following ways:
+   Localhost names are special insofar as these names do not exist in
+   the DNS, and querying the DNS for them is an error.  With that
+   principle in mind, the considerations outlined in [RFC6761] can be
+   answered as follows:
 
    1.  Users are free to use localhost names as they would any other
        domain names.  Users may assume that IPv4 and IPv6 address
@@ -209,15 +212,12 @@ Internet-Draft         let-localhost-be-localhost           October 2017
        localhost name.  That is, even if DHCP's domain search option
        [RFC3397] is used to specify a searchlist of "example.com" for a
        given network, the name "localhost" will not be resolved as
-       "localhost.example.com", and "subdomain.localhost" will not be
-       resolved as "subdomain.localhost.example.com".
+       "localhost.example.com." but as "localhost.", and
+       "subdomain.localhost" will not be resolved as
+       "subdomain.localhost.example.com." but as "subdomain.localhost.".
 
    3.  Name resolution APIs and libraries MUST recognize localhost names
        as special, and MUST always return an appropriate IP loopback
-       address for IPv4 and IPv6 address queries and negative responses
-       for all other query types.  Name resolution APIs MUST NOT send
-       queries for localhost names to their configured recursive DNS
-       server(s).
 
 
 
@@ -225,6 +225,11 @@ West                     Expires April 27, 2018                 [Page 4]
 
 Internet-Draft         let-localhost-be-localhost           October 2017
 
+
+       address for IPv4 and IPv6 address queries and negative responses
+       for all other query types.  Name resolution APIs MUST NOT send
+       queries for localhost names to their configured recursive DNS
+       server(s).
 
        As for application software, name resolution APIs and libraries
        MUST NOT use a searchlist to resolve a localhost name.
@@ -261,19 +266,14 @@ Internet-Draft         let-localhost-be-localhost           October 2017
 
 4.2.  DNSSEC
 
-   (Ed note: The following options seem reasonable.  I personally prefer
-   the latter, but could be convinced that the former is reasonable if
-   that's the way the working group's concensus trends.)
+   The ".localhost" TLD is already assigned to IANA, as per [RFC2606],
+   but does not have an entry in the DNSSEC root-zone.  This means that
+   the root will return an NXDOMAIN response along with NSEC records
+   constituting a secure denial of existence if queried.  That's
+   consistent with the general principle that localhost names do not
+   exist in the DNS, and the subsequent requirements to return NXDOMAIN
+   that are laid out in Section 3.
 
-4.2.1.  Option 1: Explicit delegation
-
-   The ".localhost" TLD is already assigned to IANA, as per [RFC2606].
-   This document requests that a DNSSEC insecure delegation (that is, a
-   delegation with no DS records) be inserted into the root-zone,
-   delegated to "blackhole-[12].iana.org".
-
-   This request for an insecure delegation relies on the rationale
-   spelled out in section 4 of [I-D.wkumari-dnsop-internal], which
 
 
 
@@ -281,19 +281,6 @@ West                     Expires April 27, 2018                 [Page 5]
 
 Internet-Draft         let-localhost-be-localhost           October 2017
 
-
-   discusses the DNSSEC considerations for the ".internal" TLD.  The
-   same considerations apply to this document's discussion of localhost
-   names.
-
-4.2.2.  Option 2: Implicit failure
-
-   The ".localhost" TLD is already assigned to IANA, as per [RFC2606],
-   but does not have an entry in the DNSSEC root-zone.  This means that
-   the root will return an NXDOMAIN response along with NSEC records
-   constituting a secure denial of existence if queried.  That's
-   consistent with the requirements to return NXDOMAIN that are laid out
-   in Section 3.
 
 5.  Security Considerations
 
@@ -315,6 +302,14 @@ Internet-Draft         let-localhost-be-localhost           October 2017
    point 2 of Section 3 are known to be followed by the resolver that is
    known to be present in the target environment.
 
+5.2.  Non-TLD 'localhost' labels
+
+   Hosts like "localhost.example.com" contain a "localhost" label, but
+   are not affected one way or another by the recommendations in this
+   document.  They are not "localhost names", have no resolution
+   guarantees, and should not be given special treatment, either in DNS
+   or in client software.
+
 6.  Implementation Considerations
 
 6.1.  Non-DNS usage of localhost names
@@ -327,7 +322,12 @@ Internet-Draft         let-localhost-be-localhost           October 2017
 
 7.  References
 
+7.1.  Normative References
 
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
+              editor.org/info/rfc2119>.
 
 
 
@@ -337,13 +337,6 @@ West                     Expires April 27, 2018                 [Page 6]
 
 Internet-Draft         let-localhost-be-localhost           October 2017
 
-
-7.1.  Normative References
-
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
-              editor.org/info/rfc2119>.
 
    [RFC6761]  Cheshire, S. and M. Krochmal, "Special-Use Domain Names",
               RFC 6761, DOI 10.17487/RFC6761, February 2013,
@@ -362,10 +355,6 @@ Internet-Draft         let-localhost-be-localhost           October 2017
               Sunset", draft-ietf-sunset4-gapanalysis-09 (work in
               progress), August 2017.
 
-   [I-D.wkumari-dnsop-internal]
-              Kumari, W., "The .internal TLD.", draft-wkumari-dnsop-
-              internal-00 (work in progress), July 2017.
-
    [RFC1537]  Beertema, P., "Common DNS Data File Configuration Errors",
               RFC 1537, DOI 10.17487/RFC1537, October 1993,
               <https://www.rfc-editor.org/info/rfc1537>.
@@ -383,17 +372,6 @@ Internet-Draft         let-localhost-be-localhost           October 2017
               West, M., "Secure Contexts", n.d.,
               <http://w3c.github.io/webappsec-secure-contexts/>.
 
-
-
-
-
-
-
-West                     Expires April 27, 2018                 [Page 7]
-
-Internet-Draft         let-localhost-be-localhost           October 2017
-
-
 Appendix A.  Changes from RFC 6761
 
    Section 3 updates the requirements in section 6.3 of [RFC6761] in a
@@ -409,24 +387,44 @@ Appendix A.  Changes from RFC 6761
        localhost names to loopback addresses, without sending the query
        on to caching DNS servers.
 
+
+
+West                     Expires April 27, 2018                 [Page 7]
+
+Internet-Draft         let-localhost-be-localhost           October 2017
+
+
    3.  Caching and authoritative DNS servers are required to respond to
        resolution requests for localhost names with NXDOMAIN.
 
 Appendix B.  Changes in this draft
 
-B.1.  draft-ietf-dnsop-let-localhost-be-localhost-00
+B.1.  draft-ietf-dnsop-let-localhost-be-localhost-01
+
+   o  Explicit adoption of the principle Wes Hardaker proposed in
+      https://www.ietf.org/mail-archive/web/dnsop/current/msg21039.html
+      , and that Warren Kumari reiterated in https://www.ietf.org/mail-
+      archive/web/dnsop/current/msg21129.html : localhost names do not
+      exist in the DNS, there is no authoritative source for these
+      names, and querying resolvers for them is an error.
+
+   o  Slight tightening of the admonition against search lists.
+
+   o  Addressed "localhost" labels in non-localhost names.
+
+B.2.  draft-ietf-dnsop-let-localhost-be-localhost-00
 
    o  No change since draft-west-let-localhost-be-localhost-06, just
       renaming the document after DNSOP adopted it.
 
-B.2.  draft-west-let-localhost-be-localhost-06
+B.3.  draft-west-let-localhost-be-localhost-06
 
    o  Incorporated Ted Lemon's further feedback from
       https://www.ietf.org/mail-archive/web/dnsop/current/msg20769.html
 
    o  Explicitly waffling on DNSSEC.
 
-B.3.  draft-west-let-localhost-be-localhost-05
+B.4.  draft-west-let-localhost-be-localhost-05
 
    o  Updated obsolete references to RFC 5735 and 5156 in favor of
       [RFC6890].
@@ -445,17 +443,19 @@ B.3.  draft-west-let-localhost-be-localhost-05
 
 
 
+
+
 West                     Expires April 27, 2018                 [Page 8]
 
 Internet-Draft         let-localhost-be-localhost           October 2017
 
 
-B.4.  draft-west-let-localhost-be-localhost-04
+B.5.  draft-west-let-localhost-be-localhost-04
 
    o  Restructured the draft as a stand-alone document, rather than as
       set of monkey-patches against [RFC6761].
 
-B.5.  draft-west-let-localhost-be-localhost-03
+B.6.  draft-west-let-localhost-be-localhost-03
 
    o  Explicitly referenced [I-D.ietf-sunset4-gapanalysis].
 
@@ -465,16 +465,16 @@ B.5.  draft-west-let-localhost-be-localhost-03
    o  Noted that MySQL has special behavior differentiating the
       connection mechanism used for "localhost" and "127.0.0.1".
 
-B.6.  draft-west-let-localhost-be-localhost-02
+B.7.  draft-west-let-localhost-be-localhost-02
 
    o  Pulled in definitions for IPv4 and IPv6 loopback addresses.
 
-B.7.  draft-west-let-localhost-be-localhost-01
+B.8.  draft-west-let-localhost-be-localhost-01
 
    o  Added a requirement that caching DNS servers MUST generate an
       immediate negative response.
 
-B.8.  draft-west-let-localhost-be-localhost-00
+B.9.  draft-west-let-localhost-be-localhost-00
 
    First draft.
 

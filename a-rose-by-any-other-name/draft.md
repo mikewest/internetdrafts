@@ -31,7 +31,6 @@ informative:
   RFC2606:
   RFC3397:
   I-D.ietf-sunset4-gapanalysis:
-  I-D.wkumari-dnsop-internal:
   SECURE-CONTEXTS:
     target: http://w3c.github.io/webappsec-secure-contexts/
     title: "Secure Contexts"
@@ -216,7 +215,7 @@ only if all the requirements under point 2 of {{localhost-names}} are known to
 be followed by the resolver that is known to be present in the target
 environment.
 
-## Non-TLD `localhost` labels
+## Non-TLD 'localhost' labels
 
 Hosts like `localhost.example.com` contain a `localhost` label, but are not
 affected one way or another by the recommendations in this document. They are
