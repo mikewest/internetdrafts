@@ -178,20 +178,18 @@ considerations outlined in {{RFC6761}} can be answered as follows:
 
 # IANA Considerations
 
-IANA is requested to update the `localhost.` registration in the registry of
-Special-Use Domain Names {{RFC6761}} to reference the domain name reservations
-considerations section of this document.
-
 ## Domain Name Reservation Considerations
 
-This document requests that IANA update the `localhost.` registration in the
-registry of Special-Use Domain Names {{RFC6761}} to reference the domain name
-reservation considerations defined in {{localhost-names}}.
+This document requests that IANA updates the `localhost.` registration in the
+registry of Special-Use Domain Names {{RFC6761}} to reference this document
+rather than {{RFC6761}}.
+
+Considerations for this reservation are detailed in {{localhost-names}}.
 
 ## DNSSEC
 
 The `.localhost` TLD is already assigned to IANA, as per {{RFC2606}}, but does
-not have an entry in the DNSSEC root-zone. This means that the root will return
+not have an entry in the root-zone. This means that the root will return
 an NXDOMAIN response along with NSEC records constituting a secure denial of
 existence if queried. That's consistent with the general principle that
 localhost names do not exist in the DNS, and the subsequent requirements to

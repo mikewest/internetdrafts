@@ -254,25 +254,25 @@ Internet-Draft         let-localhost-be-localhost          December 2017
 
 4.  IANA Considerations
 
-   IANA is requested to update the "localhost." registration in the
-   registry of Special-Use Domain Names [RFC6761] to reference the
-   domain name reservations considerations section of this document.
-
 4.1.  Domain Name Reservation Considerations
 
-   This document requests that IANA update the "localhost." registration
-   in the registry of Special-Use Domain Names [RFC6761] to reference
-   the domain name reservation considerations defined in Section 3.
+   This document requests that IANA updates the "localhost."
+   registration in the registry of Special-Use Domain Names [RFC6761] to
+   reference this document rather than [RFC6761].
+
+   Considerations for this reservation are detailed in Section 3.
 
 4.2.  DNSSEC
 
    The ".localhost" TLD is already assigned to IANA, as per [RFC2606],
-   but does not have an entry in the DNSSEC root-zone.  This means that
-   the root will return an NXDOMAIN response along with NSEC records
+   but does not have an entry in the root-zone.  This means that the
+   root will return an NXDOMAIN response along with NSEC records
    constituting a secure denial of existence if queried.  That's
    consistent with the general principle that localhost names do not
    exist in the DNS, and the subsequent requirements to return NXDOMAIN
    that are laid out in Section 3.
+
+
 
 
 
