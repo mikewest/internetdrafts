@@ -1,7 +1,7 @@
 ---
 title: Let 'localhost' be localhost.
 abbrev: let-localhost-be-localhost
-docname: draft-ietf-dnsop-let-localhost-be-localhost-01
+docname: draft-ietf-dnsop-let-localhost-be-localhost-02
 date: 2017
 category: std
 updates: 6761
@@ -23,12 +23,12 @@ author:
 
 normative:
   RFC2119:
+  RFC2606:
   RFC6761:
   RFC6890:
 
 informative:
   RFC1537:
-  RFC2606:
   RFC3397:
   I-D.ietf-sunset4-gapanalysis:
   SECURE-CONTEXTS:
@@ -42,7 +42,8 @@ informative:
 
 --- abstract
 
-This document updates RFC6761 with the goal of ensuring that `localhost` can be
+This document updates the treatment of the special-use domain name `localhost`
+as specified in RFC6761, Section 6.3, with the goal of ensuring that it can be
 safely relied upon as a name for the local host's loopback interface. To that
 end, stub resolvers are required to resolve localhost names to loopback
 addresses. Recursive DNS servers are required to return `NXDOMAIN` when queried
@@ -58,7 +59,7 @@ means `localhost`, and doesn't resolve to somewhere else on the network.
 # Introduction
 
 The `127.0.0.0/8` IPv4 address block and `::1/128` IPv6 address block are
-reserved as loopback addresses. Traffic to this block is assured to remain
+reserved as loopback addresses. Traffic to these blocks is assured to remain
 within a single host, and can not legitimately appear on any network
 anywhere. This turns out to be a very useful property in a number of
 circumstances; useful enough to label explicitly and interoperably as
@@ -177,20 +178,18 @@ considerations outlined in {{RFC6761}} can be answered as follows:
 
 # IANA Considerations
 
-IANA is requested to update the `localhost.` registration in the registry of
-Special-Use Domain Names {{RFC6761}} to reference the domain name reservations
-considerations section of this document.
-
 ## Domain Name Reservation Considerations
 
-This document requests that IANA update the `localhost.` registration in the
-registry of Special-Use Domain Names {{RFC6761}} to reference the domain name
-reservation considerations defined in {{localhost-names}}.
+This document requests that IANA updates the `localhost.` registration in the
+registry of Special-Use Domain Names {{RFC6761}} to reference this document
+rather than {{RFC6761}}.
+
+Considerations for this reservation are detailed in {{localhost-names}}.
 
 ## DNSSEC
 
 The `.localhost` TLD is already assigned to IANA, as per {{RFC2606}}, but does
-not have an entry in the DNSSEC root-zone. This means that the root will return
+not have an entry in the root-zone. This means that the root will return
 an NXDOMAIN response along with NSEC records constituting a secure denial of
 existence if queried. That's consistent with the general principle that
 localhost names do not exist in the DNS, and the subsequent requirements to
@@ -215,12 +214,21 @@ only if all the requirements under point 2 of {{localhost-names}} are known to
 be followed by the resolver that is known to be present in the target
 environment.
 
-## Non-TLD 'localhost' labels
+## 'localhost' labels in subdomains
 
-Hosts like `localhost.example.com` contain a `localhost` label, but are not
-affected one way or another by the recommendations in this document. They are
-not "localhost names", have no resolution guarantees, and should not be given
-special treatment, either in DNS or in client software.
+Hosts like `localhost.example.com` and `subdomain.localhost.example.com` contain
+a `localhost` label, but are not themselves localhost names, as they do not fall
+within `localhost.`. Therefore, they are not directly affected by the
+recommendations in this document. They have no resolution guarantees one way or
+another, and should not be given special treatment, either in DNS or in client
+software.
+
+Note, however, that the admonition against searchlist usage could affect their
+resolution in practice, as discussed in {{localhost-names}}. For example, even
+with a searchlist of `example.com` in place for a given network, the name
+`localhost` will not be resolved as `localhost.example.com.` but as
+`localhost.`, and `subdomain.localhost` will not be resolved as
+`subdomain.localhost.example.com.` but as `subdomain.localhost.`.
 
 # Implementation Considerations
 
@@ -253,7 +261,7 @@ few substantive ways:
 
 # Changes in this draft
 
-## draft-ietf-dnsop-let-localhost-be-localhost-01
+## draft-ietf-dnsop-let-localhost-be-localhost-02
 
 *   Explicit adoption of the principle Wes Hardaker proposed in
     <https://www.ietf.org/mail-archive/web/dnsop/current/msg21039.html>, and
@@ -266,7 +274,7 @@ few substantive ways:
 
 *   Addressed `localhost` labels in non-localhost names.
 
-## draft-ietf-dnsop-let-localhost-be-localhost-01
+## draft-ietf-dnsop-let-localhost-be-localhost-02
 
 *   No change since draft-west-let-localhost-be-localhost-06, just renaming the
     document after DNSOP adopted it.
