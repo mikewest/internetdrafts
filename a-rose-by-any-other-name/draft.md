@@ -1,7 +1,7 @@
 ---
 title: Let 'localhost' be localhost.
 abbrev: let-localhost-be-localhost
-docname: draft-ietf-dnsop-let-localhost-be-localhost-01
+docname: draft-ietf-dnsop-let-localhost-be-localhost-02
 date: 2017
 category: std
 updates: 6761
@@ -42,7 +42,8 @@ informative:
 
 --- abstract
 
-This document updates RFC6761 with the goal of ensuring that `localhost` can be
+This document updates the treatment of the special-use domain name `localhost`
+as specified in RFC6761, Section 6.3, with the goal of ensuring that it can be
 safely relied upon as a name for the local host's loopback interface. To that
 end, stub resolvers are required to resolve localhost names to loopback
 addresses. Recursive DNS servers are required to return `NXDOMAIN` when queried
@@ -253,7 +254,7 @@ few substantive ways:
 
 # Changes in this draft
 
-## draft-ietf-dnsop-let-localhost-be-localhost-01
+## draft-ietf-dnsop-let-localhost-be-localhost-02
 
 *   Explicit adoption of the principle Wes Hardaker proposed in
     <https://www.ietf.org/mail-archive/web/dnsop/current/msg21039.html>, and
@@ -266,7 +267,7 @@ few substantive ways:
 
 *   Addressed `localhost` labels in non-localhost names.
 
-## draft-ietf-dnsop-let-localhost-be-localhost-01
+## draft-ietf-dnsop-let-localhost-be-localhost-02
 
 *   No change since draft-west-let-localhost-be-localhost-06, just renaming the
     document after DNSOP adopted it.
