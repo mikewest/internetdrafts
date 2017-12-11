@@ -79,11 +79,11 @@ Table of Contents
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
      5.1.  Applications are encouraged to resolve localhost names
            themselves. . . . . . . . . . . . . . . . . . . . . . . .   6
-     5.2.  Non-TLD 'localhost' labels  . . . . . . . . . . . . . . .   6
+     5.2.  'localhost' labels in subdomains  . . . . . . . . . . . .   6
    6.  Implementation Considerations . . . . . . . . . . . . . . . .   6
      6.1.  Non-DNS usage of localhost names  . . . . . . . . . . . .   6
-   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
      7.2.  Informative References  . . . . . . . . . . . . . . . . .   7
    Appendix A.  Changes from RFC 6761  . . . . . . . . . . . . . . .   7
    Appendix B.  Changes in this draft  . . . . . . . . . . . . . . .   8
@@ -97,7 +97,7 @@ Table of Contents
      B.8.  draft-west-let-localhost-be-localhost-01  . . . . . . . .   9
      B.9.  draft-west-let-localhost-be-localhost-00  . . . . . . . .   9
    Appendix C.  Acknowledgements . . . . . . . . . . . . . . . . . .   9
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   9
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  10
 
 1.  Introduction
 
@@ -302,13 +302,23 @@ Internet-Draft         let-localhost-be-localhost          December 2017
    point 2 of Section 3 are known to be followed by the resolver that is
    known to be present in the target environment.
 
-5.2.  Non-TLD 'localhost' labels
+5.2.  'localhost' labels in subdomains
 
-   Hosts like "localhost.example.com" contain a "localhost" label, but
-   are not affected one way or another by the recommendations in this
-   document.  They are not "localhost names", have no resolution
-   guarantees, and should not be given special treatment, either in DNS
-   or in client software.
+   Hosts like "localhost.example.com" and
+   "subdomain.localhost.example.com" contain a "localhost" label, but
+   are not themselves localhost names, as they do not fall within
+   "localhost.".  Therefore, they are not directly affected by the
+   recommendations in this document.  They have no resolution guarantees
+   one way or another, and should not be given special treatment, either
+   in DNS or in client software.
+
+   Note, however, that the admonition against searchlist usage could
+   affect their resolution in practice, as discussed in Section 3.  For
+   example, even with a searchlist of "example.com" in place for a given
+   network, the name "localhost" will not be resolved as
+   "localhost.example.com." but as "localhost.", and
+   "subdomain.localhost" will not be resolved as
+   "subdomain.localhost.example.com." but as "subdomain.localhost.".
 
 6.  Implementation Considerations
 
@@ -320,6 +330,14 @@ Internet-Draft         let-localhost-be-localhost          December 2017
    loopback address for the latter.  The constraints on name resolution
    APIs above do not preclude this kind of differentiation.
 
+
+
+
+West                      Expires June 14, 2018                 [Page 6]
+
+Internet-Draft         let-localhost-be-localhost          December 2017
+
+
 7.  References
 
 7.1.  Normative References
@@ -328,15 +346,6 @@ Internet-Draft         let-localhost-be-localhost          December 2017
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
               editor.org/info/rfc2119>.
-
-
-
-
-
-West                      Expires June 14, 2018                 [Page 6]
-
-Internet-Draft         let-localhost-be-localhost          December 2017
-
 
    [RFC6761]  Cheshire, S. and M. Krochmal, "Special-Use Domain Names",
               RFC 6761, DOI 10.17487/RFC6761, February 2013,
@@ -377,6 +386,14 @@ Appendix A.  Changes from RFC 6761
    Section 3 updates the requirements in section 6.3 of [RFC6761] in a
    few substantive ways:
 
+
+
+
+West                      Expires June 14, 2018                 [Page 7]
+
+Internet-Draft         let-localhost-be-localhost          December 2017
+
+
    1.  Application software and name resolution APIs and libraries are
        prohibited from using searchlists when resolving localhost names,
        and encouraged to bypass resolution APIs and libraries altogether
@@ -386,13 +403,6 @@ Appendix A.  Changes from RFC 6761
    2.  Name resolution APIs and libraries are required to resolve
        localhost names to loopback addresses, without sending the query
        on to caching DNS servers.
-
-
-
-West                      Expires June 14, 2018                 [Page 7]
-
-Internet-Draft         let-localhost-be-localhost          December 2017
-
 
    3.  Caching and authoritative DNS servers are required to respond to
        resolution requests for localhost names with NXDOMAIN.
@@ -432,16 +442,6 @@ B.4.  draft-west-let-localhost-be-localhost-05
    o  Clarify that non-caching recursive DNS servers are also addressed
       by #4 in Section 3.
 
-   o  Reformulating the abstract and introduction based on feedback like
-      Ted Lemon's in https://www.ietf.org/mail-
-      archive/web/dnsop/current/msg20757.html
-
-   o  Added a request that an insecure delegation for "localhost." be
-      added to the root-zone.
-
-
-
-
 
 
 
@@ -449,6 +449,13 @@ West                      Expires June 14, 2018                 [Page 8]
 
 Internet-Draft         let-localhost-be-localhost          December 2017
 
+
+   o  Reformulating the abstract and introduction based on feedback like
+      Ted Lemon's in https://www.ietf.org/mail-
+      archive/web/dnsop/current/msg20757.html
+
+   o  Added a request that an insecure delegation for "localhost." be
+      added to the root-zone.
 
 B.5.  draft-west-let-localhost-be-localhost-04
 
@@ -488,6 +495,17 @@ Appendix C.  Acknowledgements
    of DNSOP offered substantive feedback that markedly improved the
    quality of this document.
 
+
+
+
+
+
+
+West                      Expires June 14, 2018                 [Page 9]
+
+Internet-Draft         let-localhost-be-localhost          December 2017
+
+
 Author's Address
 
    Mike West
@@ -501,4 +519,42 @@ Author's Address
 
 
 
-West                      Expires June 14, 2018                 [Page 9]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+West                      Expires June 14, 2018                [Page 10]

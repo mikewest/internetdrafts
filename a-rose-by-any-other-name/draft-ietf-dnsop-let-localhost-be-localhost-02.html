@@ -382,7 +382,7 @@
 <link href="#rfc.section.4.2" rel="Chapter" title="4.2 DNSSEC"/>
 <link href="#rfc.section.5" rel="Chapter" title="5 Security Considerations"/>
 <link href="#rfc.section.5.1" rel="Chapter" title="5.1 Applications are encouraged to resolve localhost names themselves."/>
-<link href="#rfc.section.5.2" rel="Chapter" title="5.2 Non-TLD &#x2018;localhost&#x2019; labels"/>
+<link href="#rfc.section.5.2" rel="Chapter" title="5.2 &#x2018;localhost&#x2019; labels in subdomains"/>
 <link href="#rfc.section.6" rel="Chapter" title="6 Implementation Considerations"/>
 <link href="#rfc.section.6.1" rel="Chapter" title="6.1 Non-DNS usage of localhost names"/>
 <link href="#rfc.references" rel="Chapter" title="7 References"/>
@@ -478,7 +478,7 @@
 <li>4.2.   <a href="#rfc.section.4.2">DNSSEC</a></li>
 </ul><li>5.   <a href="#rfc.section.5">Security Considerations</a></li>
 <ul><li>5.1.   <a href="#rfc.section.5.1">Applications are encouraged to resolve localhost names themselves.</a></li>
-<li>5.2.   <a href="#rfc.section.5.2">Non-TLD &#8216;localhost&#8217; labels</a></li>
+<li>5.2.   <a href="#rfc.section.5.2">&#8216;localhost&#8217; labels in subdomains</a></li>
 </ul><li>6.   <a href="#rfc.section.6">Implementation Considerations</a></li>
 <ul><li>6.1.   <a href="#rfc.section.6.1">Non-DNS usage of localhost names</a></li>
 </ul><li>7.   <a href="#rfc.references">References</a></li>
@@ -537,8 +537,9 @@
 <h1 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1.</a> <a href="#applications-are-encouraged-to-resolve-localhost-names-themselves" id="applications-are-encouraged-to-resolve-localhost-names-themselves">Applications are encouraged to resolve localhost names themselves.</a></h1>
 <p id="rfc.section.5.1.p.1">Applications that attempt to use the local resolver to query <samp>localhost</samp> do not fail safely. If an attacker sets up a malicious DNS server which returns a non-loopback address when queried for localhost names, such applications will connect to that remote server assuming it is local. This risk drives the requirement that applications resolve localhost names themselves if they intend to make security decisions based on the assumption that localhost names resolve locally.</p>
 <p id="rfc.section.5.1.p.2">There may be cases in which the target runtime environment can be safely assumed to do the right thing with localhost names. In this case, the requirement that the application resolve localhost names on its own may be safe to ignore, but only if all the requirements under point 2 of <a href="#localhost-names">Section 3</a> are known to be followed by the resolver that is known to be present in the target environment.</p>
-<h1 id="rfc.section.5.2"><a href="#rfc.section.5.2">5.2.</a> <a href="#non-tld-localhost-labels" id="non-tld-localhost-labels">Non-TLD &#8216;localhost&#8217; labels</a></h1>
-<p id="rfc.section.5.2.p.1">Hosts like <samp>localhost.example.com</samp> contain a <samp>localhost</samp> label, but are not affected one way or another by the recommendations in this document. They are not &#8220;localhost names&#8221;, have no resolution guarantees, and should not be given special treatment, either in DNS or in client software.</p>
+<h1 id="rfc.section.5.2"><a href="#rfc.section.5.2">5.2.</a> <a href="#localhost-labels-in-subdomains" id="localhost-labels-in-subdomains">&#8216;localhost&#8217; labels in subdomains</a></h1>
+<p id="rfc.section.5.2.p.1">Hosts like <samp>localhost.example.com</samp> and <samp>subdomain.localhost.example.com</samp> contain a <samp>localhost</samp> label, but are not themselves localhost names, as they do not fall within <samp>localhost.</samp>. Therefore, they are not directly affected by the recommendations in this document. They have no resolution guarantees one way or another, and should not be given special treatment, either in DNS or in client software.</p>
+<p id="rfc.section.5.2.p.2">Note, however, that the admonition against searchlist usage could affect their resolution in practice, as discussed in <a href="#localhost-names">Section 3</a>. For example, even with a searchlist of <samp>example.com</samp> in place for a given network, the name <samp>localhost</samp> will not be resolved as <samp>localhost.example.com.</samp> but as <samp>localhost.</samp>, and <samp>subdomain.localhost</samp> will not be resolved as <samp>subdomain.localhost.example.com.</samp> but as <samp>subdomain.localhost.</samp>.</p>
 <h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#implementation-considerations" id="implementation-considerations">Implementation Considerations</a></h1>
 <h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#non-dns-usage-of-localhost-names" id="non-dns-usage-of-localhost-names">Non-DNS usage of localhost names</a></h1>
 <p id="rfc.section.6.1.p.1">Some application software differentiates between the hostname <samp>localhost</samp> and the IP address <samp>127.0.0.1</samp>. MySQL, for example, uses a unix domain socket for the former, and a TCP connection to the loopback address for the latter. The constraints on name resolution APIs above do not preclude this kind of differentiation.</p>

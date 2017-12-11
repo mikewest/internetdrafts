@@ -214,12 +214,21 @@ only if all the requirements under point 2 of {{localhost-names}} are known to
 be followed by the resolver that is known to be present in the target
 environment.
 
-## Non-TLD 'localhost' labels
+## 'localhost' labels in subdomains
 
-Hosts like `localhost.example.com` contain a `localhost` label, but are not
-affected one way or another by the recommendations in this document. They are
-not "localhost names", have no resolution guarantees, and should not be given
-special treatment, either in DNS or in client software.
+Hosts like `localhost.example.com` and `subdomain.localhost.example.com` contain
+a `localhost` label, but are not themselves localhost names, as they do not fall
+within `localhost.`. Therefore, they are not directly affected by the
+recommendations in this document. They have no resolution guarantees one way or
+another, and should not be given special treatment, either in DNS or in client
+software.
+
+Note, however, that the admonition against searchlist usage could affect their
+resolution in practice, as discussed in {{localhost-names}}. For example, even
+with a searchlist of `example.com` in place for a given network, the name
+`localhost` will not be resolved as `localhost.example.com.` but as
+`localhost.`, and `subdomain.localhost` will not be resolved as
+`subdomain.localhost.example.com.` but as `subdomain.localhost.`.
 
 # Implementation Considerations
 
