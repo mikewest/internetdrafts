@@ -102,10 +102,10 @@ Table of Contents
 1.  Introduction
 
    The "127.0.0.0/8" IPv4 address block and "::1/128" IPv6 address block
-   are reserved as loopback addresses.  Traffic to this block is assured
-   to remain within a single host, and can not legitimately appear on
-   any network anywhere.  This turns out to be a very useful property in
-   a number of circumstances; useful enough to label explicitly and
+   are reserved as loopback addresses.  Traffic to these blocks is
+   assured to remain within a single host, and can not legitimately
+   appear on any network anywhere.  This turns out to be a very useful
+   property in a number of circumstances; useful enough to label
 
 
 
@@ -114,12 +114,12 @@ West                      Expires June 14, 2018                 [Page 2]
 Internet-Draft         let-localhost-be-localhost          December 2017
 
 
-   interoperably as "localhost".  [RFC1537] suggests that this special-
-   use top-level domain name has been implicitly mapped to loopback
-   addresses for decades at this point, and that [RFC6761]'s assertion
-   that developers may "assume that IPv4 and IPv6 address queries for
-   localhost names will always resolve to the respective IP loopback
-   address" is well-founded.
+   explicitly and interoperably as "localhost".  [RFC1537] suggests that
+   this special-use top-level domain name has been implicitly mapped to
+   loopback addresses for decades at this point, and that [RFC6761]'s
+   assertion that developers may "assume that IPv4 and IPv6 address
+   queries for localhost names will always resolve to the respective IP
+   loopback address" is well-founded.
 
    Unfortunately, the rest of that latter document's requirements
    undercut the assumption it suggests.  Client software is empowered to

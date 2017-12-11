@@ -59,7 +59,7 @@ means `localhost`, and doesn't resolve to somewhere else on the network.
 # Introduction
 
 The `127.0.0.0/8` IPv4 address block and `::1/128` IPv6 address block are
-reserved as loopback addresses. Traffic to this block is assured to remain
+reserved as loopback addresses. Traffic to these blocks is assured to remain
 within a single host, and can not legitimately appear on any network
 anywhere. This turns out to be a very useful property in a number of
 circumstances; useful enough to label explicitly and interoperably as
