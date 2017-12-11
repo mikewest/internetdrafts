@@ -347,6 +347,10 @@ Internet-Draft         let-localhost-be-localhost          December 2017
               DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
               editor.org/info/rfc2119>.
 
+   [RFC2606]  Eastlake 3rd, D. and A. Panitz, "Reserved Top Level DNS
+              Names", BCP 32, RFC 2606, DOI 10.17487/RFC2606, June 1999,
+              <https://www.rfc-editor.org/info/rfc2606>.
+
    [RFC6761]  Cheshire, S. and M. Krochmal, "Special-Use Domain Names",
               RFC 6761, DOI 10.17487/RFC6761, February 2013,
               <https://www.rfc-editor.org/info/rfc6761>.
@@ -367,10 +371,6 @@ Internet-Draft         let-localhost-be-localhost          December 2017
    [RFC1537]  Beertema, P., "Common DNS Data File Configuration Errors",
               RFC 1537, DOI 10.17487/RFC1537, October 1993,
               <https://www.rfc-editor.org/info/rfc1537>.
-
-   [RFC2606]  Eastlake 3rd, D. and A. Panitz, "Reserved Top Level DNS
-              Names", BCP 32, RFC 2606, DOI 10.17487/RFC2606, June 1999,
-              <https://www.rfc-editor.org/info/rfc2606>.
 
    [RFC3397]  Aboba, B. and S. Cheshire, "Dynamic Host Configuration
               Protocol (DHCP) Domain Search Option", RFC 3397,

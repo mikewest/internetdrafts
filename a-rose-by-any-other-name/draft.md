@@ -23,12 +23,12 @@ author:
 
 normative:
   RFC2119:
+  RFC2606:
   RFC6761:
   RFC6890:
 
 informative:
   RFC1537:
-  RFC2606:
   RFC3397:
   I-D.ietf-sunset4-gapanalysis:
   SECURE-CONTEXTS:
